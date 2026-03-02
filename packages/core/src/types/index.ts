@@ -60,6 +60,11 @@ export interface RelationConfig {
   target: string
 }
 
+export interface RelationField {
+  fieldName: string
+  config: RelationConfig
+}
+
 export interface SchemaOptions {
   draftAndPublish?: boolean
   timestamps?: boolean
