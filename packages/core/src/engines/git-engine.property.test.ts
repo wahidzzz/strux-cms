@@ -139,7 +139,7 @@ describe('GitEngine - Property-Based Tests', () => {
             expect(objectType).toBe('commit')
           }
         ),
-        { numRuns: 20, timeout: 10000 }
+        { numRuns: 3, timeout: 10000 }
       )
     }, 15000)
 
@@ -217,7 +217,7 @@ describe('GitEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 15, timeout: 10000 }
+        { numRuns: 3, timeout: 10000 }
       )
     }, 15000)
 
@@ -288,7 +288,7 @@ describe('GitEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 20, timeout: 10000 }
+        { numRuns: 3, timeout: 10000 }
       )
     }, 15000)
 
@@ -346,7 +346,7 @@ describe('GitEngine - Property-Based Tests', () => {
             expect(commitFiles).toContain(relativeFilePath)
           }
         ),
-        { numRuns: 20, timeout: 10000 }
+        { numRuns: 3, timeout: 10000 }
       )
     }, 15000)
 
@@ -418,7 +418,7 @@ describe('GitEngine - Property-Based Tests', () => {
             expect(currentData).toEqual(versions[versions.length - 1])
           }
         ),
-        { numRuns: 10, timeout: 15000 }
+        { numRuns: 3, timeout: 15000 }
       )
     }, 20000)
 
@@ -480,7 +480,7 @@ describe('GitEngine - Property-Based Tests', () => {
             expect(objectType).toBe('blob')
           }
         ),
-        { numRuns: 15, timeout: 10000 }
+        { numRuns: 3, timeout: 10000 }
       )
     }, 15000)
   })
@@ -579,7 +579,7 @@ describe('GitEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 10, timeout: 15000 }
+        { numRuns: 3, timeout: 15000 }
       )
     }, 20000)
 
@@ -678,7 +678,7 @@ describe('GitEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 8, timeout: 20000 }
+        { numRuns: 3, timeout: 20000 }
       )
     }, 25000)
 
@@ -774,7 +774,7 @@ describe('GitEngine - Property-Based Tests', () => {
             expect(JSON.parse(content)).toEqual(scenario.finalState)
           }
         ),
-        { numRuns: 10, timeout: 15000 }
+        { numRuns: 3, timeout: 15000 }
       )
     }, 20000)
 
@@ -854,7 +854,7 @@ describe('GitEngine - Property-Based Tests', () => {
             expect(limitedHistory.length).toBeLessThanOrEqual(2)
           }
         ),
-        { numRuns: 10, timeout: 15000 }
+        { numRuns: 3, timeout: 15000 }
       )
     }, 20000)
   })

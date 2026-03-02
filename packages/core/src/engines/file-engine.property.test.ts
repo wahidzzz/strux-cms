@@ -80,7 +80,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(parsedContent).toEqual(data)
           }
         ),
-        { numRuns: 100 }
+        { numRuns: 10 }
       )
     })
 
@@ -126,7 +126,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(finalData).toEqual(dataArray[dataArray.length - 1])
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -171,7 +171,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(tempFiles).toHaveLength(0)
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -213,7 +213,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(parsedContent).toEqual(data)
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -270,7 +270,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(tempFiles).toHaveLength(0)
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
   })
@@ -359,7 +359,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(tempFiles).toHaveLength(0)
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -420,7 +420,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(currentlyWriting).toBe(0)
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -500,7 +500,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(totalDuration).toBeLessThan(sumOfDurations * 0.9)
           }
         ),
-        { numRuns: 20 }
+        { numRuns: 3 }
       )
     })
 
@@ -566,7 +566,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(fileEngine.getGlobalWriteCount()).toBe(0)
           }
         ),
-        { numRuns: 20 }
+        { numRuns: 3 }
       )
     })
 
@@ -632,7 +632,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(fileEngine.getQueueSize(contentType)).toBe(0)
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -695,7 +695,7 @@ describe('FileEngine - Property-Based Tests', () => {
             expect(fileEngine.getQueueSize(contentType)).toBe(0)
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
   })

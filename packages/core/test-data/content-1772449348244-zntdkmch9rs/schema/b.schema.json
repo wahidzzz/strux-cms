@@ -1,0 +1,23 @@
+{
+  "apiId": "b",
+  "displayName": "B",
+  "singularName": "b",
+  "pluralName": "bs",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "content": {
+      "type": "text"
+    }
+  },
+  "options": {
+    "draftAndPublish": false,
+    "timestamps": true
+  }
+}

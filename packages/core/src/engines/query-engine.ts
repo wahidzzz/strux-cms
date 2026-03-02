@@ -9,7 +9,6 @@ import type {
   SortParam,
   PaginationParam,
   PopulateParam,
-  RelationField,
 } from '../types/index.js'
 import type { FileEngine } from './file-engine.js'
 import type { SchemaEngine } from './schema-engine.js'

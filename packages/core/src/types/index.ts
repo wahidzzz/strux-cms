@@ -298,6 +298,13 @@ export interface MediaFolder {
   updatedAt: string
 }
 
+export interface UpdateMediaData {
+  alternativeText?: string
+  caption?: string
+  folder?: string
+  name?: string
+}
+
 // Write Operation
 export interface WriteOperation {
   path: string

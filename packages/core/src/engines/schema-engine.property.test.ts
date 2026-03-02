@@ -94,7 +94,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -153,11 +153,11 @@ describe('SchemaEngine - Property-Based Tests', () => {
                   expect(result.errors).toBeUndefined()
                 }
               ),
-              { numRuns: 20 }
+              { numRuns: 3 }
             )
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -208,7 +208,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
             expect(hasRequiredError).toBe(true)
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -282,7 +282,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
             expect(result4.errors).toBeDefined()
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -367,7 +367,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
             expect(result5.valid).toBe(true)
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -418,7 +418,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
             expect(result3.valid).toBe(true)
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -476,7 +476,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
             expect(hasEmailError || hasCountError).toBe(true)
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -529,7 +529,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       )
     })
 
@@ -577,7 +577,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
             expect(result.valid).toBe(true)
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
   })

@@ -311,7 +311,7 @@ export class GitEngine {
    * @returns Formatted commit message
    */
   generateCommitMessage(
-    operation: 'create' | 'update' | 'delete',
+    operation: 'create' | 'update' | 'delete' | 'publish' | 'unpublish',
     contentType: string,
     id: string
   ): string {

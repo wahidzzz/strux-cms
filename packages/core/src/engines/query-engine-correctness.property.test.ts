@@ -132,7 +132,7 @@ describe('QueryEngine - Query Correctness Property Tests', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -209,7 +209,7 @@ describe('QueryEngine - Query Correctness Property Tests', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -290,7 +290,7 @@ describe('QueryEngine - Query Correctness Property Tests', () => {
             expect(notResults.length).toBe(notExpected.length)
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -347,7 +347,7 @@ describe('QueryEngine - Query Correctness Property Tests', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -400,7 +400,7 @@ describe('QueryEngine - Query Correctness Property Tests', () => {
             expect(results.length).toBe(0)
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
   })

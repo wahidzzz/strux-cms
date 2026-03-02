@@ -1,0 +1,20 @@
+{
+  "apiId": "g",
+  "displayName": "G",
+  "singularName": "g",
+  "pluralName": "gs",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    }
+  },
+  "options": {
+    "draftAndPublish": false,
+    "timestamps": true
+  }
+}

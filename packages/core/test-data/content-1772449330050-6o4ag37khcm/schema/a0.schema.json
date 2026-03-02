@@ -1,0 +1,20 @@
+{
+  "apiId": "a0",
+  "displayName": "A0",
+  "singularName": "a0",
+  "pluralName": "a0s",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    }
+  },
+  "options": {
+    "draftAndPublish": false,
+    "timestamps": true
+  }
+}

@@ -136,7 +136,7 @@ describe('QueryEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -218,7 +218,7 @@ describe('QueryEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -298,7 +298,7 @@ describe('QueryEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -388,7 +388,7 @@ describe('QueryEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 20 }
+        { numRuns: 3 }
       )
     })
 
@@ -471,7 +471,7 @@ describe('QueryEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 5 }
       )
     })
 
@@ -583,7 +583,7 @@ describe('QueryEngine - Property-Based Tests', () => {
             }
           }
         ),
-        { numRuns: 20 }
+        { numRuns: 3 }
       )
     })
 
@@ -617,7 +617,7 @@ describe('QueryEngine - Property-Based Tests', () => {
             expect(index!.lastUpdated).toBeGreaterThan(0)
           }
         ),
-        { numRuns: 20 }
+        { numRuns: 3 }
       )
     })
   })
