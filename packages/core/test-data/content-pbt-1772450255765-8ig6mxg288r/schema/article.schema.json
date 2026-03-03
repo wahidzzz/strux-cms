@@ -1,0 +1,25 @@
+{
+  "apiId": "article",
+  "displayName": "Article",
+  "singularName": "article",
+  "pluralName": "articles",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": false
+    },
+    "content": {
+      "type": "text",
+      "required": false
+    }
+  },
+  "options": {
+    "draftAndPublish": false,
+    "timestamps": true
+  }
+}

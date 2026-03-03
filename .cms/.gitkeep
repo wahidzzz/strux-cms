@@ -1,0 +1,5 @@
+# This directory stores CMS system files
+# - rbac.json: Role-based access control configuration
+# - users.json: User accounts
+# - media.json: Media library metadata
+# - index.json: In-memory index cache (not tracked in git)

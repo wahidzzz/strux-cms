@@ -1,0 +1,25 @@
+{
+  "apiId": "aaa",
+  "displayName": "jOI/4,;C",
+  "singularName": "NNPz",
+  "pluralName": "nLTq",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "text"
+    },
+    "count": {
+      "type": "number"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    }
+  }
+}
