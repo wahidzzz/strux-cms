@@ -49,7 +49,8 @@ export class CMS {
     private readonly basePath: string
     private readonly fileEngine: FileEngine
     private readonly schemaEngine: SchemaEngine
-    private readonly gitEngine: GitEngine
+    private readonly gitEngine: GitEngine // Root Git engine (schemas, config)
+    private readonly contentGitEngine: GitEngine // Content-specific Git engine (worktree)
     private readonly queryEngine: QueryEngine
     private readonly rbacEngine: RBACEngine
     private readonly mediaEngine: MediaEngine
@@ -70,6 +71,8 @@ export class CMS {
         this.fileEngine = new FileEngine()
         this.schemaEngine = new SchemaEngine(join(basePath, 'schema'))
         this.gitEngine = new GitEngine(basePath)
+        this.contentGitEngine = new GitEngine(join(basePath, 'content'))
+
         this.queryEngine = new QueryEngine(
             join(basePath, 'content', 'api'),
             this.fileEngine,
@@ -83,7 +86,7 @@ export class CMS {
             this.fileEngine,
             this.schemaEngine,
             this.queryEngine,
-            this.gitEngine,
+            this.contentGitEngine, // Use content-specific Git engine
             this.rbacEngine,
             this.metadataEngine
         )
@@ -190,7 +193,7 @@ export class CMS {
         } catch {
             // .git doesn't exist, initialize repository
             console.log('Initializing Git repository...')
-            await this.gitEngine.execGit(['init'])
+            await this.gitEngine.execGit(['init', '--initial-branch=main'])
 
             // Configure Git user if not configured
             try {
@@ -220,6 +223,81 @@ export class CMS {
                 'Initial commit: Initialize CMS repository'
             )
             console.log('Initial commit created')
+        }
+
+        // Initialize content worktree
+        await this.initializeContentWorktree()
+    }
+
+    /**
+     * 
+     * Algorithm:
+     * 1. Check if 'cms-data' branch exists, create if not
+     * 2. Check if 'content/' is already a worktree (contains .git file)
+     * 3. If not, setup worktree:
+     *    - Stash/Move any existing content
+     *    - Run git worktree add
+     *    - Restore content if needed
+     */
+    private async initializeContentWorktree(): Promise<void> {
+        const contentDir = join(this.basePath, 'content')
+        const contentGitPath = join(contentDir, '.git')
+        const branchName = 'cms-data'
+
+        try {
+            // 1. Ensure branch exists
+            const branches = await this.gitEngine.listBranches()
+            if (!branches.includes(branchName)) {
+                console.log(`Creating branch ${branchName}...`)
+                // Create an orphan branch for data to keep it separate from code history
+                await this.gitEngine.execGit(['checkout', '--orphan', branchName])
+                await this.gitEngine.execGit(['rm', '-rf', '.'])
+                await fs.writeFile(join(this.basePath, '.gitkeep'), '')
+                await this.gitEngine.execGit(['add', '.gitkeep'])
+                await this.gitEngine.execGit(['commit', '-m', 'Initial data branch commit'])
+                await this.gitEngine.execGit(['checkout', 'main'])
+            }
+
+            // 2. Check if content directory is a worktree
+            let isWorktree = false
+            try {
+                const stat = await fs.stat(contentGitPath)
+                isWorktree = stat.isFile() // Git worktree .git is a file
+            } catch {
+                isWorktree = false
+            }
+
+            if (!isWorktree) {
+                console.log('Setting up Git worktree for content...')
+
+                // If content directory exists, we might need to backup data
+                const tempBackup = join(this.basePath, '.content_backup')
+                let hadExistingContent = false
+                try {
+                    await fs.access(contentDir)
+                    await fs.rename(contentDir, tempBackup)
+                    hadExistingContent = true
+                } catch { }
+
+                // Add the worktree
+                await this.gitEngine.execGit(['worktree', 'add', 'content', branchName])
+
+                // Restore backup if it existed
+                if (hadExistingContent) {
+                    // Copy files from backup to new worktree dir
+                    // We use a simple recursive copy or move individual items to avoid deleting .git
+                    const items = await fs.readdir(tempBackup)
+                    for (const item of items) {
+                        await fs.rename(join(tempBackup, item), join(contentDir, item))
+                    }
+                    await fs.rmdir(tempBackup)
+                }
+
+                console.log('Content worktree setup complete')
+            }
+        } catch (error) {
+            console.error('Failed to initialize content worktree:', error)
+            // We don't throw here to allow CMS to boot, but Git operations on content may fail
         }
     }
 
@@ -444,10 +522,17 @@ export class CMS {
     }
 
     /**
-     * Get the GitEngine instance
+     * Get the GitEngine instance for the root repository
      */
     getGitEngine(): GitEngine {
         return this.gitEngine
+    }
+
+    /**
+     * Get the GitEngine instance for the content worktree
+     */
+    getContentGitEngine(): GitEngine {
+        return this.contentGitEngine
     }
 
     /**
@@ -508,8 +593,9 @@ export class CMS {
 
         // 5. Commit changes to Git
         const schemaPath = `schema/${contentType}.schema.json`
-        const contentPath = `content/api/${contentType}`
         const metadataPath = `.cms/metadata.json`
+        // Content path is relative to content/ worktree root
+        const contentPath = `api/${contentType}`
 
         const commitMessage = `delete(schema): remove ${contentType} and all its entries`
 
@@ -520,12 +606,31 @@ export class CMS {
             }
             : undefined
 
-        // Note: GitEngine.commit handles multiple paths
+        // First commit content deletion to content worktree
+        await this.contentGitEngine.commit(
+            [contentPath],
+            `delete(content): remove all entries for ${contentType}`,
+            author
+        )
+
+        // Then commit schema and metadata to root repository
         await this.gitEngine.commit(
-            [schemaPath, contentPath, metadataPath],
+            [schemaPath, metadataPath],
             commitMessage,
             author
         )
+
+        // Then commit content removal to content repo (worktree)
+        try {
+            await this.contentGitEngine.execGit(['add', contentPath])
+            await this.contentGitEngine.commit(
+                [contentPath],
+                `delete(data): remove all entries for ${contentType}`,
+                author
+            )
+        } catch (error) {
+            console.warn(`Failed to commit content removal to Git: ${error}`)
+        }
 
         console.log(`Content type ${contentType} deleted successfully`)
     }

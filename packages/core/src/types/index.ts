@@ -554,12 +554,14 @@ export interface FileDiff {
  * @property {string[]} staged - Staged files
  * @property {string[]} unstaged - Unstaged modified files
  * @property {string[]} untracked - Untracked files
+ * @property {string[]} ignored - Ignored files (but in working tree)
  */
 export interface GitStatus {
   branch: string
   staged: string[]
   unstaged: string[]
   untracked: string[]
+  ignored: string[]
 }
 
 // ============================================================================

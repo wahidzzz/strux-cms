@@ -127,7 +127,8 @@ export class GitEngine {
     }
 
     // Step 2: Stage files
-    const addArgs = ['add', ...files]
+    // Use -f (force) because content worktree might be ignored in parent .gitignore
+    const addArgs = ['add', '-f', ...files]
     await this.execGit(addArgs)
 
     // Step 3: Verify files are staged
@@ -141,8 +142,9 @@ export class GitEngine {
         // If it's completely clean (in sync with HEAD), we can safely skip it
         const hasUnstagedChanges = status.unstaged.includes(file) || Array.from(status.unstaged).some(unstaged => unstaged.startsWith(`${file}/`))
         const isUntracked = status.untracked.includes(file) || Array.from(status.untracked).some(untracked => untracked.startsWith(`${file}/`))
+        const isIgnored = status.ignored.includes(file) || Array.from(status.ignored).some(ignored => ignored.startsWith(`${file}/`))
 
-        if (hasUnstagedChanges || isUntracked) {
+        if (hasUnstagedChanges || isUntracked || isIgnored) {
           throw new Error(`File not staged: ${file}`)
         }
       }
@@ -257,12 +259,13 @@ export class GitEngine {
     const branchOutput = await this.execGit(['branch', '--show-current'])
     const branch = branchOutput.trim()
 
-    // Get status in porcelain format
-    const statusOutput = await this.execGit(['status', '--porcelain'])
+    // Get status in porcelain format including ignored files
+    const statusOutput = await this.execGit(['status', '--porcelain', '--ignored'])
 
     const staged: string[] = []
     const unstaged: string[] = []
     const untracked: string[] = []
+    const ignored: string[] = []
 
     // Parse porcelain output
     // Format: XY filename
@@ -292,6 +295,11 @@ export class GitEngine {
       if (indexStatus === '?' && workTreeStatus === '?') {
         untracked.push(filename)
       }
+
+      // Ignored files (!!)
+      if (indexStatus === '!' && workTreeStatus === '!') {
+        ignored.push(filename)
+      }
     }
 
     return {
@@ -299,6 +307,7 @@ export class GitEngine {
       staged,
       unstaged,
       untracked,
+      ignored,
     }
   }
 

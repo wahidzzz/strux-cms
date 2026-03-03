@@ -49,3 +49,7 @@ Thumbs.db
 # CMS system files (keep structure but ignore content in development)
 # Note: In production, these should be tracked by Git
 .cms/index.json
+
+# Content development worktree
+content/
+.content_backup/
