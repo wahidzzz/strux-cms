@@ -2,7 +2,14 @@
   "id": 1,
   "documentId": "W3yLWUxSH6iEvNpUFU_lD",
   "test": "news",
-  "publishedAt": null,
+  "publishedAt": "2026-03-03T17:23:46.966Z",
   "createdAt": "2026-03-03T17:23:34.429Z",
-  "updatedAt": "2026-03-03T17:23:34.429Z"
+  "updatedAt": "2026-03-03T17:23:47.859Z",
+  "_searchableText": "w3ylwuxsh6ievnpufu_ld news 2026-03-03t17:23:34.429z 2026-03-03t17:23:34.429z",
+  "new_comptest": [
+    {
+      "new_field": "test1",
+      "new_field2": "test2"
+    }
+  ]
 }
