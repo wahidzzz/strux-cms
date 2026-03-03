@@ -1,0 +1,11 @@
+{
+  "id": 4,
+  "documentId": "ZJdKWs4pnbta24njVODhH",
+  "name": "Test user",
+  "new_field": "Test value",
+  "createdAt": "2026-03-03T11:22:40.326Z",
+  "updatedAt": "2026-03-03T11:22:40.326Z",
+  "publishedAt": null,
+  "createdBy": "test-user",
+  "updatedBy": "test-user"
+}
