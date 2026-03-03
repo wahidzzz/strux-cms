@@ -832,7 +832,6 @@ export class ContentEngine {
     // Step 2: Delete files from file system
     // We need to acquire locks for each delete operation
     for (let i = 0; i < ids.length; i++) {
-      const id = ids[i]
       const filePath = filePaths[i]
 
       await this.fileEngine.acquireLock(contentType)

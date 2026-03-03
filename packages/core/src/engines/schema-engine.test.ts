@@ -411,6 +411,38 @@ describe('SchemaEngine', () => {
       }
     })
 
+    it('should reject schema with invalid field type', async () => {
+      const schema: ContentTypeSchema = {
+        apiId: 'article',
+        displayName: 'Article',
+        singularName: 'article',
+        pluralName: 'articles',
+        attributes: {
+          title: { type: 'invalidType' as any },
+        },
+      }
+
+      await expect(engine.saveSchema('article', schema)).rejects.toThrow(
+        "Field 'title' has invalid type 'invalidType'"
+      )
+    })
+
+    it('should reject schema with field missing type property', async () => {
+      const schema: ContentTypeSchema = {
+        apiId: 'article',
+        displayName: 'Article',
+        singularName: 'article',
+        pluralName: 'articles',
+        attributes: {
+          title: {} as any,
+        },
+      }
+
+      await expect(engine.saveSchema('article', schema)).rejects.toThrow(
+        "Field 'title' must have a type property"
+      )
+    })
+
     it('should accept valid schema with all field types', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',

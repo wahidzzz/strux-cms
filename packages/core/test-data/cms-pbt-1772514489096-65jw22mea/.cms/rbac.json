@@ -1,0 +1,17 @@
+{
+  "roles": {
+    "admin": {
+      "id": "admin",
+      "name": "Administrator",
+      "description": "Full access",
+      "type": "admin",
+      "permissions": [
+        {
+          "action": "*",
+          "subject": "all"
+        }
+      ]
+    }
+  },
+  "defaultRole": "admin"
+}

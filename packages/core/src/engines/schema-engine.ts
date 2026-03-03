@@ -562,6 +562,58 @@ export class SchemaEngine {
       }
     }
 
+    // Validate field types
+    const validFieldTypes = [
+      'string',
+      'text',
+      'richtext',
+      'number',
+      'boolean',
+      'date',
+      'datetime',
+      'email',
+      'password',
+      'enumeration',
+      'media',
+      'relation',
+      'component',
+      'dynamiczone',
+      'json',
+      'uid',
+    ]
+
+    for (const [fieldName, fieldDef] of Object.entries(attributes)) {
+      if (!fieldDef || typeof fieldDef !== 'object') {
+        errors.push({
+          path: ['attributes', fieldName],
+          message: `Field '${fieldName}' must be an object with a type property`,
+          type: 'type',
+        })
+        continue
+      }
+
+      const field = fieldDef as Record<string, unknown>
+
+      // Check if type property exists
+      if (!('type' in field) || !field.type) {
+        errors.push({
+          path: ['attributes', fieldName, 'type'],
+          message: `Field '${fieldName}' must have a type property`,
+          type: 'required',
+        })
+        continue
+      }
+
+      // Validate field type is valid
+      if (!validFieldTypes.includes(field.type as string)) {
+        errors.push({
+          path: ['attributes', fieldName, 'type'],
+          message: `Field '${fieldName}' has invalid type '${field.type}'. Valid types are: ${validFieldTypes.join(', ')}`,
+          type: 'constraint',
+        })
+      }
+    }
+
     return {
       valid: errors.length === 0,
       errors: errors.length > 0 ? errors : undefined,

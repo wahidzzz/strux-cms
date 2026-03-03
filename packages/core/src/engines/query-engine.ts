@@ -852,4 +852,15 @@ export class QueryEngine {
 
     return results
   }
+
+  /**
+   * Get all indexes for all content types.
+   * 
+   * This is used by the CMS class to calculate total entry count during initialization.
+   * 
+   * @returns Map of content type to index
+   */
+  getAllIndexes(): Map<string, ContentIndex> {
+    return this.indexes
+  }
 }

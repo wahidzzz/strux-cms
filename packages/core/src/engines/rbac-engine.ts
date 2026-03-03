@@ -73,6 +73,119 @@ export class RBACEngine {
   }
 
   /**
+   * Create default RBAC configuration file
+   *
+   * Creates four default roles:
+   * - Admin: Full system access
+   * - Editor: Can create, read, update, publish, unpublish content (but not delete or manage schemas)
+   * - Authenticated: Limited permissions, can only update content they created
+   * - Public: Read-only access
+   *
+   * Writes configuration to .cms/rbac.json
+   *
+   * @throws Error if file creation fails
+   *
+   * Validates: Requirements 6.1, 6.2
+   */
+  async createDefaultConfig(): Promise<void> {
+    const defaultConfig: RBACConfig = {
+      roles: {
+        admin: {
+          id: 'admin',
+          name: 'Administrator',
+          description: 'Full access to all features',
+          type: 'admin',
+          permissions: [
+            {
+              action: '*',
+              subject: 'all'
+            }
+          ]
+        },
+        editor: {
+          id: 'editor',
+          name: 'Editor',
+          description: 'Can manage content',
+          type: 'editor',
+          permissions: [
+            {
+              action: 'create',
+              subject: 'all'
+            },
+            {
+              action: 'read',
+              subject: 'all'
+            },
+            {
+              action: 'update',
+              subject: 'all'
+            },
+            {
+              action: 'publish',
+              subject: 'all'
+            },
+            {
+              action: 'unpublish',
+              subject: 'all'
+            }
+          ]
+        },
+        authenticated: {
+          id: 'authenticated',
+          name: 'Authenticated',
+          description: 'Default role for authenticated users',
+          type: 'authenticated',
+          permissions: [
+            {
+              action: 'read',
+              subject: 'all'
+            },
+            {
+              action: 'create',
+              subject: 'all'
+            },
+            {
+              action: 'update',
+              subject: 'all',
+              conditions: {
+                createdBy: '${user.id}'
+              }
+            }
+          ]
+        },
+        public: {
+          id: 'public',
+          name: 'Public',
+          description: 'Default role for unauthenticated users',
+          type: 'public',
+          permissions: [
+            {
+              action: 'read',
+              subject: 'all'
+            }
+          ]
+        }
+      },
+      defaultRole: 'authenticated'
+    }
+
+    // Ensure .cms directory exists
+    const cmsDir = join(this.basePath, '.cms')
+    await fs.mkdir(cmsDir, { recursive: true })
+
+    // Write config file
+    await fs.writeFile(
+      this.configPath,
+      JSON.stringify(defaultConfig, null, 2),
+      'utf-8'
+    )
+
+    // Load the config into memory
+    this.config = defaultConfig
+  }
+
+
+  /**
    * Check if a user has permission to perform an action on a resource
    * 
    * Supports:
