@@ -551,7 +551,7 @@ export class SchemaEngine {
     }
 
     // Check for reserved field names
-    const reservedFields = ['id', 'createdAt', 'updatedAt', 'publishedAt']
+    const reservedFields = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt']
     for (const field of Object.keys(attributes)) {
       if (reservedFields.includes(field)) {
         errors.push({

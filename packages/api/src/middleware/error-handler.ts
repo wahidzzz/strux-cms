@@ -314,9 +314,13 @@ export function transformError(
   
   // Include stack trace in development mode
   if (options.includeStackTrace && error.stack) {
-    apiError.details = {
-      ...apiError.details,
-      stack: error.stack
+    if (typeof apiError.details === 'object' && apiError.details !== null) {
+      apiError.details = {
+        ...(apiError.details as Record<string, unknown>),
+        stack: error.stack
+      }
+    } else {
+      apiError.details = { stack: error.stack }
     }
   }
   

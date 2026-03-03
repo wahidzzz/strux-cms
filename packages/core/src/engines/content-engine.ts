@@ -34,6 +34,7 @@ import type { SchemaEngine } from './schema-engine.js'
 import type { QueryEngine } from './query-engine.js'
 import type { GitEngine } from './git-engine.js'
 import type { RBACEngine } from './rbac-engine.js'
+import type { MetadataEngine } from './metadata-engine.js'
 
 /**
  * ContentEngine orchestrates CRUD operations across all engines
@@ -57,7 +58,8 @@ export class ContentEngine {
     private readonly schemaEngine: SchemaEngine,
     private readonly queryEngine: QueryEngine,
     private readonly gitEngine: GitEngine,
-    private readonly rbacEngine: RBACEngine
+    private readonly rbacEngine: RBACEngine,
+    private readonly metadataEngine: MetadataEngine
   ) {
     this.contentDir = join(basePath, 'content', 'api')
   }
@@ -102,8 +104,9 @@ export class ContentEngine {
       )
     }
 
-    // Step 2: Generate unique ID
-    const id = nanoid()
+    // Step 2: Generate unique documentId and next incremental id
+    const documentId = nanoid()
+    const id = this.metadataEngine.getNextId(contentType)
 
     // Step 3: Add timestamps
     const now = new Date().toISOString()
@@ -111,6 +114,7 @@ export class ContentEngine {
     // Step 4: Build complete entry with metadata
     const entry: ContentEntry = {
       id,
+      documentId,
       ...data,
       createdAt: now,
       updatedAt: now,
@@ -135,9 +139,9 @@ export class ContentEngine {
       throw new Error(`Validation failed: ${errorMessages}`)
     }
 
-    // Step 6: Build file path
-    const filePath = join(this.contentDir, contentType, `${id}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${id}.json`)
+    // Step 6: Build file path using documentId
+    const filePath = join(this.contentDir, contentType, `${documentId}.json`)
+    const relativeFilePath = join('content', 'api', contentType, `${documentId}.json`)
 
     // Step 7: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -150,7 +154,7 @@ export class ContentEngine {
       const commitMessage = this.gitEngine.generateCommitMessage(
         'create',
         contentType,
-        id
+        documentId
       )
 
       const author = context.user
@@ -161,6 +165,9 @@ export class ContentEngine {
         : undefined
 
       await this.gitEngine.commit([relativeFilePath], commitMessage, author)
+
+      // Step 9.5: Update metadata engine
+      await this.metadataEngine.updateLastId(contentType, id)
 
       // Step 10: Update query engine index
       this.queryEngine.updateIndex(contentType, id, entry)
@@ -192,13 +199,15 @@ export class ContentEngine {
    */
   async findOne(
     contentType: string,
-    id: string,
+    id: number | string,
     query?: QueryParams
   ): Promise<ContentEntry | null> {
     // Query from index with ID filter
+    const idFilter = typeof id === 'number' ? { $eq: id } : { $eq: Number(id) }
+
     const results = this.queryEngine.query(contentType, {
       filters: {
-        id: { $eq: id },
+        id: idFilter,
       },
       ...query,
     })
@@ -281,7 +290,7 @@ export class ContentEngine {
    */
   async update(
     contentType: string,
-    id: string,
+    id: number | string,
     data: UpdateData,
     context: RequestContext
   ): Promise<ContentEntry> {
@@ -311,7 +320,8 @@ export class ContentEngine {
     const updated: ContentEntry = {
       ...existing,
       ...data,
-      id, // Ensure ID doesn't change
+      id: existing.id, // Ensure ID doesn't change
+      documentId: existing.documentId, // Ensure documentId doesn't change
       createdAt: existing.createdAt, // Preserve createdAt
       updatedAt: now, // Update timestamp
       createdBy: existing.createdBy, // Preserve createdBy
@@ -334,9 +344,9 @@ export class ContentEngine {
       throw new Error(`Validation failed: ${errorMessages}`)
     }
 
-    // Step 5: Build file path
-    const filePath = join(this.contentDir, contentType, `${id}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${id}.json`)
+    // Step 5: Build file path using documentId
+    const filePath = join(this.contentDir, contentType, `${existing.documentId}.json`)
+    const relativeFilePath = join('content', 'api', contentType, `${existing.documentId}.json`)
 
     // Step 6: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -349,7 +359,7 @@ export class ContentEngine {
       const commitMessage = this.gitEngine.generateCommitMessage(
         'update',
         contentType,
-        id
+        existing.documentId
       )
 
       const author = context.user
@@ -392,7 +402,7 @@ export class ContentEngine {
    */
   async delete(
     contentType: string,
-    id: string,
+    id: number | string,
     context: RequestContext
   ): Promise<void> {
     // Step 1: Find existing entry
@@ -415,9 +425,9 @@ export class ContentEngine {
       )
     }
 
-    // Step 3: Build file path
-    const filePath = join(this.contentDir, contentType, `${id}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${id}.json`)
+    // Step 3: Build file path using documentId
+    const filePath = join(this.contentDir, contentType, `${existing.documentId}.json`)
+    const relativeFilePath = join('content', 'api', contentType, `${existing.documentId}.json`)
 
     // Step 4: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -430,7 +440,7 @@ export class ContentEngine {
       const commitMessage = this.gitEngine.generateCommitMessage(
         'delete',
         contentType,
-        id
+        existing.documentId
       )
 
       const author = context.user
@@ -474,7 +484,7 @@ export class ContentEngine {
    */
   async publish(
     contentType: string,
-    id: string,
+    id: number | string,
     context: RequestContext
   ): Promise<ContentEntry> {
     // Step 1: Find existing entry
@@ -508,8 +518,8 @@ export class ContentEngine {
     }
 
     // Step 4: Build file path
-    const filePath = join(this.contentDir, contentType, `${id}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${id}.json`)
+    const filePath = join(this.contentDir, contentType, `${existing.documentId}.json`)
+    const relativeFilePath = join('content', 'api', contentType, `${existing.documentId}.json`)
 
     // Step 5: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -522,7 +532,7 @@ export class ContentEngine {
       const commitMessage = this.gitEngine.generateCommitMessage(
         'publish',
         contentType,
-        id
+        existing.documentId
       )
 
       const author = context.user
@@ -569,7 +579,7 @@ export class ContentEngine {
    */
   async unpublish(
     contentType: string,
-    id: string,
+    id: number | string,
     context: RequestContext
   ): Promise<ContentEntry> {
     // Step 1: Find existing entry
@@ -603,8 +613,8 @@ export class ContentEngine {
     }
 
     // Step 4: Build file path
-    const filePath = join(this.contentDir, contentType, `${id}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${id}.json`)
+    const filePath = join(this.contentDir, contentType, `${existing.documentId}.json`)
+    const relativeFilePath = join('content', 'api', contentType, `${existing.documentId}.json`)
 
     // Step 5: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -617,7 +627,7 @@ export class ContentEngine {
       const commitMessage = this.gitEngine.generateCommitMessage(
         'unpublish',
         contentType,
-        id
+        existing.documentId
       )
 
       const author = context.user
@@ -692,12 +702,14 @@ export class ContentEngine {
     const relativePaths: string[] = []
 
     for (const data of entries) {
-      // Generate unique ID
-      const id = nanoid()
+      // Generate unique documentId and incremental id
+      const documentId = nanoid()
+      const id = this.metadataEngine.getNextId(contentType)
 
       // Build complete entry with metadata
       const entry: ContentEntry = {
         id,
+        documentId,
         ...data,
         createdAt: now,
         updatedAt: now,
@@ -722,9 +734,13 @@ export class ContentEngine {
         throw new Error(`Validation failed for entry ${id}: ${errorMessages}`)
       }
 
-      // Build file paths
-      const filePath = join(this.contentDir, contentType, `${id}.json`)
-      const relativeFilePath = join('content', 'api', contentType, `${id}.json`)
+      // Build file paths using documentId
+      const filePath = join(this.contentDir, contentType, `${documentId}.json`)
+      const relativeFilePath = join('content', 'api', contentType, `${documentId}.json`)
+
+      // Update metadata engine (increment for next loop iteration if needed)
+      // Actually we should probably acquire all IDs first or update after each.
+      await this.metadataEngine.updateLastId(contentType, id)
 
       // Add to write operations
       writeOperations.push({
@@ -784,7 +800,7 @@ export class ContentEngine {
    */
   async deleteMany(
     contentType: string,
-    ids: string[],
+    ids: (number | string)[],
     context: RequestContext
   ): Promise<void> {
     // Validate input
@@ -798,11 +814,7 @@ export class ContentEngine {
 
     for (const id of ids) {
       // Check if entry exists
-      const entry = this.queryEngine.query(contentType, {
-        filters: {
-          id: { $eq: id },
-        },
-      })[0]
+      const entry = await this.findOne(contentType, id)
 
       if (!entry) {
         throw new Error(`Entry not found: ${contentType}/${id}`)
@@ -822,8 +834,8 @@ export class ContentEngine {
       }
 
       // Build file paths
-      const filePath = join(this.contentDir, contentType, `${id}.json`)
-      const relativeFilePath = join('content', 'api', contentType, `${id}.json`)
+      const filePath = join(this.contentDir, contentType, `${entry.documentId}.json`)
+      const relativeFilePath = join('content', 'api', contentType, `${entry.documentId}.json`)
 
       filePaths.push(filePath)
       relativePaths.push(relativeFilePath)
@@ -863,6 +875,25 @@ export class ContentEngine {
       this.queryEngine.removeFromIndex(contentType, id)
     }
   }
+
+  /**
+   * Delete all entries for a content type.
+   * 
+   * This is used when a content type is deleted from the Content Type Builder.
+   * 
+   * @param contentType - The API ID of the content type
+   */
+  async deleteAllEntries(contentType: string): Promise<void> {
+    const contentTypeDir = join(this.contentDir, contentType)
+
+    await this.fileEngine.acquireLock(contentType)
+    try {
+      await this.fileEngine.deleteDirectory(contentTypeDir)
+    } finally {
+      this.fileEngine.releaseLock(contentType)
+    }
+  }
+
 
 
   /**
@@ -1114,7 +1145,7 @@ export class ContentEngine {
     contentType: string,
     fieldName: string,
     slug: string,
-    excludeId: string
+    excludeId: number | string
   ): Promise<boolean> {
     // Query index for existing entries with this slug
     const results = this.queryEngine.query(contentType, {
@@ -1142,7 +1173,7 @@ export class ContentEngine {
     contentType: string,
     fieldName: string,
     baseSlug: string,
-    excludeId: string
+    excludeId: number | string
   ): Promise<string> {
     // Step 1: Check if base slug is unique
     if (
@@ -1254,15 +1285,15 @@ export class ContentEngine {
      relationValue: unknown,
      targetType: string
    ): Promise<void> {
-     // Validate that relationValue is a string
-     if (typeof relationValue !== 'string') {
+     // Validate that relationValue is a string or number ID
+     if (typeof relationValue !== 'string' && typeof relationValue !== 'number') {
        throw new Error(
-         `Validation failed: ${contentType}.${fieldName} must be a string ID, got ${typeof relationValue}`
+         `Validation failed: ${contentType}.${fieldName} must be a string or number ID, got ${typeof relationValue}`
        )
      }
 
      // Check if target entry exists
-     const targetEntry = await this.findOne(targetType, relationValue)
+     const targetEntry = await this.findOne(targetType, relationValue as string | number)
 
      if (!targetEntry) {
        throw new Error(
@@ -1299,15 +1330,15 @@ export class ContentEngine {
      for (let i = 0; i < relationValue.length; i++) {
        const relatedId = relationValue[i]
 
-       // Validate that each element is a string
-       if (typeof relatedId !== 'string') {
+       // Validate that each element is a string or number
+       if (typeof relatedId !== 'string' && typeof relatedId !== 'number') {
          throw new Error(
-           `Validation failed: ${contentType}.${fieldName}[${i}] must be a string ID, got ${typeof relatedId}`
+           `Validation failed: ${contentType}.${fieldName}[${i}] must be a string or number ID, got ${typeof relatedId}`
          )
        }
 
        // Check if target entry exists
-       const targetEntry = await this.findOne(targetType, relatedId)
+       const targetEntry = await this.findOne(targetType, relatedId as string | number)
 
        if (!targetEntry) {
          throw new Error(

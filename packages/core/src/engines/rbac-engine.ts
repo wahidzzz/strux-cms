@@ -399,8 +399,8 @@ export class RBACEngine {
 
     const role = this.config.roles[context.role]
     if (!role) {
-      // If role not found, return only id
-      return { id: entry.id } as unknown as Partial<T>
+      // If role not found, return only id and documentId
+      return { id: entry.id, documentId: entry.documentId } as unknown as Partial<T>
     }
 
     // Find permissions for this content type
@@ -408,9 +408,9 @@ export class RBACEngine {
       (p) => p.subject === contentType || p.subject === 'all'
     )
 
-    // If no permissions found, return only id
+    // If no permissions found, return only id and documentId
     if (permissions.length === 0) {
-      return { id: entry.id } as unknown as Partial<T>
+      return { id: entry.id, documentId: entry.documentId } as unknown as Partial<T>
     }
 
     // Check if any permission has no field restrictions (full access)
@@ -424,7 +424,7 @@ export class RBACEngine {
     }
 
     // Collect all allowed fields from all permissions
-    const allowedFields = new Set<string>(['id']) // Always include id
+    const allowedFields = new Set<string>(['id', 'documentId']) // Always include id and documentId
     for (const permission of permissions) {
       if (permission.fields) {
         permission.fields.forEach((field) => allowedFields.add(field))

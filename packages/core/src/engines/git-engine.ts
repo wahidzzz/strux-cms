@@ -135,8 +135,16 @@ export class GitEngine {
     const stagedFiles = new Set(status.staged)
 
     for (const file of files) {
-      if (!stagedFiles.has(file)) {
-        throw new Error(`File not staged: ${file}`)
+      const isStaged = stagedFiles.has(file) || Array.from(stagedFiles).some(staged => staged.startsWith(`${file}/`))
+      if (!isStaged) {
+        // If not staged, check if it has any unstaged changes or is untracked
+        // If it's completely clean (in sync with HEAD), we can safely skip it
+        const hasUnstagedChanges = status.unstaged.includes(file) || Array.from(status.unstaged).some(unstaged => unstaged.startsWith(`${file}/`))
+        const isUntracked = status.untracked.includes(file) || Array.from(status.untracked).some(untracked => untracked.startsWith(`${file}/`))
+
+        if (hasUnstagedChanges || isUntracked) {
+          throw new Error(`File not staged: ${file}`)
+        }
       }
     }
 
@@ -313,7 +321,7 @@ export class GitEngine {
   generateCommitMessage(
     operation: 'create' | 'update' | 'delete' | 'publish' | 'unpublish',
     contentType: string,
-    id: string
+    id: number | string
   ): string {
     const operationLabel = operation.charAt(0).toUpperCase() + operation.slice(1)
     return `${operationLabel} ${contentType} entry ${id}`

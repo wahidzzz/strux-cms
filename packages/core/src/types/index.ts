@@ -21,7 +21,8 @@
  * @example
  * ```typescript
  * const article: ContentEntry = {
- *   id: "abc123",
+ *   id: 1,
+ *   documentId: "abc123",
  *   title: "My Article",
  *   content: "Article content...",
  *   createdAt: "2024-01-15T10:00:00.000Z",
@@ -32,7 +33,8 @@
  * }
  * ```
  *
- * @property {string} id - Unique identifier (nanoid or uuid)
+ * @property {number} id - Incremental identifier unique per collection
+ * @property {string} documentId - Unique string identifier (nanoid)
  * @property {string} createdAt - ISO 8601 datetime string when entry was created
  * @property {string} updatedAt - ISO 8601 datetime string when entry was last updated
  * @property {string | null} [publishedAt] - ISO 8601 datetime string when entry was published, null if draft
@@ -40,7 +42,8 @@
  * @property {string} [updatedBy] - User ID who last updated the entry
  */
 export interface ContentEntry {
-  id: string
+  id: number
+  documentId: string
   [key: string]: unknown
   createdAt: string
   updatedAt: string
@@ -413,8 +416,8 @@ export interface PopulateConfig {
  * @property {number} lastUpdated - Timestamp of last index update
  */
 export interface ContentIndex {
-  entries: Map<string, ContentEntry>
-  fieldIndexes: Map<string, Map<unknown, Set<string>>>
+  entries: Map<number | string, ContentEntry>
+  fieldIndexes: Map<string, Map<unknown, Set<number | string>>>
   lastUpdated: number
 }
 
@@ -634,7 +637,7 @@ export type Action = 'create' | 'read' | 'update' | 'delete' | 'publish' | 'unpu
  */
 export interface Resource {
   type: string
-  id?: string
+  id?: number | string
   data?: unknown
 }
 

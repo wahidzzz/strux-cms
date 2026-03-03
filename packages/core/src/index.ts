@@ -15,7 +15,8 @@ import { QueryEngine } from './engines/query-engine.js'
 import { ContentEngine } from './engines/content-engine.js'
 import { RBACEngine } from './engines/rbac-engine.js'
 import { MediaEngine } from './engines/media-engine.js'
-import type { CMSConfig } from './types/index.js'
+import { MetadataEngine } from './engines/metadata-engine.js'
+import type { CMSConfig, RequestContext } from './types/index.js'
 
 // Export all types
 export * from './types/index.js'
@@ -28,6 +29,7 @@ export { MediaEngine } from './engines/media-engine.js'
 export { ContentEngine } from './engines/content-engine.js'
 export { QueryEngine } from './engines/query-engine.js'
 export { RBACEngine } from './engines/rbac-engine.js'
+export { MetadataEngine } from './engines/metadata-engine.js'
 
 /**
  * CMS - Main class for Git-Native JSON CMS
@@ -51,6 +53,7 @@ export class CMS {
     private readonly queryEngine: QueryEngine
     private readonly rbacEngine: RBACEngine
     private readonly mediaEngine: MediaEngine
+    private readonly metadataEngine: MetadataEngine
     private readonly contentEngine: ContentEngine
     private initialized = false
     private config: CMSConfig | null = null
@@ -74,13 +77,15 @@ export class CMS {
         )
         this.rbacEngine = new RBACEngine(basePath)
         this.mediaEngine = new MediaEngine(this.fileEngine, basePath)
+        this.metadataEngine = new MetadataEngine(basePath, this.fileEngine)
         this.contentEngine = new ContentEngine(
             basePath,
             this.fileEngine,
             this.schemaEngine,
             this.queryEngine,
             this.gitEngine,
-            this.rbacEngine
+            this.rbacEngine,
+            this.metadataEngine
         )
     }
 
@@ -118,10 +123,14 @@ export class CMS {
             // Step 2: Create directory structure
             await this.createDirectoryStructure()
 
-            // Step 3: Load configuration (create default if not exists)
             console.log('Loading configuration...')
             await this.loadConfiguration()
             console.log('Configuration loaded')
+
+            // Step 3.5: Initialize metadata engine
+            console.log('Initializing metadata...')
+            await this.metadataEngine.init()
+            console.log('Metadata initialized')
 
             // Step 4: Load all schemas and compile validators
             console.log('Loading schemas...')
@@ -463,10 +472,62 @@ export class CMS {
     }
 
     /**
+     * Get the MetadataEngine instance
+     */
+    getMetadataEngine(): MetadataEngine {
+        return this.metadataEngine
+    }
+
+    /**
      * Get the ContentEngine instance
      */
     getContentEngine(): ContentEngine {
         return this.contentEngine
+    }
+
+    /**
+     * Delete a content type and all its associated data
+     * 
+     * @param contentType - The API ID of the content type to delete
+     * @param context - Request context for Git author info
+     */
+    async deleteContentType(contentType: string, context?: RequestContext): Promise<void> {
+        console.log(`Deleting content type: ${contentType}`)
+
+        // 1. Delete all content entries
+        await this.contentEngine.deleteAllEntries(contentType)
+
+        // 2. Remove from QueryEngine (in-memory index)
+        this.queryEngine.removeIndex(contentType)
+
+        // 3. Delete metadata
+        await this.metadataEngine.deleteMetadata(contentType)
+
+        // 4. Delete schema file
+        await this.schemaEngine.deleteSchema(contentType)
+
+        // 5. Commit changes to Git
+        const schemaPath = `schema/${contentType}.schema.json`
+        const contentPath = `content/api/${contentType}`
+        const metadataPath = `.cms/metadata.json`
+
+        const commitMessage = `delete(schema): remove ${contentType} and all its entries`
+
+        const author = context?.user
+            ? {
+                name: context.user.username,
+                email: context.user.email,
+            }
+            : undefined
+
+        // Note: GitEngine.commit handles multiple paths
+        await this.gitEngine.commit(
+            [schemaPath, contentPath, metadataPath],
+            commitMessage,
+            author
+        )
+
+        console.log(`Content type ${contentType} deleted successfully`)
     }
 
     /**

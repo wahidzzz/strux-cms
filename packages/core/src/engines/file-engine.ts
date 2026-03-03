@@ -377,8 +377,30 @@ export class FileEngine {
      }
    }
 
-   /**
-    * Read multiple files in parallel.
+  /**
+  * Delete a directory with recursive option.
+  * 
+  * @param path - Directory path to delete
+  * @param recursive - Whether to delete parent and children (default: true)
+  * @throws Error if directory can't be deleted
+  */
+  async deleteDirectory(path: string, recursive = true): Promise<void> {
+    // Validate input
+    if (!path || typeof path !== 'string') {
+      throw new Error('Invalid path: path must be a non-empty string')
+    }
+
+    try {
+      await fs.rm(path, { recursive, force: true })
+    } catch (error) {
+      throw new Error(
+        `Failed to delete directory: ${error instanceof Error ? error.message : String(error)}`
+      )
+    }
+  }
+
+  /**
+   * Read multiple files in parallel.
     *
     * This is more efficient than calling readFile in a loop because:
     * - All reads execute concurrently (no blocking)

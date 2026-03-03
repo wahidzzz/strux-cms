@@ -63,7 +63,7 @@ export class SchemaRouteHandler {
       const schemasMap = await schemaEngine.loadAllSchemas()
       
       // Convert Map to array
-      const schemas = Array.from(schemasMap.values())
+      const schemas = Array.from(schemasMap.values()) as ContentTypeSchema[]
 
       return {
         data: schemas
@@ -303,7 +303,8 @@ export class SchemaRouteHandler {
    */
   async delete(
     request: SchemaRequest,
-    schemaEngine: any
+    schemaEngine: any,
+    cms?: any
   ): Promise<SchemaResponse<{ apiId: string; deleted: boolean }>> {
     try {
       const { apiId } = request.params
@@ -334,8 +335,12 @@ export class SchemaRouteHandler {
         throw error
       }
 
-      // Delete the schema
-      await schemaEngine.deleteSchema(apiId)
+      // Delete the schema (and data if CMS is provided)
+      if (cms && typeof cms.deleteContentType === 'function') {
+        await cms.deleteContentType(apiId, request.context)
+      } else {
+        await schemaEngine.deleteSchema(apiId)
+      }
 
       return {
         data: {

@@ -183,7 +183,10 @@ export class QueryEngine {
    * @param id - The entry ID
    * @param entry - The updated entry data
    */
-  updateIndex(contentType: string, id: string, entry: ContentEntry): void {
+  updateIndex(contentType: string, id: number | string, entry: ContentEntry): void {
+    // Normalize ID type
+    const normalizedId = this.normalizeId(id)
+
     let index = this.indexes.get(contentType)
 
     // Create index if it doesn't exist
@@ -197,13 +200,13 @@ export class QueryEngine {
     }
 
     // Remove old field indexes if entry exists
-    const oldEntry = index.entries.get(id)
+    const oldEntry = index.entries.get(normalizedId)
     if (oldEntry) {
       this.removeFromFieldIndexes(index, oldEntry)
     }
 
     // Update main index
-    index.entries.set(id, entry)
+    index.entries.set(normalizedId, entry)
 
     // Rebuild field indexes for this entry
     this.indexCommonFields(index, entry)
@@ -220,20 +223,16 @@ export class QueryEngine {
    * @param contentType - The content type
    * @param id - The entry ID to remove
    */
-  removeFromIndex(contentType: string, id: string): void {
+  removeFromIndex(contentType: string, id: number | string): void {
+    const normalizedId = this.normalizeId(id)
     const index = this.indexes.get(contentType)
-    if (!index) return
-
-    const entry = index.entries.get(id)
-    if (!entry) return
-
-    // Remove from field indexes
-    this.removeFromFieldIndexes(index, entry)
-
-    // Remove from main index
-    index.entries.delete(id)
-
-    index.lastUpdated = Date.now()
+    if (index) {
+      const entry = index.entries.get(normalizedId)
+      if (entry) {
+        this.removeFromFieldIndexes(index, entry)
+        index.entries.delete(normalizedId)
+      }
+    }
   }
 
   /**
@@ -367,7 +366,7 @@ export class QueryEngine {
     // Step 1: Get in-memory index
     const index = this.indexes.get(contentType)
     if (!index) {
-      throw new Error(`Index not found for content type: ${contentType}`)
+      return []
     }
 
     // Step 2: Start with all entries
@@ -502,38 +501,58 @@ export class QueryEngine {
   private matchesOperator(value: unknown, operator: FilterOperator): boolean {
     // Equality operators
     if (operator.$eq !== undefined) {
+      // Handle numeric ID comparison (string "1" should match number 1)
+      if (typeof value === 'number' && typeof operator.$eq === 'string') {
+        const num = Number(operator.$eq)
+        if (!isNaN(num)) {
+          return value === num
+        }
+      }
+      if (typeof value === 'string' && typeof operator.$eq === 'number') {
+        return value === String(operator.$eq)
+      }
       return value === operator.$eq
     }
 
     if (operator.$ne !== undefined) {
+      // Handle numeric ID comparison for inequality
+      if (typeof value === 'number' && typeof operator.$ne === 'string') {
+        const num = Number(operator.$ne)
+        if (!isNaN(num)) {
+          return value !== num
+        }
+      }
+      if (typeof value === 'string' && typeof operator.$ne === 'number') {
+        return value !== String(operator.$ne)
+      }
       return value !== operator.$ne
     }
 
     // Comparison operators (for numbers and strings)
     if (operator.$gt !== undefined) {
       if (typeof value === 'number' || typeof value === 'string') {
-        return value > operator.$gt
+        return (value as any) > operator.$gt
       }
       return false
     }
 
     if (operator.$gte !== undefined) {
       if (typeof value === 'number' || typeof value === 'string') {
-        return value >= operator.$gte
+        return (value as any) >= operator.$gte
       }
       return false
     }
 
     if (operator.$lt !== undefined) {
       if (typeof value === 'number' || typeof value === 'string') {
-        return value < operator.$lt
+        return (value as any) < operator.$lt
       }
       return false
     }
 
     if (operator.$lte !== undefined) {
       if (typeof value === 'number' || typeof value === 'string') {
-        return value <= operator.$lte
+        return (value as any) <= operator.$lte
       }
       return false
     }
@@ -699,6 +718,7 @@ export class QueryEngine {
   private selectFields(entry: ContentEntry, fields: string[]): ContentEntry {
     const result: ContentEntry = {
       id: entry.id,
+      documentId: entry.documentId,
       createdAt: entry.createdAt,
       updatedAt: entry.updatedAt,
     }
@@ -736,7 +756,7 @@ export class QueryEngine {
     entries: ContentEntry[],
     populate: PopulateParam,
     contentType: string,
-    visited: Set<string> = new Set()
+    visited: Set<number | string> = new Set()
   ): ContentEntry[] {
     if (!this.schemaEngine) {
       return entries
@@ -788,8 +808,9 @@ export class QueryEngine {
         // Populate based on relation type
         if (relation === 'manyToOne' || relation === 'oneToOne') {
           // Single relation - relationValue should be an ID
-          if (typeof relationValue === 'string') {
-            const relatedEntry = targetIndex.entries.get(relationValue)
+          if (typeof relationValue === 'string' || typeof relationValue === 'number') {
+            const relatedId = typeof relationValue === 'string' && /^\d+$/.test(relationValue) ? Number(relationValue) : (relationValue as number | string)
+            const relatedEntry = targetIndex.entries.get(relatedId)
             if (relatedEntry) {
               let populated = { ...relatedEntry }
 
@@ -813,25 +834,22 @@ export class QueryEngine {
             }
           }
         } else if (relation === 'oneToMany' || relation === 'manyToMany') {
-          // Multiple relations - relationValue should be an array of IDs
+          // Array of relations - relationValue should be an array of IDs
           if (Array.isArray(relationValue)) {
-            const relatedEntries: ContentEntry[] = []
-
-            for (const relatedId of relationValue) {
-              if (typeof relatedId === 'string') {
+            const relatedEntries = relationValue
+              .map((id) => {
+                const relatedId = typeof id === 'string' && /^\d+$/.test(id) ? Number(id) : (id as number | string)
                 const relatedEntry = targetIndex.entries.get(relatedId)
-                if (relatedEntry) {
-                  let populated = { ...relatedEntry }
+                if (!relatedEntry) return null
 
-                  // Apply field selection if specified
-                  if (typeof populateConfig === 'object' && populateConfig.fields) {
-                    populated = this.selectFields(populated, populateConfig.fields)
-                  }
-
-                  relatedEntries.push(populated)
+                let populated = { ...relatedEntry }
+                // Apply field selection if specified
+                if (typeof populateConfig === 'object' && populateConfig.fields) {
+                  populated = this.selectFields(populated, populateConfig.fields)
                 }
-              }
-            }
+                return populated
+              })
+              .filter(Boolean) as ContentEntry[]
 
             // Handle nested population for all related entries
             if (typeof populateConfig === 'object' && populateConfig.populate && relatedEntries.length > 0) {
@@ -854,6 +872,15 @@ export class QueryEngine {
   }
 
   /**
+   * Remove a content type index from memory.
+   * 
+   * @param contentType - The API ID of the content type
+   */
+  removeIndex(contentType: string): void {
+    this.indexes.delete(contentType)
+  }
+
+  /**
    * Get all indexes for all content types.
    * 
    * This is used by the CMS class to calculate total entry count during initialization.
@@ -862,5 +889,19 @@ export class QueryEngine {
    */
   getAllIndexes(): Map<string, ContentIndex> {
     return this.indexes
+  }
+  /**
+   * Normalize ID type to ensure consistency between numbers and strings.
+   *
+   * Converts string representations of numbers to numbers.
+   *
+   * @param id - The ID to normalize
+   * @returns Normalized ID
+   */
+  private normalizeId(id: number | string): number | string {
+    if (typeof id === 'string' && /^\d+$/.test(id)) {
+      return Number(id)
+    }
+    return id
   }
 }
