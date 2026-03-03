@@ -1,8 +1,0 @@
-packages:
-  - packages/*
-
-ignoredBuiltDependencies:
-  - bcrypt
-  - esbuild
-  - sharp
-  - unrs-resolver
