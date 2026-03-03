@@ -2,7 +2,18 @@
   "id": 1,
   "documentId": "20PdetRcYMmmCt23CEMtR",
   "test": "test",
-  "publishedAt": null,
+  "publishedAt": "2026-03-03T13:17:51.958Z",
   "createdAt": "2026-03-03T13:16:00.073Z",
-  "updatedAt": "2026-03-03T13:16:00.073Z"
+  "updatedAt": "2026-03-03T13:17:52.871Z",
+  "_searchableText": "20pdetrcymmmct23cemtr test 2026-03-03t13:16:00.073z 2026-03-03t13:16:00.073z",
+  "new_comptest": [
+    {
+      "new_field": "new",
+      "new_field2": "nre"
+    },
+    {
+      "new_field": "test",
+      "new_field2": "tsr"
+    }
+  ]
 }
