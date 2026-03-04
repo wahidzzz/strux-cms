@@ -1,0 +1,27 @@
+{
+  "id": 1,
+  "documentId": "snW9sTwqzHTZEqMaEprb8",
+  "news": [
+    {
+      "__component": "new-comp",
+      "new_field": "nnewn",
+      "new_field2": "newsdas"
+    },
+    {
+      "__component": "new-comp",
+      "new_field": "newe",
+      "new_field2": "newewe"
+    },
+    {
+      "__component": "new-comp",
+      "new_field": "new",
+      "new_field2": "new"
+    },
+    {
+      "__component": "new-comp"
+    }
+  ],
+  "publishedAt": null,
+  "createdAt": "2026-03-04T11:31:45.418Z",
+  "updatedAt": "2026-03-04T11:31:45.418Z"
+}
