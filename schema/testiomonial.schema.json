@@ -1,0 +1,22 @@
+{
+  "displayName": "testiomonial",
+  "singularName": "testiomonial",
+  "pluralName": "testiomonials",
+  "description": "",
+  "apiId": "testiomonial",
+  "kind": "collectionType",
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": false
+    },
+    "new_field": {
+      "type": "string",
+      "required": false
+    },
+    "test_field": {
+      "type": "richtext",
+      "required": false
+    }
+  }
+}

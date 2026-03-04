@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getCMS } from '@/lib/cms'
-import { Plus, Settings, Search, MoreVertical, Edit2, Trash2 } from 'lucide-react'
+import { Plus, Settings, Search, Edit2, Trash2 } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 // Allow dynamic params
 type Props = {
@@ -26,6 +27,17 @@ export default async function ContentList({ params, searchParams }: Props) {
         <Link href="/content-manager" className="text-primary hover:underline mt-4 inline-block">Back to Content Manager</Link>
       </div>
     )
+  }
+
+  // If it's a single type, redirect to its entry
+  if (schema.kind === 'singleType') {
+    const result = await cms.getContentEngine().findMany(contentType, { pagination: { pageSize: 1 } })
+    const entry = result.data?.[0]
+    if (entry) {
+      redirect(`/content-manager/${contentType}/${entry.id}`)
+    } else {
+      redirect(`/content-manager/${contentType}/create`)
+    }
   }
 
   const page = parseInt(searchParams.page || '1', 10)
@@ -97,7 +109,7 @@ export default async function ContentList({ params, searchParams }: Props) {
                   </td>
                 </tr>
               ) : (
-                entries.map((entry) => (
+                  entries.map((entry: any) => (
                   <tr key={entry.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-6 py-4 font-mono text-xs">{entry.id}</td>
                     {Object.keys(schema.attributes).slice(0, 4).map((key) => {

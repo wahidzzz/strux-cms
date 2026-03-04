@@ -7,13 +7,15 @@ import { Plus, Edit2, Trash2, Save, X } from 'lucide-react'
 type SchemaFormProps = {
   initialSchema: any | null
   isCreate: boolean
+  allSchemas: any[]
 }
 
-export default function SchemaForm({ initialSchema, isCreate }: SchemaFormProps) {
+export default function SchemaForm({ initialSchema, isCreate, allSchemas }: SchemaFormProps) {
   const router = useRouter()
   // Entire Schema state
   const [schema, setSchema] = useState<any>(initialSchema || {
     displayName: '',
+    kind: 'collectionType',
     singularName: '',
     pluralName: '',
     description: '',
@@ -23,7 +25,7 @@ export default function SchemaForm({ initialSchema, isCreate }: SchemaFormProps)
 
   // State for Field Modal
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false)
-  const [editingFieldData, setEditingFieldData] = useState<{name: string, type: string, required: boolean} | null>(null)
+  const [editingFieldData, setEditingFieldData] = useState<{ name: string, type: string, required: boolean, component?: string, repeatable?: boolean } | null>(null)
   const [originalFieldName, setOriginalFieldName] = useState<string | null>(null) // To track if we are renaming
 
   const [isSaving, setIsSaving] = useState(false)
@@ -49,13 +51,19 @@ export default function SchemaForm({ initialSchema, isCreate }: SchemaFormProps)
   // Handlers for field modal
   const openNewField = () => {
     setOriginalFieldName(null)
-    setEditingFieldData({ name: '', type: 'string', required: false })
+    setEditingFieldData({ name: '', type: 'string', required: false, component: '', repeatable: false })
     setIsFieldModalOpen(true)
   }
 
   const openEditField = (name: string, attr: any) => {
     setOriginalFieldName(name)
-    setEditingFieldData({ name, type: attr.type, required: !!attr.required })
+    setEditingFieldData({
+      name,
+      type: attr.type,
+      required: !!attr.required,
+      component: attr.component || '',
+      repeatable: !!attr.repeatable
+    })
     setIsFieldModalOpen(true)
   }
 
@@ -80,7 +88,11 @@ export default function SchemaForm({ initialSchema, isCreate }: SchemaFormProps)
       
       newAttrs[editingFieldData.name] = {
         type: editingFieldData.type,
-        required: editingFieldData.required
+        required: editingFieldData.required,
+        ...(editingFieldData.type === 'component' ? {
+          component: editingFieldData.component,
+          repeatable: editingFieldData.repeatable
+        } : {})
       }
       
       return { ...prev, attributes: newAttrs }
@@ -142,7 +154,12 @@ export default function SchemaForm({ initialSchema, isCreate }: SchemaFormProps)
       <div className="p-6 border border-border rounded-xl bg-card shadow-sm">
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-2xl font-bold">{isCreate ? 'New Content Type' : schema.displayName}</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold">{isCreate ? 'New Content Type' : schema.displayName}</h2>
+              <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider border border-primary/20">
+                {schema.kind || 'collectionType'}
+              </span>
+            </div>
             <p className="text-sm text-muted-foreground mt-1 font-mono">
               {isCreate ? 'API ID will be generated' : `apiId: ${schema.apiId}`}
             </p>
@@ -173,16 +190,31 @@ export default function SchemaForm({ initialSchema, isCreate }: SchemaFormProps)
         
         {isCreate && (
           <form className="space-y-4 max-w-md pb-6 mb-6 border-b border-border">
-            <div>
-              <label className="block text-sm font-medium mb-1">Display Name</label>
-              <input 
-                 type="text" 
-                 value={schema.displayName}
-                 onChange={(e) => handleSchemaChange('displayName', e.target.value)}
-                 className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm" 
-                 placeholder="e.g. Article" 
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Display Name</label>
+                <input
+                  type="text"
+                  value={schema.displayName}
+                  onChange={(e) => handleSchemaChange('displayName', e.target.value)}
+                  className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                  placeholder="e.g. Article"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Type Kind</label>
+                <select
+                  value={schema.kind || 'collectionType'}
+                  onChange={(e) => handleSchemaChange('kind', e.target.value)}
+                  className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm bg-background"
+                >
+                  <option value="collectionType">Collection Type</option>
+                  <option value="singleType">Single Type</option>
+                  <option value="component">Component</option>
+                </select>
+              </div>
             </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Singular Name</label>
@@ -231,7 +263,10 @@ export default function SchemaForm({ initialSchema, isCreate }: SchemaFormProps)
                     </div>
                     <div>
                       <p className="font-medium text-sm">{key}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{attr.type} {attr.required ? '(Required)' : ''}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {attr.type} {attr.required ? '(Required)' : ''}
+                        {attr.type === 'component' && ` [Component: ${attr.component}]${attr.repeatable ? ' (Repeatable)' : ''}`}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -293,10 +328,43 @@ export default function SchemaForm({ initialSchema, isCreate }: SchemaFormProps)
                           <option value="boolean">Boolean</option>
                           <option value="email">Email</option>
                           <option value="password">Password</option>
-                          {/* <option value="relation">Relation</option> */}
-                          {/* <option value="media">Media</option> */}
-                       </select>
-                   </div>
+                  <option value="enumeration">Enumeration</option>
+                  <option value="component">Component</option>
+                  <option value="media">Media</option>
+                  <option value="json">JSON</option>
+                  <option value="dynamiczone">Dynamic Zone</option>
+                  <option value="uid">UID (Slug)</option>
+                </select>
+              </div>
+
+              {editingFieldData.type === 'component' && (
+                <div className="space-y-4 pt-2 border-t border-border mt-2">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Select Component</label>
+                    <select
+                      value={editingFieldData.component}
+                      onChange={(e) => setEditingFieldData({ ...editingFieldData, component: e.target.value })}
+                      className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm bg-background"
+                    >
+                      <option value="">Select a component...</option>
+                      {allSchemas && allSchemas.filter(s => s.kind === 'component').map(comp => (
+                        <option key={comp.apiId} value={comp.apiId}>{comp.displayName}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="comp-repeatable"
+                      checked={editingFieldData.repeatable}
+                      onChange={(e) => setEditingFieldData({ ...editingFieldData, repeatable: e.target.checked })}
+                      className="h-4 w-4 rounded border-input text-primary focus:ring-primary/50"
+                    />
+                    <label htmlFor="comp-repeatable" className="text-sm font-medium">Repeatable component</label>
+                  </div>
+                </div>
+              )}
+
                    <div className="flex items-center gap-2 pt-2">
                        <input 
                          type="checkbox" 

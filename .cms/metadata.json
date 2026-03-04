@@ -1,5 +1,11 @@
 {
   "test": {
     "lastId": 1
+  },
+  "profile": {
+    "lastId": 1
+  },
+  "article": {
+    "lastId": 1
   }
 }

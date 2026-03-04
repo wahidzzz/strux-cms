@@ -1,0 +1,26 @@
+{
+  "displayName": "profile",
+  "kind": "collectionType",
+  "singularName": "profile",
+  "pluralName": "profiles",
+  "description": "",
+  "apiId": "profile",
+  "attributes": {
+    "new-field": {
+      "type": "string",
+      "required": false
+    },
+    "new-field2": {
+      "type": "string",
+      "required": false
+    },
+    "image": {
+      "type": "media",
+      "required": false
+    },
+    "dynma": {
+      "type": "dynamiczone",
+      "required": false
+    }
+  }
+}

@@ -141,7 +141,6 @@ export class ContentEngine {
 
     // Step 6: Build file path using documentId
     const filePath = join(this.contentDir, contentType, `${documentId}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${documentId}.json`)
 
     // Step 7: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -164,7 +163,7 @@ export class ContentEngine {
           }
         : undefined
 
-      await this.gitEngine.commit([relativeFilePath], commitMessage, author)
+      await this.gitEngine.commit([join('api', contentType, `${documentId}.json`)], commitMessage, author)
 
       // Step 9.5: Update metadata engine
       await this.metadataEngine.updateLastId(contentType, id)
@@ -183,11 +182,10 @@ export class ContentEngine {
    * Find a single content entry by ID
    *
    * Algorithm:
-   * 1. Check RBAC permissions
-   * 2. Query from index (fast, no file I/O)
-   * 3. Apply query parameters (populate, fields)
-   * 4. Filter fields based on RBAC permissions
-   * 5. Return entry or null if not found
+   * 1. Query from index (fast, no file I/O)
+   * 2. Apply query parameters (populate, fields)
+   * 3. Filter fields based on RBAC permissions
+   * 4. Return entry or null if not found
    *
    * @param contentType Content type identifier
    * @param id Entry ID
@@ -346,7 +344,6 @@ export class ContentEngine {
 
     // Step 5: Build file path using documentId
     const filePath = join(this.contentDir, contentType, `${existing.documentId}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${existing.documentId}.json`)
 
     // Step 6: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -369,7 +366,7 @@ export class ContentEngine {
           }
         : undefined
 
-      await this.gitEngine.commit([relativeFilePath], commitMessage, author)
+      await this.gitEngine.commit([join('api', contentType, `${existing.documentId}.json`)], commitMessage, author)
 
       // Step 9: Update query engine index
       this.queryEngine.updateIndex(contentType, id, updated)
@@ -427,7 +424,6 @@ export class ContentEngine {
 
     // Step 3: Build file path using documentId
     const filePath = join(this.contentDir, contentType, `${existing.documentId}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${existing.documentId}.json`)
 
     // Step 4: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -437,6 +433,7 @@ export class ContentEngine {
       await this.fileEngine.deleteFile(filePath)
 
       // Step 6: Commit to Git
+      const relativeFilePath = join('api', contentType, `${existing.documentId}.json`)
       const commitMessage = this.gitEngine.generateCommitMessage(
         'delete',
         contentType,
@@ -519,7 +516,7 @@ export class ContentEngine {
 
     // Step 4: Build file path
     const filePath = join(this.contentDir, contentType, `${existing.documentId}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${existing.documentId}.json`)
+    // const relativeFilePath = join('api', contentType, `${existing.documentId}.json`) // This line was removed
 
     // Step 5: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -529,6 +526,7 @@ export class ContentEngine {
       await this.fileEngine.writeAtomic(filePath, published)
 
       // Step 7: Commit to Git
+      const relativeFilePath = join('api', contentType, `${existing.documentId}.json`)
       const commitMessage = this.gitEngine.generateCommitMessage(
         'publish',
         contentType,
@@ -614,7 +612,7 @@ export class ContentEngine {
 
     // Step 4: Build file path
     const filePath = join(this.contentDir, contentType, `${existing.documentId}.json`)
-    const relativeFilePath = join('content', 'api', contentType, `${existing.documentId}.json`)
+    // const relativeFilePath = join('api', contentType, `${existing.documentId}.json`) // This line was removed
 
     // Step 5: Acquire write lock
     await this.fileEngine.acquireLock(contentType)
@@ -624,10 +622,11 @@ export class ContentEngine {
       await this.fileEngine.writeAtomic(filePath, unpublished)
 
       // Step 7: Commit to Git
+      const relativeFilePath = join('api', contentType, `${existing.documentId}.json`)
       const commitMessage = this.gitEngine.generateCommitMessage(
         'unpublish',
         contentType,
-        existing.documentId
+        unpublished.documentId
       )
 
       const author = context.user
@@ -736,7 +735,7 @@ export class ContentEngine {
 
       // Build file paths using documentId
       const filePath = join(this.contentDir, contentType, `${documentId}.json`)
-      const relativeFilePath = join('content', 'api', contentType, `${documentId}.json`)
+      const relativeFilePathForGit = join('api', contentType, `${documentId}.json`) // Changed from 'content', 'api'
 
       // Update metadata engine (increment for next loop iteration if needed)
       // Actually we should probably acquire all IDs first or update after each.
@@ -749,7 +748,7 @@ export class ContentEngine {
         contentType,
       })
 
-      relativePaths.push(relativeFilePath)
+      relativePaths.push(relativeFilePathForGit)
       preparedEntries.push(entry)
     }
 
@@ -835,7 +834,7 @@ export class ContentEngine {
 
       // Build file paths
       const filePath = join(this.contentDir, contentType, `${entry.documentId}.json`)
-      const relativeFilePath = join('content', 'api', contentType, `${entry.documentId}.json`)
+      const relativeFilePath = join('api', contentType, `${entry.documentId}.json`) // Changed from 'content', 'api'
 
       filePaths.push(filePath)
       relativePaths.push(relativeFilePath)

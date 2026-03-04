@@ -15,7 +15,10 @@ export default async function ContentEditPage({ params }: Props) {
   const { contentType, id } = params
   const isNew = id === 'create'
   const cms = await getCMS()
-  
+
+  const schemasMap = await cms.getSchemaEngine().loadAllSchemas()
+  const allSchemas = Array.from(schemasMap.values())
+
   let schema;
   try {
     schema = await cms.getSchemaEngine().loadSchema(contentType)
@@ -58,6 +61,7 @@ export default async function ContentEditPage({ params }: Props) {
       <ContentForm 
         contentType={contentType}
         schema={schema}
+        allSchemas={allSchemas}
         initialEntry={entry}
         isNew={isNew}
       />

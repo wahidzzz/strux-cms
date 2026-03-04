@@ -97,6 +97,7 @@ export interface ContentEntry {
  */
 export interface ContentTypeSchema {
   apiId: string
+  kind: 'collectionType' | 'singleType' | 'component'
   displayName: string
   singularName: string
   pluralName: string
@@ -134,6 +135,8 @@ export interface FieldDefinition {
   maxLength?: number
   minLength?: number
   targetField?: string
+  component?: string
+  repeatable?: boolean
 }
 
 /**
@@ -554,12 +557,14 @@ export interface FileDiff {
  * @property {string[]} staged - Staged files
  * @property {string[]} unstaged - Unstaged modified files
  * @property {string[]} untracked - Untracked files
+ * @property {string[]} ignored - Ignored files (but in working tree)
  */
 export interface GitStatus {
   branch: string
   staged: string[]
   unstaged: string[]
   untracked: string[]
+  ignored: string[]
 }
 
 // ============================================================================

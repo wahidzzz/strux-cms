@@ -211,7 +211,8 @@ export class RBACEngine {
     }
 
     // Get user's role
-    const role = this.config.roles[context.role]
+    const roleId = context.role
+    const role = this.config.roles[roleId]
     if (!role) {
       // If role not found, deny access
       return false

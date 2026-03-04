@@ -72,12 +72,18 @@ export class SchemaEngine {
       return this.schemaCache.get(contentType)!
     }
 
-    // Build file path
-    const schemaPath = join(this.schemaDir, `${contentType}.schema.json`)
+    // Build file paths
+    const rootPath = join(this.schemaDir, `${contentType}.schema.json`)
+    const componentPath = join(this.schemaDir, 'components', `${contentType}.schema.json`)
 
     try {
-      // Read schema file
-      const content = await fs.readFile(schemaPath, 'utf8')
+      // Try root path first, then component path
+      let content: string
+      try {
+        content = await fs.readFile(rootPath, 'utf8')
+      } catch {
+        content = await fs.readFile(componentPath, 'utf8')
+      }
 
       // Parse JSON
       let schema: unknown
@@ -126,31 +132,33 @@ export class SchemaEngine {
    */
   async loadAllSchemas(): Promise<Map<string, ContentTypeSchema>> {
     try {
-      // Ensure schema directory exists
+      // Ensure directories exist
+      const componentDir = join(this.schemaDir, 'components')
       await fs.mkdir(this.schemaDir, { recursive: true })
+      await fs.mkdir(componentDir, { recursive: true })
 
-      // Read all files in schema directory
-      const files = await fs.readdir(this.schemaDir)
+      // Read root and component directories
+      const [rootFiles, componentFiles] = await Promise.all([
+        fs.readdir(this.schemaDir),
+        fs.readdir(componentDir).catch(() => [] as string[]) // Component dir might not exist yet
+      ])
 
-      // Filter for .schema.json files
-      const schemaFiles = files.filter((file) => file.endsWith('.schema.json'))
-
-      // Extract content type names (remove .schema.json suffix)
-      const contentTypes = schemaFiles.map((file) =>
-        file.replace('.schema.json', '')
-      )
-
-      // Load all schemas in parallel
-      const loadPromises = contentTypes.map((contentType) =>
-        this.loadSchema(contentType)
-      )
-
-      const schemas = await Promise.all(loadPromises)
-
-      // Build result map
       const schemaMap = new Map<string, ContentTypeSchema>()
-      for (let i = 0; i < contentTypes.length; i++) {
-        schemaMap.set(contentTypes[i], schemas[i])
+
+      // Load root schemas (collection types, etc.)
+      const rootSchemaFiles = rootFiles.filter(f => f.endsWith('.schema.json'))
+      for (const file of rootSchemaFiles) {
+        const contentType = file.replace('.schema.json', '')
+        const schema = await this.loadSchema(contentType)
+        schemaMap.set(contentType, schema)
+      }
+
+      // Load component schemas
+      const componentSchemaFiles = componentFiles.filter(f => f.endsWith('.schema.json'))
+      for (const file of componentSchemaFiles) {
+        const contentType = file.replace('.schema.json', '')
+        const schema = await this.loadSchema(contentType)
+        schemaMap.set(contentType, schema)
       }
 
       return schemaMap
@@ -198,11 +206,16 @@ export class SchemaEngine {
     }
 
     try {
-      // Ensure schema directory exists
-      await fs.mkdir(this.schemaDir, { recursive: true })
+      // Determine target directory based on kind
+      const targetDir = schema.kind === 'component'
+        ? join(this.schemaDir, 'components')
+        : this.schemaDir
+
+      // Ensure target directory exists
+      await fs.mkdir(targetDir, { recursive: true })
 
       // Build file path
-      const schemaPath = join(this.schemaDir, `${contentType}.schema.json`)
+      const schemaPath = join(targetDir, `${contentType}.schema.json`)
 
       // Serialize schema to JSON
       const json = JSON.stringify(schema, null, 2)
@@ -237,11 +250,19 @@ export class SchemaEngine {
     }
 
     try {
-      // Build file path
-      const schemaPath = join(this.schemaDir, `${contentType}.schema.json`)
+      // Determine possible file paths
+      const rootPath = join(this.schemaDir, `${contentType}.schema.json`)
+      const componentPath = join(this.schemaDir, 'components', `${contentType}.schema.json`)
 
-      // Delete file
-      await fs.unlink(schemaPath)
+      // Try deleting from both locations
+      try {
+        await fs.unlink(rootPath)
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+        await fs.unlink(componentPath).catch((err) => {
+          if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err
+        })
+      }
 
       // Remove from cache
       this.schemaCache.delete(contentType)
@@ -316,13 +337,22 @@ export class SchemaEngine {
     }
     
     // Convert AJV errors to ValidationError format
-    const errors = (validator.errors || []).map((error) => ({
-      path: error.instancePath
+    const errors = (validator.errors || []).map((error) => {
+      const path = error.instancePath
         .split('/')
-        .filter((p) => p.length > 0),
-      message: error.message || 'Validation failed',
-      type: error.keyword,
-    }))
+        .filter((p) => p.length > 0)
+
+      // For required errors, AJV puts the missing property in params
+      if (error.keyword === 'required' && error.params?.missingProperty) {
+        path.push(error.params.missingProperty as string)
+      }
+
+      return {
+        path,
+        message: error.message || 'Validation failed',
+        type: error.keyword,
+      }
+    })
     
     return {
       valid: false,
@@ -358,11 +388,65 @@ export class SchemaEngine {
       }
     }
     
+    // Collect all dependent component definitions for recursive validation
+    const definitions: Record<string, object> = {}
+    const dependents = this.getDependentComponents(schema)
+    for (const comp of dependents) {
+      // Avoid infinite recursion by checking if already defined
+      if (!definitions[comp.apiId]) {
+        definitions[comp.apiId] = this.componentToDefinition(comp)
+      }
+    }
+
     return {
       type: 'object',
       properties,
       required: required.length > 0 ? required : undefined,
       additionalProperties: true, // Allow additional properties like id, createdAt, etc.
+      ...(Object.keys(definitions).length > 0 && { definitions }),
+    }
+  }
+
+  /**
+   * Recursively collect all components used in a schema.
+   */
+  private getDependentComponents(schema: ContentTypeSchema, seen = new Set<string>()): ContentTypeSchema[] {
+    const components: ContentTypeSchema[] = []
+    for (const field of Object.values(schema.attributes)) {
+      if (field.type === 'component' && field.component) {
+        if (!seen.has(field.component)) {
+          seen.add(field.component)
+          const compSchema = this.schemaCache.get(field.component)
+          if (compSchema) {
+            components.push(compSchema)
+            // Recursively find sub-components
+            components.push(...this.getDependentComponents(compSchema, seen))
+          }
+        }
+      }
+    }
+    return components
+  }
+
+  /**
+   * Convert a component schema to a JSON Schema definition.
+   */
+  private componentToDefinition(schema: ContentTypeSchema): object {
+    const properties: Record<string, object> = {}
+    const required: string[] = []
+
+    for (const [fieldName, fieldDef] of Object.entries(schema.attributes)) {
+      properties[fieldName] = this.fieldToJsonSchema(fieldDef)
+      if (fieldDef.required) {
+        required.push(fieldName)
+      }
+    }
+
+    return {
+      type: 'object',
+      properties,
+      required: required.length > 0 ? required : undefined,
+      additionalProperties: true,
     }
   }
 
@@ -438,15 +522,35 @@ export class SchemaEngine {
         }
       
       case 'component':
-      case 'dynamiczone':
-        // Components and dynamic zones are objects or arrays
-        return {
-          oneOf: [
-            { type: 'object' },
-            { type: 'array', items: { type: 'object' } },
-          ],
+        // Components use $ref for recursive validation
+        if (!fieldDef.component) {
+          return { type: 'object' } // Fallback for invalid schemas
         }
-      
+
+        const ref = { $ref: `#/definitions/${fieldDef.component}` }
+
+        if (fieldDef.repeatable) {
+          return {
+            type: 'array',
+            items: ref,
+          }
+        }
+        return ref
+
+      case 'dynamiczone':
+        // Dynamic zones are arrays of various components
+        return {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['__component'],
+            properties: {
+              __component: { type: 'string' }
+            },
+            additionalProperties: true
+          }
+        }
+
       default:
         // Default to any type
         return {
@@ -490,6 +594,7 @@ export class SchemaEngine {
     // Check required fields
     const requiredFields = [
       'apiId',
+      'kind',
       'displayName',
       'singularName',
       'pluralName',
@@ -508,6 +613,16 @@ export class SchemaEngine {
     // If required fields are missing, return early
     if (errors.length > 0) {
       return { valid: false, errors }
+    }
+
+    // Validate kind
+    const kind = s.kind as string
+    if (!['collectionType', 'singleType', 'component'].includes(kind)) {
+      errors.push({
+        path: ['kind'],
+        message: 'kind must be one of: collectionType, singleType, component',
+        type: 'enumeration',
+      })
     }
 
     // Validate apiId is kebab-case

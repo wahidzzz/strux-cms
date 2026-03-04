@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
+import { watch, type FSWatcher } from 'chokidar'
 import type {
   ContentEntry,
   ContentIndex,
@@ -29,6 +30,7 @@ import type { SchemaEngine } from './schema-engine.js'
 export class QueryEngine {
   private indexes: Map<string, ContentIndex> = new Map()
   private contentDir: string
+  private watcher: FSWatcher | null = null
 
   /**
    * Create a new QueryEngine instance.
@@ -161,6 +163,73 @@ export class QueryEngine {
     // Warn if boot time exceeds target for datasets <= 10k entries
     if (totalEntries <= 10000 && duration > 3000) {
       console.warn(`Boot time exceeded 3s target: ${duration}ms`)
+    }
+
+    // Start watching for external modifications
+    this.startWatching()
+  }
+
+  /**
+   * Start watching the content directory for external changes
+   * to sync the in-memory index across multiple processes.
+   */
+  public startWatching(): void {
+    if (this.watcher) return
+
+    const logPrefix = `[QueryEngine Sync][Port:${process.env.PORT || 'unknown'}]`
+    console.log(`${logPrefix} Starting content watcher on ${this.contentDir}`)
+
+    this.watcher = watch(this.contentDir, {
+      ignoreInitial: true,
+      depth: 2, // contentType/id.json
+      usePolling: process.env.CHOKIDAR_USEPOLLING === 'true',
+    })
+
+    this.watcher.on('all', async (event: string, filePath: string) => {
+      if (!filePath.endsWith('.json')) return
+
+      // Parse contentType and filename out of the path
+      // Path format: .../content/api/contentType/id.json
+      const relativePath = filePath.replace(this.contentDir, '').replace(/^[\/\\]/, '')
+      const parts = relativePath.split(/[\/\\]/)
+
+      // Expected parts are [contentType, filename] if depth is matched
+      if (parts.length < 2) return
+
+      const contentType = parts[parts.length - 2]
+      const filename = parts[parts.length - 1]
+      const documentId = filename.replace('.json', '')
+
+      console.log(`${logPrefix} File ${event}: ${contentType}/${filename}`)
+
+      try {
+        if (event === 'add' || event === 'change') {
+          const entry = await this.fileEngine.readFile(filePath)
+          if (entry && typeof entry === 'object') {
+            this.updateIndex(contentType, (entry as ContentEntry).id, entry as ContentEntry)
+            console.log(`${logPrefix} Updated index for ${contentType}/${documentId}`)
+          }
+        } else if (event === 'unlink') {
+          const index = this.indexes.get(contentType)
+          if (index) {
+            // Find entry by id (it's the filename)
+            this.removeFromIndex(contentType, documentId)
+            console.log(`${logPrefix} Removed from index: ${contentType}/${documentId}`)
+          }
+        }
+      } catch (err) {
+        console.warn(`${logPrefix} Failed to sync index for ${filePath}:`, err)
+      }
+    })
+  }
+
+  /**
+   * Stop watching the content directory.
+   */
+  public stopWatching(): void {
+    if (this.watcher) {
+      this.watcher.close()
+      this.watcher = null
     }
   }
 
