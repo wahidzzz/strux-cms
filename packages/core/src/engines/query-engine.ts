@@ -333,7 +333,7 @@ export class QueryEngine {
    * @param entry - The content entry to index
    */
   private indexCommonFields(index: ContentIndex, entry: ContentEntry): void {
-    const fieldsToIndex = ['slug', 'publishedAt', 'createdAt', 'status']
+    const fieldsToIndex = ['documentId', 'slug', 'publishedAt', 'createdAt', 'status']
 
     for (const field of fieldsToIndex) {
       if (!(field in entry)) continue
@@ -364,7 +364,7 @@ export class QueryEngine {
    * @param entry - The content entry to remove
    */
   private removeFromFieldIndexes(index: ContentIndex, entry: ContentEntry): void {
-    const fieldsToIndex = ['slug', 'publishedAt', 'createdAt', 'status']
+    const fieldsToIndex = ['documentId', 'slug', 'publishedAt', 'createdAt', 'status']
 
     for (const field of fieldsToIndex) {
       if (!(field in entry)) continue
@@ -879,7 +879,20 @@ export class QueryEngine {
           // Single relation - relationValue should be an ID
           if (typeof relationValue === 'string' || typeof relationValue === 'number') {
             const relatedId = typeof relationValue === 'string' && /^\d+$/.test(relationValue) ? Number(relationValue) : (relationValue as number | string)
-            const relatedEntry = targetIndex.entries.get(relatedId)
+            let relatedEntry = targetIndex.entries.get(relatedId)
+
+            // If not found by ID, try finding by documentId
+            if (!relatedEntry && typeof relatedId === 'string') {
+              const docIdIndex = targetIndex.fieldIndexes.get('documentId')
+              if (docIdIndex) {
+                const idSet = docIdIndex.get(relatedId)
+                if (idSet && idSet.size > 0) {
+                  const numericId = Array.from(idSet)[0]
+                  relatedEntry = targetIndex.entries.get(numericId)
+                }
+              }
+            }
+
             if (relatedEntry) {
               let populated = { ...relatedEntry }
 
@@ -907,8 +920,26 @@ export class QueryEngine {
           if (Array.isArray(relationValue)) {
             const relatedEntries = relationValue
               .map((id) => {
-                const relatedId = typeof id === 'string' && /^\d+$/.test(id) ? Number(id) : (id as number | string)
-                const relatedEntry = targetIndex.entries.get(relatedId)
+                const relatedId = id
+                let relatedEntry = targetIndex.entries.get(relatedId)
+
+                // If not found by ID, try finding by documentId
+                if (!relatedEntry && (typeof relatedId === 'string' || typeof relatedId === 'number')) {
+                  const normalizedId = typeof relatedId === 'string' && /^\d+$/.test(relatedId) ? Number(relatedId) : relatedId
+                  relatedEntry = targetIndex.entries.get(normalizedId)
+
+                  if (!relatedEntry && typeof relatedId === 'string') {
+                    const docIdIndex = targetIndex.fieldIndexes.get('documentId')
+                    if (docIdIndex) {
+                      const idSet = docIdIndex.get(relatedId)
+                      if (idSet && idSet.size > 0) {
+                        const numericId = Array.from(idSet)[0]
+                        relatedEntry = targetIndex.entries.get(numericId)
+                      }
+                    }
+                  }
+                }
+
                 if (!relatedEntry) return null
 
                 let populated = { ...relatedEntry }

@@ -105,10 +105,10 @@ export function validateSchema(schema: Partial<ContentTypeSchema>): SchemaValida
     })
   }
 
-  if (!schema.attributes || typeof schema.attributes !== 'object' || Object.keys(schema.attributes).length === 0) {
+  if (!schema.attributes || typeof schema.attributes !== 'object') {
     errors.push({
       field: 'attributes',
-      message: 'attributes is required and must be a non-empty object'
+      message: 'attributes is required and must be an object'
     })
   }
 

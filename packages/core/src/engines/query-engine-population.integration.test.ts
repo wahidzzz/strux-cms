@@ -51,6 +51,7 @@ describe('QueryEngine - Relation Population Integration', () => {
     // Create author schema
     const authorSchema: ContentTypeSchema = {
       apiId: 'authors',
+kind: 'collectionType',
       displayName: 'Author',
       singularName: 'author',
       pluralName: 'authors',
@@ -63,6 +64,7 @@ describe('QueryEngine - Relation Population Integration', () => {
     // Create article schema with author relation
     const articleSchema: ContentTypeSchema = {
       apiId: 'articles',
+kind: 'collectionType',
       displayName: 'Article',
       singularName: 'article',
       pluralName: 'articles',
@@ -134,6 +136,7 @@ describe('QueryEngine - Relation Population Integration', () => {
     // Create category schema with articles relation
     const categorySchema: ContentTypeSchema = {
       apiId: 'categories',
+kind: 'collectionType',
       displayName: 'Category',
       singularName: 'category',
       pluralName: 'categories',
@@ -152,6 +155,7 @@ describe('QueryEngine - Relation Population Integration', () => {
     // Create article schema
     const articleSchema: ContentTypeSchema = {
       apiId: 'articles',
+kind: 'collectionType',
       displayName: 'Article',
       singularName: 'article',
       pluralName: 'articles',
@@ -227,6 +231,7 @@ describe('QueryEngine - Relation Population Integration', () => {
     // Create schemas
     const authorSchema: ContentTypeSchema = {
       apiId: 'authors',
+kind: 'collectionType',
       displayName: 'Author',
       singularName: 'author',
       pluralName: 'authors',
@@ -237,6 +242,7 @@ describe('QueryEngine - Relation Population Integration', () => {
 
     const articleSchema: ContentTypeSchema = {
       apiId: 'articles',
+kind: 'collectionType',
       displayName: 'Article',
       singularName: 'article',
       pluralName: 'articles',
@@ -254,6 +260,7 @@ describe('QueryEngine - Relation Population Integration', () => {
 
     const commentSchema: ContentTypeSchema = {
       apiId: 'comments',
+kind: 'collectionType',
       displayName: 'Comment',
       singularName: 'comment',
       pluralName: 'comments',
@@ -344,6 +351,7 @@ describe('QueryEngine - Relation Population Integration', () => {
     // Create schemas
     const authorSchema: ContentTypeSchema = {
       apiId: 'authors',
+kind: 'collectionType',
       displayName: 'Author',
       singularName: 'author',
       pluralName: 'authors',
@@ -356,6 +364,7 @@ describe('QueryEngine - Relation Population Integration', () => {
 
     const articleSchema: ContentTypeSchema = {
       apiId: 'articles',
+kind: 'collectionType',
       displayName: 'Article',
       singularName: 'article',
       pluralName: 'articles',

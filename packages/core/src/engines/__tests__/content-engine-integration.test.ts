@@ -73,6 +73,7 @@ describe('ContentEngine - Engine Integration', () => {
     // Create a test schema
     await schemaEngine.saveSchema('article', {
       apiId: 'article',
+kind: 'collectionType',
       displayName: 'Article',
       singularName: 'article',
       pluralName: 'articles',

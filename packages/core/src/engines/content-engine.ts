@@ -200,13 +200,18 @@ export class ContentEngine {
     id: number | string,
     query?: QueryParams
   ): Promise<ContentEntry | null> {
-    // Query from index with ID filter
-    const idFilter = typeof id === 'number' ? { $eq: id } : { $eq: Number(id) }
+    // Determine if we should query by id (numeric) or documentId (string)
+    const isNumeric = typeof id === 'number' || (typeof id === 'string' && /^\d+$/.test(id));
+
+    const filters: any = {};
+    if (isNumeric) {
+      filters.id = { $eq: Number(id) };
+    } else {
+      filters.documentId = { $eq: id };
+    }
 
     const results = this.queryEngine.query(contentType, {
-      filters: {
-        id: idFilter,
-      },
+      filters,
       ...query,
     })
 
@@ -1220,49 +1225,67 @@ export class ContentEngine {
     */
    private async validateRelations(
      contentType: string,
-     entry: ContentEntry
+     data: any,
+     schema?: any
    ): Promise<void> {
-     // Step 1: Load schema
-     const schema = await this.schemaEngine.loadSchema(contentType)
+     // Step 1: Load schema if not provided
+     const currentSchema = schema || await this.schemaEngine.loadSchema(contentType)
 
-     // Step 2: Find all relation fields
-     const relationFields = Object.entries(schema.attributes).filter(
-       ([_, fieldDef]) => fieldDef.type === 'relation'
-     )
-
-     // Step 3: Validate each relation field
-     for (const [fieldName, fieldDef] of relationFields) {
-       const relationValue = entry[fieldName]
+     // Step 2: Validate each attribute
+     for (const [fieldName, fieldDef] of Object.entries(currentSchema.attributes)) {
+       const value = data[fieldName]
 
        // Skip if field is not present or is null/undefined
-       if (relationValue === null || relationValue === undefined) {
+       if (value === null || value === undefined) {
          continue
        }
 
-       const relationConfig = fieldDef.relation
-       if (!relationConfig) {
-         continue
-       }
+       if ((fieldDef as any).type === 'relation') {
+         const relationConfig = (fieldDef as any).relation
+         if (!relationConfig) {
+           continue
+         }
 
-       const { relation, target } = relationConfig
+         const { relation, target } = relationConfig
 
-       // Step 4: Validate based on relation type
-       if (relation === 'manyToOne' || relation === 'oneToOne') {
-         // Single relation - validate single ID
-         await this.validateSingleRelation(
-           contentType,
-           fieldName,
-           relationValue,
-           target
-         )
-       } else if (relation === 'oneToMany' || relation === 'manyToMany') {
-         // Multiple relations - validate array of IDs
-         await this.validateMultipleRelations(
-           contentType,
-           fieldName,
-           relationValue,
-           target
-         )
+         // Validate based on relation type
+         if (relation === 'manyToOne' || relation === 'oneToOne') {
+           // Single relation - validate single ID
+           await this.validateSingleRelation(
+             contentType,
+             fieldName,
+             value,
+             target
+           )
+         } else if (relation === 'oneToMany' || relation === 'manyToMany') {
+           // Multiple relations - validate array of IDs
+           await this.validateMultipleRelations(
+             contentType,
+             fieldName,
+             value,
+             target
+           )
+         }
+       } else if ((fieldDef as any).type === 'component') {
+         const componentId = (fieldDef as any).component
+         if (!componentId) continue
+
+         const componentSchema = await this.schemaEngine.loadSchema(componentId)
+         if ((fieldDef as any).repeatable && Array.isArray(value)) {
+           for (const item of value) {
+             await this.validateRelations(componentId, item, componentSchema)
+           }
+         } else if (!(fieldDef as any).repeatable && value && typeof value === 'object') {
+           await this.validateRelations(componentId, value, componentSchema)
+         }
+       } else if ((fieldDef as any).type === 'dynamiczone' && Array.isArray(value)) {
+         for (const item of value) {
+           if (item && item.__component) {
+             const componentId = item.__component
+             const componentSchema = await this.schemaEngine.loadSchema(componentId)
+             await this.validateRelations(componentId, item, componentSchema)
+           }
+         }
        }
      }
    }

@@ -17,6 +17,7 @@ describe('Type definitions', () => {
   it('should define ContentTypeSchema interface', () => {
     const schema: ContentTypeSchema = {
       apiId: 'articles',
+kind: 'collectionType',
       displayName: 'Article',
       singularName: 'article',
       pluralName: 'articles',

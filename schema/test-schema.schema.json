@@ -1,0 +1,9 @@
+{
+  "displayName": "Test Schema",
+  "kind": "collectionType",
+  "singularName": "test-schema",
+  "pluralName": "test-schemas",
+  "description": "",
+  "apiId": "test-schema",
+  "attributes": {}
+}

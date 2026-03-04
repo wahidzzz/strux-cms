@@ -423,6 +423,17 @@ export class SchemaEngine {
             components.push(...this.getDependentComponents(compSchema, seen))
           }
         }
+      } else if (field.type === 'dynamiczone' && field.allowedComponents) {
+        for (const compName of field.allowedComponents) {
+          if (!seen.has(compName)) {
+            seen.add(compName)
+            const compSchema = this.schemaCache.get(compName)
+            if (compSchema) {
+              components.push(compSchema)
+              components.push(...this.getDependentComponents(compSchema, seen))
+            }
+          }
+        }
       }
     }
     return components
@@ -539,6 +550,39 @@ export class SchemaEngine {
 
       case 'dynamiczone':
         // Dynamic zones are arrays of various components
+        // Validate against allowedComponents if defined
+        const allowed = fieldDef.allowedComponents || []
+
+        if (allowed.length > 0) {
+          const anyOf = allowed.map(compId => ({
+            allOf: [
+              {
+                type: 'object',
+                properties: {
+                  __component: { const: compId }
+                }
+              },
+              { $ref: `#/definitions/${compId}` }
+            ]
+          }))
+
+          return {
+            type: 'array',
+            items: {
+              allOf: [
+                {
+                  type: 'object',
+                  required: ['__component'],
+                  properties: {
+                    __component: { type: 'string' }
+                  }
+                },
+                { anyOf }
+              ]
+            }
+          }
+        }
+
         return {
           type: 'array',
           items: {
@@ -656,15 +700,8 @@ export class SchemaEngine {
 
     const attributes = s.attributes as Record<string, unknown>
 
-    // Check attributes has at least one field
-    if (Object.keys(attributes).length === 0) {
-      errors.push({
-        path: ['attributes'],
-        message: 'attributes must contain at least one field',
-        type: 'constraint',
-      })
-    }
-
+    // Allow empty attributes during initial schema creation
+    // The UX flow creates the schema metadata first, then adds fields.
     // Check for reserved field names
     const reservedFields = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt']
     for (const field of Object.keys(attributes)) {

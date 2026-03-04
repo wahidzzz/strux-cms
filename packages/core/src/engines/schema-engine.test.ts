@@ -17,11 +17,7 @@ describe('SchemaEngine', () => {
   afterEach(async () => {
     // Clean up test schema directory
     try {
-      const files = await fs.readdir(testSchemaDir)
-      for (const file of files) {
-        await fs.unlink(join(testSchemaDir, file))
-      }
-      await fs.rmdir(testSchemaDir)
+      await fs.rm(testSchemaDir, { recursive: true, force: true })
     } catch {
       // Ignore cleanup errors
     }
@@ -32,6 +28,7 @@ describe('SchemaEngine', () => {
       // Create a test schema file
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -58,6 +55,7 @@ describe('SchemaEngine', () => {
       // Create a test schema file
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -102,6 +100,7 @@ describe('SchemaEngine', () => {
       // Write schema with missing required fields
       const invalidSchema = {
         apiId: 'test',
+        kind: 'collectionType',
         // Missing displayName, singularName, pluralName, attributes
       }
 
@@ -129,6 +128,7 @@ describe('SchemaEngine', () => {
       const schemas: ContentTypeSchema[] = [
         {
           apiId: 'article',
+          kind: 'collectionType',
           displayName: 'Article',
           singularName: 'article',
           pluralName: 'articles',
@@ -136,6 +136,7 @@ describe('SchemaEngine', () => {
         },
         {
           apiId: 'user',
+          kind: 'collectionType',
           displayName: 'User',
           singularName: 'user',
           pluralName: 'users',
@@ -143,6 +144,7 @@ describe('SchemaEngine', () => {
         },
         {
           apiId: 'comment',
+          kind: 'collectionType',
           displayName: 'Comment',
           singularName: 'comment',
           pluralName: 'comments',
@@ -176,6 +178,7 @@ describe('SchemaEngine', () => {
       // Create a schema file and a non-schema file
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -202,6 +205,7 @@ describe('SchemaEngine', () => {
     it('should save a valid schema to disk and cache', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -225,6 +229,7 @@ describe('SchemaEngine', () => {
     it('should throw error if schema structure is invalid', async () => {
       const invalidSchema = {
         apiId: 'test',
+        kind: 'collectionType',
         // Missing required fields
       } as unknown as ContentTypeSchema
 
@@ -236,6 +241,7 @@ describe('SchemaEngine', () => {
     it('should throw error if apiId does not match contentType', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -250,6 +256,7 @@ describe('SchemaEngine', () => {
     it('should throw error for invalid contentType parameter', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'test',
+        kind: 'collectionType',
         displayName: 'Test',
         singularName: 'test',
         pluralName: 'tests',
@@ -264,6 +271,7 @@ describe('SchemaEngine', () => {
     it('should update existing schema', async () => {
       const schema1: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -272,6 +280,7 @@ describe('SchemaEngine', () => {
 
       const schema2: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article Updated',
         singularName: 'article',
         pluralName: 'articles',
@@ -295,6 +304,7 @@ describe('SchemaEngine', () => {
     it('should delete schema file and remove from cache', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -327,6 +337,7 @@ describe('SchemaEngine', () => {
     it('should remove from cache even if file does not exist', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -351,7 +362,8 @@ describe('SchemaEngine', () => {
   describe('schema validation', () => {
     it('should reject schema with non-kebab-case apiId', async () => {
       const schema: ContentTypeSchema = {
-        apiId: 'ArticleType', // Not kebab-case
+        apiId: 'ArticleType',
+        kind: 'collectionType', // Not kebab-case
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -366,6 +378,7 @@ describe('SchemaEngine', () => {
     it('should reject schema with same singularName and pluralName', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'article', // Same as singularName
@@ -380,6 +393,7 @@ describe('SchemaEngine', () => {
     it('should reject schema with empty attributes', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -397,6 +411,7 @@ describe('SchemaEngine', () => {
       for (const field of reservedFields) {
         const schema: ContentTypeSchema = {
           apiId: 'article',
+          kind: 'collectionType',
           displayName: 'Article',
           singularName: 'article',
           pluralName: 'articles',
@@ -414,6 +429,7 @@ describe('SchemaEngine', () => {
     it('should reject schema with invalid field type', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -430,6 +446,7 @@ describe('SchemaEngine', () => {
     it('should reject schema with field missing type property', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -446,6 +463,7 @@ describe('SchemaEngine', () => {
     it('should accept valid schema with all field types', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -483,6 +501,7 @@ describe('SchemaEngine', () => {
     it('should clear cache', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -503,6 +522,7 @@ describe('SchemaEngine', () => {
       const schemas: ContentTypeSchema[] = [
         {
           apiId: 'article',
+          kind: 'collectionType',
           displayName: 'Article',
           singularName: 'article',
           pluralName: 'articles',
@@ -510,6 +530,7 @@ describe('SchemaEngine', () => {
         },
         {
           apiId: 'user',
+          kind: 'collectionType',
           displayName: 'User',
           singularName: 'user',
           pluralName: 'users',
@@ -527,6 +548,7 @@ describe('SchemaEngine', () => {
     it('should check if schema is cached', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -548,6 +570,7 @@ describe('SchemaEngine', () => {
       // Create a test schema
       const schema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -712,6 +735,7 @@ describe('SchemaEngine', () => {
     it('should validate all field types correctly', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'test-types',
+        kind: 'collectionType',
         displayName: 'Test Types',
         singularName: 'test-type',
         pluralName: 'test-types',
@@ -759,6 +783,7 @@ describe('SchemaEngine', () => {
     it('should accept media field as string or array', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'media-test',
+        kind: 'collectionType',
         displayName: 'Media Test',
         singularName: 'media-test',
         pluralName: 'media-tests',
@@ -781,6 +806,7 @@ describe('SchemaEngine', () => {
     it('should accept relation field as string or array', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'relation-test',
+        kind: 'collectionType',
         displayName: 'Relation Test',
         singularName: 'relation-test',
         pluralName: 'relation-tests',
@@ -827,6 +853,7 @@ describe('SchemaEngine', () => {
       // Create test schemas with relations
       const userSchema: ContentTypeSchema = {
         apiId: 'user',
+        kind: 'collectionType',
         displayName: 'User',
         singularName: 'user',
         pluralName: 'users',
@@ -840,6 +867,7 @@ describe('SchemaEngine', () => {
 
       const articleSchema: ContentTypeSchema = {
         apiId: 'article',
+        kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -867,6 +895,7 @@ describe('SchemaEngine', () => {
 
       const categorySchema: ContentTypeSchema = {
         apiId: 'category',
+        kind: 'collectionType',
         displayName: 'Category',
         singularName: 'category',
         pluralName: 'categories',
@@ -933,6 +962,7 @@ describe('SchemaEngine', () => {
         // Create a schema with nested relations
         const commentSchema: ContentTypeSchema = {
           apiId: 'comment',
+          kind: 'collectionType',
           displayName: 'Comment',
           singularName: 'comment',
           pluralName: 'comments',
@@ -1000,6 +1030,7 @@ describe('SchemaEngine', () => {
       it('should handle schema with single relation', async () => {
         const commentSchema: ContentTypeSchema = {
           apiId: 'comment',
+          kind: 'collectionType',
           displayName: 'Comment',
           singularName: 'comment',
           pluralName: 'comments',
@@ -1031,6 +1062,7 @@ describe('SchemaEngine', () => {
       it('should handle all relation types', async () => {
         const testSchema: ContentTypeSchema = {
           apiId: 'test-relations',
+          kind: 'collectionType',
           displayName: 'Test Relations',
           singularName: 'test-relation',
           pluralName: 'test-relations',

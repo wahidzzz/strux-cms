@@ -102,6 +102,7 @@ describe('ContentEngine', () => {
     // Create test schema
     const articleSchema: ContentTypeSchema = {
       apiId: 'article',
+kind: 'collectionType',
       displayName: 'Article',
       singularName: 'article',
       pluralName: 'articles',
@@ -730,6 +731,7 @@ describe('ContentEngine', () => {
       // Create category schema
       const categorySchema: ContentTypeSchema = {
         apiId: 'category',
+kind: 'collectionType',
         displayName: 'Category',
         singularName: 'category',
         pluralName: 'categories',
@@ -750,6 +752,7 @@ describe('ContentEngine', () => {
       // Create tag schema
       const tagSchema: ContentTypeSchema = {
         apiId: 'tag',
+kind: 'collectionType',
         displayName: 'Tag',
         singularName: 'tag',
         pluralName: 'tags',
@@ -770,6 +773,7 @@ describe('ContentEngine', () => {
       // Create article schema with relations
       const articleWithRelationsSchema: ContentTypeSchema = {
         apiId: 'article-with-relations',
+kind: 'collectionType',
         displayName: 'Article with Relations',
         singularName: 'article-with-relations',
         pluralName: 'articles-with-relations',
@@ -1118,6 +1122,7 @@ describe('ContentEngine', () => {
       // Create test schema
       const schema: ContentTypeSchema = {
         apiId: 'articles',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -1314,6 +1319,7 @@ describe('ContentEngine', () => {
       // Create schema for testing
       const schema: ContentTypeSchema = {
         apiId: 'articles',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -1446,6 +1452,7 @@ describe('ContentEngine', () => {
       // Create schema with required field
       const schema: ContentTypeSchema = {
         apiId: 'posts',
+kind: 'collectionType',
         displayName: 'Post',
         singularName: 'post',
         pluralName: 'posts',
@@ -1486,6 +1493,7 @@ describe('ContentEngine', () => {
       // Create schema
       const schema: ContentTypeSchema = {
         apiId: 'protected',
+kind: 'collectionType',
         displayName: 'Protected',
         singularName: 'protected-item',
         pluralName: 'protected-items',
@@ -1548,6 +1556,7 @@ describe('ContentEngine', () => {
       // Create schema
       const schema: ContentTypeSchema = {
         apiId: 'indexed',
+kind: 'collectionType',
         displayName: 'Indexed',
         singularName: 'indexed-item',
         pluralName: 'indexed-items',
@@ -1607,6 +1616,7 @@ describe('ContentEngine', () => {
       // Create schema
       const schema: ContentTypeSchema = {
         apiId: 'versioned',
+kind: 'collectionType',
         displayName: 'Versioned',
         singularName: 'versioned-item',
         pluralName: 'versioned-items',
@@ -1669,6 +1679,7 @@ describe('ContentEngine', () => {
       // Create schema with slug field
       const schema: ContentTypeSchema = {
         apiId: 'blog-post',
+kind: 'collectionType',
         displayName: 'Blog Post',
         singularName: 'blog-post',
         pluralName: 'blog-posts',
@@ -1989,6 +2000,7 @@ describe('ContentEngine', () => {
     beforeEach(async () => {
       const schema: ContentTypeSchema = {
         apiId: 'audited',
+kind: 'collectionType',
         displayName: 'Audited',
         singularName: 'audited-item',
         pluralName: 'audited-items',

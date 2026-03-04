@@ -137,6 +137,7 @@ export interface FieldDefinition {
   targetField?: string
   component?: string
   repeatable?: boolean
+  allowedComponents?: string[]
 }
 
 /**

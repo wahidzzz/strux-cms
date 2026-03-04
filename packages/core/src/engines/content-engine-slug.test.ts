@@ -86,6 +86,7 @@ describe('ContentEngine - Slug Generation', () => {
       // Create schema with uid field
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -116,6 +117,7 @@ describe('ContentEngine - Slug Generation', () => {
       // Create schema without uid field
       const schema: ContentTypeSchema = {
         apiId: 'page',
+kind: 'collectionType',
         displayName: 'Page',
         singularName: 'page',
         pluralName: 'pages',
@@ -146,6 +148,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should convert to lowercase', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -169,6 +172,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should replace spaces with hyphens', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -192,6 +196,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should remove special characters', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -217,6 +222,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should append -2 when slug already exists', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -250,6 +256,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should increment suffix for multiple conflicts', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -288,6 +295,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should regenerate slug when title changes', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -322,6 +330,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should not regenerate slug when title does not change', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -359,6 +368,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should use custom slug when provided', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -386,6 +396,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should use custom slug in update', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -420,6 +431,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should throw error when custom slug already exists on create', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -457,6 +469,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should throw error when custom slug already exists on update', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -495,6 +508,7 @@ describe('ContentEngine - Slug Generation', () => {
     it('should allow updating entry with its own slug', async () => {
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',

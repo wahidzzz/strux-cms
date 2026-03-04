@@ -126,6 +126,7 @@ describe('CMS System Initialization - Integration Tests', () => {
       const schemas: ContentTypeSchema[] = [
         {
           apiId: 'article',
+kind: 'collectionType',
           displayName: 'Article',
           singularName: 'article',
           pluralName: 'articles',
@@ -136,6 +137,7 @@ describe('CMS System Initialization - Integration Tests', () => {
         },
         {
           apiId: 'page',
+kind: 'collectionType',
           displayName: 'Page',
           singularName: 'page',
           pluralName: 'pages',
@@ -146,6 +148,7 @@ describe('CMS System Initialization - Integration Tests', () => {
         },
         {
           apiId: 'product',
+kind: 'collectionType',
           displayName: 'Product',
           singularName: 'product',
           pluralName: 'products',
@@ -186,6 +189,7 @@ describe('CMS System Initialization - Integration Tests', () => {
 
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -242,6 +246,7 @@ describe('CMS System Initialization - Integration Tests', () => {
       // Write schema
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -313,6 +318,7 @@ describe('CMS System Initialization - Integration Tests', () => {
         // Create schema
         const schema: ContentTypeSchema = {
           apiId: type,
+kind: 'collectionType',
           displayName: type.charAt(0).toUpperCase() + type.slice(1),
           singularName: type,
           pluralName: `${type}s`,
@@ -363,6 +369,7 @@ describe('CMS System Initialization - Integration Tests', () => {
 
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -526,6 +533,7 @@ describe('CMS System Initialization - Integration Tests', () => {
 
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',
@@ -581,6 +589,7 @@ describe('CMS System Initialization - Integration Tests', () => {
 
       const schema: ContentTypeSchema = {
         apiId: 'article',
+kind: 'collectionType',
         displayName: 'Article',
         singularName: 'article',
         pluralName: 'articles',

@@ -59,6 +59,7 @@ describe('CMS - Property-Based Tests', () => {
           fc.array(
             fc.record({
               apiId: fc.string({ minLength: 3, maxLength: 20 })
+kind: 'collectionType',
                 .filter(s => /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(s)),
               displayName: fc.string({ minLength: 3, maxLength: 50 }),
               singularName: fc.string({ minLength: 3, maxLength: 30 }),
@@ -141,6 +142,7 @@ describe('CMS - Property-Based Tests', () => {
           // Generate a single content type
           fc.record({
             apiId: fc.constantFrom('articles', 'posts', 'pages', 'products'),
+kind: 'collectionType',
             displayName: fc.string({ minLength: 3, maxLength: 50 }),
             singularName: fc.constantFrom('article', 'post', 'page', 'product'),
             pluralName: fc.constantFrom('articles', 'posts', 'pages', 'products'),
@@ -273,6 +275,7 @@ async function setupFileSystemState(
   basePath: string,
   schemas: Array<{
     apiId: string
+kind: 'collectionType',
     displayName: string
     singularName: string
     pluralName: string
@@ -381,7 +384,8 @@ function captureIndexState(cms: CMS): Record<string, any> {
 async function verifyIndexMatchesFileSystem(
   basePath: string,
   cms: CMS,
-  schemas: Array<{ apiId: string }>,
+  schemas: Array<{ apiId: string
+kind: 'collectionType', }>,
   entries: ContentEntry[]
 ): Promise<void> {
   const queryEngine = cms.getQueryEngine()

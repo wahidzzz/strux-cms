@@ -23,7 +23,8 @@ describe('SchemaEngine - Reusable Components Integration', () => {
 
   it('should support creating and saving a component', async () => {
     const seoComponent = {
-      apiId: 'seo',
+      apiId: 'seo'
+kind: 'collectionType',,
       kind: 'component' as const,
       displayName: 'SEO',
       singularName: 'seo',
@@ -49,7 +50,8 @@ describe('SchemaEngine - Reusable Components Integration', () => {
   it('should validate data with nested components using $ref', async () => {
     // 1. Create and save SEO component
     const seoComponent = {
-      apiId: 'seo',
+      apiId: 'seo'
+kind: 'collectionType',,
       kind: 'component' as const,
       displayName: 'SEO',
       singularName: 'seo',
@@ -63,7 +65,8 @@ describe('SchemaEngine - Reusable Components Integration', () => {
 
     // 2. Create article collection type using the SEO component
     const articleSchema = {
-      apiId: 'article',
+      apiId: 'article'
+kind: 'collectionType',,
       kind: 'collectionType' as const,
       displayName: 'Article',
       singularName: 'article',
@@ -109,7 +112,8 @@ describe('SchemaEngine - Reusable Components Integration', () => {
   it('should support repeatable components', async () => {
     // 1. Create link component
     const linkComponent = {
-      apiId: 'link',
+      apiId: 'link'
+kind: 'collectionType',,
       kind: 'component' as const,
       displayName: 'Link',
       singularName: 'link',
@@ -123,7 +127,8 @@ describe('SchemaEngine - Reusable Components Integration', () => {
 
     // 2. Create menu with repeatable links
     const menuSchema = {
-      apiId: 'menu',
+      apiId: 'menu'
+kind: 'collectionType',,
       kind: 'singleType' as const,
       displayName: 'Menu',
       singularName: 'menu',
@@ -159,7 +164,8 @@ describe('SchemaEngine - Reusable Components Integration', () => {
   it('should support deeply nested components', async () => {
     // 1. Child component
     const childComp = {
-      apiId: 'child',
+      apiId: 'child'
+kind: 'collectionType',,
       kind: 'component' as const,
       displayName: 'Child',
       singularName: 'child',
@@ -172,7 +178,8 @@ describe('SchemaEngine - Reusable Components Integration', () => {
 
     // 2. Parent component
     const parentComp = {
-      apiId: 'parent',
+      apiId: 'parent'
+kind: 'collectionType',,
       kind: 'component' as const,
       displayName: 'Parent',
       singularName: 'parent',
@@ -185,7 +192,8 @@ describe('SchemaEngine - Reusable Components Integration', () => {
 
     // 3. Collection type
     const pageSchema = {
-      apiId: 'page',
+      apiId: 'page'
+kind: 'collectionType',,
       kind: 'collectionType' as const,
       displayName: 'Page',
       singularName: 'page',

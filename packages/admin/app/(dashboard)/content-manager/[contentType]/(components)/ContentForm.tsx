@@ -240,26 +240,75 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
                   </select>
                   ) : def.type === 'relation' ? (
                     <div className="space-y-2">
-                      <div className="relative">
-                        <select
-                          value={value || ''}
-                          onChange={(e) => onChange(e.target.value)}
-                          className="w-full px-3 py-2 pl-9 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm bg-background appearance-none"
-                          required={def.required}
-                        >
-                          <option value="">Select an entry from {def.relation?.target}...</option>
-                          {relationEntries[def.relation?.target]?.map((entry: any) => (
-                            <option key={entry.id} value={entry.documentId || entry.id}>
-                              {entry.title || entry.name || entry.displayName || entry.documentId || `Entry #${entry.id}`}
-                            </option>
-                          ))}
-                        </select>
-                        <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                          <ChevronRight className="w-4 h-4 text-muted-foreground rotate-90" />
-                        </div>
-                      </div>
-                      {value && (
+                        {def.relation?.relation?.includes('ToMany') ? (
+                          <div className="space-y-2">
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {(Array.isArray(value) ? value : []).map((id: string) => {
+                                const entry = relationEntries[def.relation!.target]?.find(e => (e.documentId || e.id) === id)
+                                return (
+                                  <div key={id} className="flex items-center gap-1 bg-primary/10 text-primary text-xs px-2 py-1 rounded-full border border-primary/20">
+                                    <span className="truncate max-w-[150px]">{entry ? (entry.title || entry.name || entry.displayName || entry.documentId || `Entry #${entry.id}`) : id}</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => onChange((Array.isArray(value) ? value : []).filter(v => v !== id))}
+                                      className="hover:text-destructive transition-colors ml-1"
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                            <div className="relative">
+                              <select
+                                value=""
+                                onChange={(e) => {
+                                  if (e.target.value) {
+                                    const current = Array.isArray(value) ? value : []
+                                    if (!current.includes(e.target.value)) {
+                                      onChange([...current, e.target.value])
+                                    }
+                                  }
+                                }}
+                                className="w-full px-3 py-2 pl-9 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm bg-background appearance-none"
+                              >
+                                <option value="">Select an entry from {def.relation?.target} to add...</option>
+                                {relationEntries[def.relation?.target]
+                                  ?.filter(entry => !(Array.isArray(value) ? value : []).includes(entry.documentId || entry.id))
+                                  .map((entry: any) => (
+                                    <option key={entry.id} value={entry.documentId || entry.id}>
+                                      {entry.title || entry.name || entry.displayName || entry.documentId || `Entry #${entry.id}`}
+                                    </option>
+                                  ))}
+                              </select>
+                              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <ChevronRight className="w-4 h-4 text-muted-foreground rotate-90" />
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                            <div className="relative">
+                              <select
+                                value={value || ''}
+                                onChange={(e) => onChange(e.target.value)}
+                                className="w-full px-3 py-2 pl-9 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm bg-background appearance-none"
+                                required={def.required}
+                              >
+                                <option value="">Select an entry from {def.relation?.target}...</option>
+                                {relationEntries[def.relation?.target]?.map((entry: any) => (
+                                  <option key={entry.id} value={entry.documentId || entry.id}>
+                                    {entry.title || entry.name || entry.displayName || entry.documentId || `Entry #${entry.id}`}
+                                  </option>
+                                ))}
+                              </select>
+                              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <ChevronRight className="w-4 h-4 text-muted-foreground rotate-90" />
+                              </div>
+                            </div>
+                        )}
+                        {value && !def.relation?.relation?.includes('ToMany') && (
                         <p className="text-[10px] text-muted-foreground px-1">
                           Selected ID: <span className="font-mono">{value}</span>
                         </p>
@@ -296,6 +345,71 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
                         </div>
                       )}
                     </div>
+                      ) : def.type === 'dynamiczone' ? (
+                        <div className="space-y-4 rounded-xl">
+                          {/* Render existing components in the dynamic zone */}
+                          {(Array.isArray(value) ? value : []).map((zoneItem: any, index: number) => {
+                            const compName = zoneItem.__component
+                            const compDef = allSchemas.find(s => s.apiId === compName)
+
+                            return (
+                              <div key={`${compName}-${index}`} className="border border-border/60 rounded-lg bg-card/50 overflow-hidden group">
+                                <div className="flex items-center justify-between p-3 bg-muted/20 border-b border-border/40">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase tracking-wider">
+                                      {compDef?.displayName || compName}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newZone = [...(value || [])]
+                                        newZone.splice(index, 1)
+                                        onChange(newZone)
+                                      }}
+                                      className="p-1 text-muted-foreground hover:text-destructive transition-colors ml-2"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="p-4 space-y-4">
+                                  {compDef ? Object.entries(compDef.attributes).map(([subFieldName, subDef]: [string, any]) => (
+                                    <div key={subFieldName} className="space-y-1">
+                                      <label className="text-sm font-medium">{subFieldName}{subDef.required ? ' *' : ''}</label>
+                                      {renderField(subFieldName, subDef, zoneItem[subFieldName], (newVal) => {
+                                        const newZone = [...(value || [])]
+                                        newZone[index] = { ...newZone[index], [subFieldName]: newVal }
+                                        onChange(newZone)
+                                      })}
+                                    </div>
+                                  )) : <p className="text-sm text-destructive px-2">Component schema not found.</p>}
+                                </div>
+                              </div>
+                            )
+                          })}
+
+                          {/* Add Component Menu */}
+                          <div className="relative pt-2">
+                            <select
+                              value=""
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  onChange([...(value || []), { __component: e.target.value }])
+                                }
+                              }}
+                              className="w-full px-3 py-2.5 border-2 border-dashed border-primary/30 rounded-lg focus:outline-none focus:border-primary/60 text-sm bg-primary/5 hover:bg-primary/10 transition-colors appearance-none text-center font-medium text-primary cursor-pointer"
+                            >
+                              <option value="" disabled hidden>+ Add a Component to {fieldName}</option>
+                              <option value="">+ Add a Component to {fieldName}</option>
+                              {def.allowedComponents?.map((compId: string) => {
+                                const cschema = allSchemas.find(s => s.apiId === compId)
+                                return <option key={compId} value={compId}>{cschema?.displayName || compId}</option>
+                              })}
+                            </select>
+                          </div>
+                        </div>
                   ) : def.type === 'json' ? (
                     <textarea
                       value={typeof value === 'object' ? JSON.stringify(value, null, 2) : value}

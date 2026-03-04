@@ -107,6 +107,7 @@ describe('SchemaEngine - Property-Based Tests', () => {
           // Generate a schema with specific field types
           fc.record({
             apiId: fc.string({ minLength: 1, maxLength: 20 })
+kind: 'collectionType',
               .filter(s => /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(s)),
             displayName: fc.string({ minLength: 1, maxLength: 50 }),
             singularName: fc.string({ minLength: 1, maxLength: 30 }),
@@ -120,7 +121,8 @@ describe('SchemaEngine - Property-Based Tests', () => {
 
             // Create a schema with known fields
             const schema: ContentTypeSchema = {
-              apiId: schemaData.apiId,
+              apiId: schemaData
+kind: 'collectionType',.apiId,
               displayName: schemaData.displayName,
               singularName: schemaData.singularName,
               pluralName: schemaData.pluralName,

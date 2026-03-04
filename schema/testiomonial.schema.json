@@ -17,6 +17,12 @@
     "test_field": {
       "type": "richtext",
       "required": false
+    },
+    "profiles": {
+      "type": "component",
+      "required": false,
+      "component": "new-test-componet",
+      "repeatable": false
     }
   }
 }

@@ -3,9 +3,15 @@
     "lastId": 1
   },
   "profile": {
-    "lastId": 1
+    "lastId": 2
   },
   "article": {
     "lastId": 1
+  },
+  "testiomonial": {
+    "lastId": 1
+  },
+  "new1": {
+    "lastId": 2
   }
 }

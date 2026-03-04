@@ -146,6 +146,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with uid field (slug)
             const schema: ContentTypeSchema = {
               apiId: 'article',
+kind: 'collectionType',
               displayName: 'Article',
               singularName: 'article',
               pluralName: 'articles',
@@ -236,6 +237,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with uid field
             const schema: ContentTypeSchema = {
               apiId: 'post',
+kind: 'collectionType',
               displayName: 'Post',
               singularName: 'post',
               pluralName: 'posts',
@@ -338,6 +340,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with unique email field
             const schema: ContentTypeSchema = {
               apiId: 'user-profile',
+kind: 'collectionType',
               displayName: 'User Profile',
               singularName: 'user-profile',
               pluralName: 'user-profiles',
@@ -423,6 +426,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with uid field
             const schema: ContentTypeSchema = {
               apiId: 'page',
+kind: 'collectionType',
               displayName: 'Page',
               singularName: 'page',
               pluralName: 'pages',
@@ -515,6 +519,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with uid field
             const schema: ContentTypeSchema = {
               apiId: 'product',
+kind: 'collectionType',
               displayName: 'Product',
               singularName: 'product',
               pluralName: 'products',
@@ -598,6 +603,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with uid field
             const schema: ContentTypeSchema = {
               apiId: 'blog-post',
+kind: 'collectionType',
               displayName: 'Blog Post',
               singularName: 'blog-post',
               pluralName: 'blog-posts',
@@ -702,6 +708,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with draftAndPublish enabled
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Article',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -824,6 +831,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with draftAndPublish enabled
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Post',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -943,6 +951,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with draftAndPublish enabled
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'News Article',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -1066,6 +1075,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with draftAndPublish enabled
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Page',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -1149,6 +1159,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with draftAndPublish enabled
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Document',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -1256,6 +1267,7 @@ describe('ContentEngine - Property-Based Tests', () => {
           // Create schema
           const schema: ContentTypeSchema = {
             apiId: contentType,
+kind: 'collectionType',
             displayName: 'Article',
             singularName: contentType,
             pluralName: `${contentType}s`,
@@ -1342,6 +1354,7 @@ describe('ContentEngine - Property-Based Tests', () => {
           // Create schema
           const schema: ContentTypeSchema = {
             apiId: contentType,
+kind: 'collectionType',
             displayName: 'Post',
             singularName: contentType,
             pluralName: `${contentType}s`,
@@ -1454,6 +1467,7 @@ describe('ContentEngine - Property-Based Tests', () => {
           // Create schema
           const schema: ContentTypeSchema = {
             apiId: contentType,
+kind: 'collectionType',
             displayName: 'Page',
             singularName: contentType,
             pluralName: `${contentType}s`,
@@ -1551,6 +1565,7 @@ describe('ContentEngine - Property-Based Tests', () => {
           // Create schema
           const schema: ContentTypeSchema = {
             apiId: contentType,
+kind: 'collectionType',
             displayName: 'Document',
             singularName: contentType,
             pluralName: `${contentType}s`,
@@ -1646,6 +1661,7 @@ describe('ContentEngine - Property-Based Tests', () => {
           // Create schema with draftAndPublish
           const schema: ContentTypeSchema = {
             apiId: contentType,
+kind: 'collectionType',
             displayName: 'Article',
             singularName: contentType,
             pluralName: `${contentType}s`,
@@ -1758,6 +1774,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Article',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -1844,6 +1861,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Post',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -1956,6 +1974,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Page',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -2053,6 +2072,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Document',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -2148,6 +2168,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create schema with draftAndPublish
             const schema: ContentTypeSchema = {
               apiId: contentType,
+kind: 'collectionType',
               displayName: 'Article',
               singularName: contentType,
               pluralName: `${contentType}s`,
@@ -2268,6 +2289,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create author schema
             const authorSchema: ContentTypeSchema = {
               apiId: authorType,
+kind: 'collectionType',
               displayName: 'Author',
               singularName: authorType,
               pluralName: `${authorType}s`,
@@ -2290,6 +2312,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create article schema with manyToOne relation to author
             const articleSchema: ContentTypeSchema = {
               apiId: articleType,
+kind: 'collectionType',
               displayName: 'Article',
               singularName: articleType,
               pluralName: `${articleType}s`,
@@ -2432,6 +2455,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create tag schema
             const tagSchema: ContentTypeSchema = {
               apiId: tagType,
+kind: 'collectionType',
               displayName: 'Tag',
               singularName: tagType,
               pluralName: `${tagType}s`,
@@ -2450,6 +2474,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create post schema with manyToMany relation to tags
             const postSchema: ContentTypeSchema = {
               apiId: postType,
+kind: 'collectionType',
               displayName: 'Post',
               singularName: postType,
               pluralName: `${postType}s`,
@@ -2606,6 +2631,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create category schema
             const categorySchema: ContentTypeSchema = {
               apiId: categoryType,
+kind: 'collectionType',
               displayName: 'Category',
               singularName: categoryType,
               pluralName: `${categoryType}s`,
@@ -2624,6 +2650,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create author schema
             const authorSchema: ContentTypeSchema = {
               apiId: authorType,
+kind: 'collectionType',
               displayName: 'Author',
               singularName: authorType,
               pluralName: `${authorType}s`,
@@ -2646,6 +2673,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create article schema with relations to both category and author
             const articleSchema: ContentTypeSchema = {
               apiId: articleType,
+kind: 'collectionType',
               displayName: 'Article',
               singularName: articleType,
               pluralName: `${articleType}s`,
@@ -2821,6 +2849,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create author schema
             const authorSchema: ContentTypeSchema = {
               apiId: authorType,
+kind: 'collectionType',
               displayName: 'Author',
               singularName: authorType,
               pluralName: `${authorType}s`,
@@ -2839,6 +2868,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create article schema with optional author relation
             const articleSchema: ContentTypeSchema = {
               apiId: articleType,
+kind: 'collectionType',
               displayName: 'Article',
               singularName: articleType,
               pluralName: `${articleType}s`,
@@ -2968,6 +2998,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create author schema
             const authorSchema: ContentTypeSchema = {
               apiId: authorType,
+kind: 'collectionType',
               displayName: 'Author',
               singularName: authorType,
               pluralName: `${authorType}s`,
@@ -2986,6 +3017,7 @@ describe('ContentEngine - Property-Based Tests', () => {
             // Create article schema with manyToOne relation
             const articleSchema: ContentTypeSchema = {
               apiId: articleType,
+kind: 'collectionType',
               displayName: 'Article',
               singularName: articleType,
               pluralName: `${articleType}s`,

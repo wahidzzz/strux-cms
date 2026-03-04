@@ -21,6 +21,14 @@
     "dynma": {
       "type": "dynamiczone",
       "required": false
+    },
+    "relatio": {
+      "type": "relation",
+      "required": false,
+      "relation": {
+        "target": "article",
+        "relation": "oneToMany"
+      }
     }
   }
 }
