@@ -1,124 +1,105 @@
-# Git-Native JSON CMS
+# Jayson: JSON Git-Native CMS - Alpha Release Documentation
 
-A production-grade content management system that uses JSON file-based storage and Git versioning instead of a traditional database. Built with TypeScript, Next.js 14, and a framework-agnostic core engine architecture.
+Welcome to the Alpha Release of **Jayson**, a revolutionary Git-Native JSON-based Content Management System (CMS). Jayson challenges the traditional CMS paradigm by replacing heavy database infrastructure with lightweight, file-based JSON storage, versioned natively via Git.
 
-## Features
+This document serves as an in-depth technical dive into Jayson's architecture, security engineering, performance profile, and roadmap.
 
-- **JSON File Storage**: Content stored as JSON files for simplicity and portability
-- **Git Versioning**: Every content change is versioned in Git for complete history tracking
-- **Strapi-Compatible API**: REST API compatible with Strapi's query syntax
-- **High Performance**: <50ms average read latency, <3s boot time for 10k entries
-- **Concurrent Operations**: Supports 200 concurrent reads, 20 concurrent writes
-- **Framework-Agnostic Core**: Core engines can be used independently
-- **TypeScript**: Strict TypeScript for type safety
-- **Property-Based Testing**: Comprehensive testing with fast-check
+---
 
-## Architecture
+## 1. Philosophy: Why a JSON Git-Native CMS?
 
-The system follows a layered modular architecture:
+For years, Headless CMS platforms have relied on traditional relational or NoSQL databases. While robust, this approach introduces significant friction points:
 
-- **Core Package** (`@cms/core`): Framework-agnostic engines for content management
-  - File Engine: Atomic file operations with concurrency control
-  - Schema Engine: JSON Schema validation with AJV
-  - Content Engine: CRUD operations and business logic
-  - Query Engine: In-memory indexing and Strapi-compatible queries
-  - Git Engine: Git operations for versioning
-  - RBAC Engine: Role-based access control
-  - Media Engine: File uploads and media library
+- **Environment Synchronization:** Moving content from "Staging" to "Production" often requires painful database dumps or fragile API syncs.
+- **Infrastructure Overhead:** Databases require hosting, maintenance, scaling, and backups.
+- **Auditability & Revisions:** Native database revisions rarely match the granular power and developer familiarity of Git.
 
-- **API Package** (`@cms/api`): REST API layer with Strapi-compatible endpoints
+### The "Content-as-Code" Paradigm
 
-- **Admin Package** (`@cms/admin`): Next.js 14 admin UI with App Router
+By storing all schemas, configurations, and content as JSON files, Jayson turns your file system into your database and **Git into your database engine**.
 
-## Project Structure
+**What Problems Does It Solve?**
+1. **Zero Database Infrastructure:** No PostgreSQL, no MongoDB. Only a file system.
+2. **Native Branching & Merging:** Stage massive campaigns on Git branches; merge to launch.
+3. **Perfect Audit Trails:** Every update is a Git commit tied to a specific author and timestamp.
+4. **Seamless CI/CD:** Frontend builds (Next.js/Astro) read from the local file system at build time for massive performance gains.
 
-```
-git-native-json-cms/
-├── packages/
-│   ├── core/          # Core engines (framework-agnostic)
-│   ├── api/           # REST API layer
-│   └── admin/         # Next.js admin UI
-├── content/           # Content entries (JSON files)
-├── schema/            # Content type schemas
-├── uploads/           # Media files
-├── .cms/              # System files (RBAC, users, media metadata)
-└── .git/              # Git repository
-```
+---
 
-## Getting Started
+## 2. Technical Profile & Performance
 
-### Prerequisites
+Jayson is engineered for high performance and reliability, targeting the following metrics:
 
-- Node.js >= 20.0.0
-- npm >= 10.0.0
-- Git
+| Metric | Target | Description |
+| :--- | :--- | :--- |
+| **Boot Time** | < 3s | Full in-memory index rebuild for 10k entries |
+| **Read Latency** | < 50ms | Average response time for content retrieval |
+| **Write Latency** | < 200ms | P95 latency for atomic write + Git commit |
+| **Concurrent Reads** | 200 | Simultaneous read operations supported |
+| **Concurrent Writes** | 20 | Simultaneous write operations (global limit) |
 
-### Installation
+### 2.1. Concurrency Control (FileEngine)
+Reliability is managed via the [FileEngine](file:///home/wizard/wizard-dev/jayson/packages/core/src/engines/file-engine.ts#72-513) using a custom **AsyncMutex** implementation:
+- **Write Serialization:** Ensures only one operation holds the lock per content-type at a time using a FIFO queue.
+- **Global Throttle:** Enforces a hard limit of 20 concurrent writes across the entire system to prevent I/O saturation.
+- **Atomicity:** Uses a "temp file + fsync + rename" pattern. Data is never written directly to the target file, preventing corruption even during process crashes.
 
-```bash
-# Install dependencies
-npm install
+---
 
-# Build all packages
-npm run build
+## 3. Security Architecture
 
-# Run tests
-npm test
-```
+Security is built into the engine layer, ensuring data protection even if the API layer is exposed.
 
-### Development
+### 3.1. Authentication (AuthEngine)
+- **User Persistence:** Users are stored as JSON files in `.cms/users/`.
+- **Credential Safety:** Uses **bcryptjs** with 10 salt rounds for secure password hashing.
+- **Tokenization:** Issues **JWT (JSON Web Tokens)** containing user ID and Role for stateless session management.
 
-```bash
-# Start development mode (watches for changes)
-npm run dev
+### 3.2. Role-Based Access Control (RBACEngine)
+- **Granular Permissions:** Configured via `rbac.json` with four default roles (`Admin`, `Editor`, `Authenticated`, `Public`).
+- **Conditional Logic:** Supports dynamic templates (e.g., `createdBy: '${user.id}'`), enabling ownership-based access.
+- **Field-Level Security:** Automatically filters JSON payloads at the engine level based on role-restricted fields.
 
-# Run tests in watch mode
-npm run test:watch
+---
 
-# Run tests with coverage
-npm run test:coverage
-```
+## 4. Architecture Deep Dive
 
-## Technology Stack
+### 4.1. GitEngine & Worktree Architecture
+To prevent commit pollution, Jayson utilizes **Git Worktrees**:
+- **Data Branch:** Content lives on an orphan branch named `cms-data`.
+- **Hybrid Mapping:** The `content/` directory is mapped to `cms-data` using `git worktree add`, while code/config remains on the `main` branch.
 
-- **TypeScript**: Strict type safety
-- **Turborepo**: Monorepo build system
-- **Vitest**: Unit and integration testing
-- **fast-check**: Property-based testing
-- **Next.js 14**: Admin UI framework
-- **Tailwind CSS**: Styling
-- **Radix UI**: Accessible UI components
-- **AJV**: JSON Schema validation
-- **bcrypt**: Password hashing
-- **JWT**: Authentication tokens
+### 4.2. QueryEngine & Real-time Sync
+Querying a file system directly is slow, so Jayson maintains a high-performance **In-Memory Index**.
+- **Index Sync:** Uses **Chokidar** to watch the file system. External modifications (like a `git pull`) trigger instant index refreshes without requiring a system restart.
+- **Population:** Inherently resolves deep relationships and dynamic zones during the query phase.
 
-## Performance Targets
+---
 
-| Metric | Target |
-|--------|--------|
-| Boot time (10k entries) | <3s |
-| Average read latency | <50ms |
-| Write latency (p95) | <200ms |
-| Concurrent reads | 200 |
-| Concurrent writes | 20 |
-| Total entries | 100k |
-| Entries per type | 10k |
+## 5. Technology Stack
 
-## Testing
+- **Runtime:** Node.js >= 20.0.0
+- **Framework:** Next.js 14 (App Router)
+- **State/Build:** Turborepo, TypeScript (Strict Mode)
+- **UI:** Tailwind CSS, Radix UI, Lucide Icons
+- **Validation:** AJV (JSON Schema)
+- **Testing:** Vitest, fast-check (Property-Based Testing)
 
-The project includes comprehensive testing:
+---
 
-- **Unit Tests**: Test individual engines and functions
-- **Property-Based Tests**: Test correctness properties with fast-check
-- **Integration Tests**: Test complete workflows
-- **Stress Tests**: Test performance under load
 
-Target: >80% code coverage for all packages
+## 7. Roadmap & Future Plans
 
-## License
+Jayson is currently in Alpha. Planned features include:
 
-MIT
+- [ ] **Infrastructure Hooks:** Build triggers for Vercel/Netlify via MetadataEngine webhooks.
+- [ ] **Cloud Media Providers:** Support for S3, Cloudflare R2, and Cloudinary.
+- [ ] **Visual Content Builder:** Enhanced Dynamic Zone editor with live block previews.
+- [ ] **Version Diffing UI:** A visual "Git Diff" interface for content authors.
+- [ ] **Deep Relational Optimization:** Enhanced caching for massive, deeply-nested content structures.
 
-## Status
+---
 
-🚧 **Under Development** - Core infrastructure complete, engines in progress
+## 7. Conclusion
+
+Jayson CMS bridges the gap between the speed of local development and the power of enterprise CMS platforms. By treating **Content-as-Code**, it provides infinite history and zero-cost environment synchronization for modern production teams.

@@ -1,0 +1,9 @@
+{
+  "displayName": "Set",
+  "kind": "singleType",
+  "singularName": "set",
+  "pluralName": "sets",
+  "description": "",
+  "apiId": "set",
+  "attributes": {}
+}
