@@ -2,8 +2,8 @@
   "id": "admin-64jiq",
   "username": "admin",
   "email": "admin@example.com",
-  "role": "authenticated",
-  "password": "$2b$10$Vmw/lY9vJXm4hecKmsQWNO2.p3584oUsoXSmt4gU01uycj0GgQP7q",
+  "role": "admin",
+  "password": "$2b$10$Hcv4cEn2gd9vyqFd1cE0IujGTZ8q.83VNmFT6t52kqUBYOYi.X8Dy",
   "createdAt": "2026-03-04T12:16:59.925Z",
-  "updatedAt": "2026-03-04T12:16:59.925Z"
+  "updatedAt": "2026-03-05T06:21:16.278Z"
 }

@@ -1,0 +1,14 @@
+{
+  "displayName": "Article",
+  "kind": "collectionType",
+  "singularName": "article",
+  "pluralName": "articles",
+  "description": "",
+  "apiId": "article",
+  "attributes": {
+    "media": {
+      "type": "media",
+      "required": false
+    }
+  }
+}

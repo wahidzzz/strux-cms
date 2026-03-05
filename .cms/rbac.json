@@ -88,9 +88,6 @@
     "testuser_iqkf7-49ya1": [
       "admin"
     ],
-    "admin-64jiq": [
-      "authenticated"
-    ],
     "wahid-90nof": [
       "admin"
     ],
@@ -102,6 +99,9 @@
     ],
     "admin@example-comdummy2-ox5p4": [
       "content-approver"
+    ],
+    "admin-64jiq": [
+      "admin"
     ]
   }
 }

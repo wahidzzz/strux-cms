@@ -171,7 +171,7 @@ export default function MediaGrid({ initialMediaFiles }: { initialMediaFiles: an
                 <div className="h-3/4 bg-muted/30 flex items-center justify-center p-4 relative">
                   {file.mime?.startsWith('image/') ? (
                      // eslint-disable-next-line @next/next/no-img-element
-                    <img src={file.url} alt={file.name} className="w-full h-full object-contain" />
+                    <img src={`/api${file.url}`} alt={file.name} className="w-full h-full object-contain" />
                   ) : file.mime?.startsWith('video/') ? (
                     <Video className="w-12 h-12 text-muted-foreground" />
                   ) : (

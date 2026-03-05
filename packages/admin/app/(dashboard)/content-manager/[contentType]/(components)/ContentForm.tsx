@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Save, CheckCircle, Clock, Trash2, Image as ImageIcon, Link as LinkIcon, FileText, Eye, EyeOff, Search, ChevronRight } from 'lucide-react'
+import { MediaInput } from './MediaInput'
 
 type ContentFormProps = {
   contentType: string
@@ -315,36 +316,7 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
                       )}
                     </div>
                   ) : def.type === 'media' ? (
-                    <div className="space-y-3 font-outfit">
-                      <input
-                        type="text"
-                        value={value}
-                        onChange={(e) => onChange(e.target.value)}
-                        className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-                        placeholder="Paste image URL here..."
-                      />
-                      {value && (
-                        <div className="relative aspect-video w-full max-w-sm rounded-lg overflow-hidden border border-border bg-muted/20 flex items-center justify-center group">
-                          <img
-                            src={value}
-                            alt="Preview"
-                            className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                            onError={(e) => (e.currentTarget.style.display = 'none')}
-                          />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <button type="button" onClick={() => onChange('')} className="p-2 bg-destructive text-destructive-foreground rounded-full shadow-lg">
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                      {!value && (
-                        <div className="border border-dashed rounded-lg p-6 flex flex-col items-center justify-center bg-muted/5 text-muted-foreground transition-colors hover:bg-muted/10">
-                          <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
-                          <p className="text-xs">Paste an image URL in the field above to preview</p>
-                        </div>
-                      )}
-                    </div>
+                        <MediaInput value={value} onChange={onChange} fieldName={fieldName} />
                       ) : def.type === 'dynamiczone' ? (
                         <div className="space-y-4 rounded-xl">
                           {/* Render existing components in the dynamic zone */}
