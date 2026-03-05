@@ -74,8 +74,34 @@
           "subject": "all"
         }
       ]
+    },
+    "content-approver": {
+      "id": "content-approver",
+      "name": "Content Approver",
+      "description": "Custom role for Content Approver",
+      "permissions": [],
+      "type": "custom"
     }
   },
   "defaultRole": "authenticated",
-  "userRoles": {}
+  "userRoles": {
+    "testuser_iqkf7-49ya1": [
+      "admin"
+    ],
+    "admin-64jiq": [
+      "authenticated"
+    ],
+    "wahid-90nof": [
+      "admin"
+    ],
+    "admin@example-comfixeduser-71jh0": [
+      "admin"
+    ],
+    "admin@example-comdummy-o9xyz": [
+      "authenticated"
+    ],
+    "admin@example-comdummy2-ox5p4": [
+      "content-approver"
+    ]
+  }
 }

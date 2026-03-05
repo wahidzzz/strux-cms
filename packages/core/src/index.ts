@@ -16,6 +16,7 @@ import { ContentEngine } from './engines/content-engine.js'
 import { RBACEngine } from './engines/rbac-engine.js'
 import { MediaEngine } from './engines/media-engine.js'
 import { MetadataEngine } from './engines/metadata-engine.js'
+import { AuthEngine } from './engines/auth-engine.js'
 import type { CMSConfig, RequestContext } from './types/index.js'
 
 // Export all types
@@ -30,6 +31,7 @@ export { ContentEngine } from './engines/content-engine.js'
 export { QueryEngine } from './engines/query-engine.js'
 export { RBACEngine } from './engines/rbac-engine.js'
 export { MetadataEngine } from './engines/metadata-engine.js'
+export { AuthEngine } from './engines/auth-engine.js'
 
 /**
  * CMS - Main class for Git-Native JSON CMS
@@ -55,6 +57,7 @@ export class CMS {
     private readonly rbacEngine: RBACEngine
     private readonly mediaEngine: MediaEngine
     private readonly metadataEngine: MetadataEngine
+    private readonly authEngine: AuthEngine
     private readonly contentEngine: ContentEngine
     private initialized = false
     private config: CMSConfig | null = null
@@ -80,6 +83,7 @@ export class CMS {
         this.rbacEngine = new RBACEngine(basePath)
         this.mediaEngine = new MediaEngine(this.fileEngine, basePath)
         this.metadataEngine = new MetadataEngine(basePath, this.fileEngine)
+        this.authEngine = new AuthEngine(basePath, this.rbacEngine)
         this.contentEngine = new ContentEngine(
             basePath,
             this.fileEngine,
@@ -140,9 +144,13 @@ export class CMS {
             console.log(`Loaded ${schemas.size} content type schemas`)
 
             // Step 5: Initialize RBAC configuration (create default if not exists)
-            console.log('Initializing RBAC configuration...')
             await this.initializeRBACConfiguration()
             console.log('RBAC configuration loaded')
+
+            // Step 5.5: Initialize Auth engine
+            console.log('Initializing Auth engine...')
+            await this.authEngine.init()
+            console.log('Auth engine initialized')
 
             // Step 6: Rebuild in-memory indexes from file system
             console.log('Rebuilding indexes...')
@@ -587,6 +595,13 @@ export class CMS {
      */
     getContentEngine(): ContentEngine {
         return this.contentEngine
+    }
+
+    /**
+     * Get the AuthEngine instance
+     */
+    getAuthEngine(): AuthEngine {
+        return this.authEngine
     }
 
     /**

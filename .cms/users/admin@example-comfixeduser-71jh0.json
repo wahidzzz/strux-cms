@@ -1,0 +1,9 @@
+{
+  "id": "admin@example-comfixeduser-71jh0",
+  "username": "admin@example.comfixeduser",
+  "email": "fixed@example.com",
+  "role": "admin",
+  "password": "$2b$10$0dUnmJs3a6vCl21benJ.hOCzN.k./Roy0FVxN5VlgCv4H2t9/ECvy",
+  "createdAt": "2026-03-04T12:24:38.560Z",
+  "updatedAt": "2026-03-04T12:24:38.560Z"
+}

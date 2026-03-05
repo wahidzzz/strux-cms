@@ -8,14 +8,9 @@ export async function POST(request: Request) {
   try {
     const cms = await getCMS()
     const authEngine = cms.getAuthEngine()
-    const config = cms.getConfig()
-
+    
     const body = await request.json()
-    const response = await handler.login(
-      { body },
-      authEngine,
-      config.jwt.secret
-    )
+    const response = await handler.register({ body }, authEngine)
 
     if (response.error) {
       return NextResponse.json(response.error, { status: response.error.status })

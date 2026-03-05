@@ -1,0 +1,9 @@
+{
+  "id": "admin@example-comdummy2-ox5p4",
+  "username": "admin@example.comDummy2",
+  "email": "dummy2@example.com",
+  "role": "content-approver",
+  "password": "$2b$10$XaAJxv5Xq3wcAW11cpBkFOZoPse/YJwTISL0TWh8FhPHUrqzC6dwi",
+  "createdAt": "2026-03-05T06:03:21.219Z",
+  "updatedAt": "2026-03-05T06:03:21.219Z"
+}

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { 
   FileText, 
   Database, 
@@ -11,9 +11,11 @@ import {
   Menu,
   X,
   Layers,
-  ChevronRight
+  ChevronRight,
+  LogOut
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/lib/auth-store'
 
 const mainNavigation = [
   { name: 'Content-Type Builder', href: '/content-type-builder', icon: Database },
@@ -23,6 +25,8 @@ const mainNavigation = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const logout = useAuthStore((state) => state.logout)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [schemas, setSchemas] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -47,6 +51,11 @@ export function Sidebar() {
   const collectionTypes = schemas.filter(s => s.kind === 'collectionType' || !s.kind)
   const singleTypes = schemas.filter(s => s.kind === 'singleType')
   const componentTypes = schemas.filter(s => s.kind === 'component')
+
+  const handleLogout = () => {
+    logout()
+    router.push('/login')
+  }
 
   const NavItem = ({ item, indent = false }: { item: any, indent?: boolean }) => {
     const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href))
@@ -179,16 +188,26 @@ export function Sidebar() {
           </nav>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-border bg-muted/10">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Connected
+          <div className="px-6 py-4 border-t border-border bg-muted/10 space-y-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Connected
+                </p>
+              </div>
+              <p className="text-[10px] text-muted-foreground font-mono">
+                v0.1.0-alpha
               </p>
             </div>
-            <p className="text-[10px] text-muted-foreground font-mono">
-              v0.1.0-alpha
-            </p>
+
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/20 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Log out</span>
+            </button>
           </div>
         </div>
       </aside>
