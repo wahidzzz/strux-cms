@@ -10,5 +10,14 @@
   },
   "new1": {
     "lastId": 2
+  },
+  "ser-profile": {
+    "lastId": 1
+  },
+  "article": {
+    "lastId": 1
+  },
+  "verse-prof": {
+    "lastId": 1
   }
 }

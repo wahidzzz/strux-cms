@@ -1,0 +1,46 @@
+{
+  "displayName": "verse_prof",
+  "kind": "singleType",
+  "singularName": "verse-prof",
+  "pluralName": "verse-profs",
+  "description": "",
+  "apiId": "verse-prof",
+  "attributes": {
+    "new_num": {
+      "type": "number",
+      "required": false
+    },
+    "new_com": {
+      "type": "relation",
+      "required": false,
+      "relation": {
+        "target": "article",
+        "relation": "manyToOne"
+      }
+    },
+    "raw_json": {
+      "type": "json",
+      "required": false
+    },
+    "comp": {
+      "type": "dynamiczone",
+      "required": false,
+      "allowedComponents": [
+        "new-comp",
+        "new-test-componet"
+      ]
+    },
+    "yes": {
+      "type": "boolean",
+      "required": false
+    },
+    "format": {
+      "type": "richtext",
+      "required": false
+    },
+    "new_med": {
+      "type": "media",
+      "required": false
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "displayName": "ser_profile",
+  "kind": "singleType",
+  "singularName": "ser-profile",
+  "pluralName": "ser-profiles",
+  "description": "",
+  "apiId": "ser-profile",
+  "attributes": {
+    "new_field": {
+      "type": "string",
+      "required": false
+    },
+    "new_media_field": {
+      "type": "media",
+      "required": false
+    }
+  }
+}

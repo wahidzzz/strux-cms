@@ -89,7 +89,10 @@ export default function MediaGrid({ initialMediaFiles }: { initialMediaFiles: an
             className="hidden" 
             multiple 
           />
-          <button className="flex items-center gap-2 border border-border px-4 py-2 rounded-md hover:bg-accent transition-colors font-medium text-sm">
+          <button
+            onClick={() => alert("Folder creation features coming soon.")}
+            className="flex items-center gap-2 border border-border px-4 py-2 rounded-md hover:bg-accent transition-colors font-medium text-sm"
+          >
             <Folder className="w-4 h-4" />
             New folder
           </button>
@@ -180,7 +183,10 @@ export default function MediaGrid({ initialMediaFiles }: { initialMediaFiles: an
                   
                   {/* Overlay actions */}
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1">
-                    <button className="p-1.5 bg-background border border-border rounded shadow-sm text-foreground hover:bg-accent -translate-y-1 group-hover:translate-y-0 transition-all duration-200">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); alert("Media settings editing coming soon."); }}
+                      className="p-1.5 bg-background border border-border rounded shadow-sm text-foreground hover:bg-accent -translate-y-1 group-hover:translate-y-0 transition-all duration-200"
+                    >
                       <Settings className="w-3.5 h-3.5" />
                     </button>
                     <button 

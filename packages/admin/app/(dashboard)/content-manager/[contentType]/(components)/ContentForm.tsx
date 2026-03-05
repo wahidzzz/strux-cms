@@ -57,6 +57,27 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
       const method = isNew ? 'POST' : 'PUT'
       
       const payload = { ...formData }
+
+      // Pre-process payload for Media uploads
+      for (const key of Object.keys(payload)) {
+        if (payload[key] instanceof File) {
+          const file = payload[key] as File
+          const uploadForm = new FormData()
+          uploadForm.append('files', file)
+
+          const uploadRes = await fetch('/api/upload', {
+            method: 'POST',
+            body: uploadForm
+          })
+
+          const uploadData = await uploadRes.json()
+          if (!uploadRes.ok) throw new Error(uploadData.error?.message || 'Failed to upload inline media')
+
+          const uploadedFile = Array.isArray(uploadData.data) ? uploadData.data[0] : uploadData.data
+          payload[key] = uploadedFile.url
+        }
+      }
+
       if (publish) {
         payload.publishedAt = typeof payload.publishedAt !== 'undefined' && initialEntry?.publishedAt 
             ? initialEntry.publishedAt 

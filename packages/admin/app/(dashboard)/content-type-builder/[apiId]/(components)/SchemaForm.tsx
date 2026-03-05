@@ -139,6 +139,9 @@ export default function SchemaForm({ initialSchema, isCreate, allSchemas }: Sche
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'Failed to save schema')
 
+      // Trigger sidebar refresh
+      window.dispatchEvent(new Event('cms-schema-changed'))
+
       router.push(`/content-type-builder/${schema.apiId}`)
       router.refresh()
     } catch (err: any) {
@@ -161,6 +164,9 @@ export default function SchemaForm({ initialSchema, isCreate, allSchemas }: Sche
 
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'Failed to delete content type')
+
+      // Trigger sidebar refresh
+      window.dispatchEvent(new Event('cms-schema-changed'))
 
       router.push('/content-type-builder/create')
       router.refresh()

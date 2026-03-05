@@ -31,21 +31,31 @@ export function Sidebar() {
   const [schemas, setSchemas] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetchSchemas() {
-      try {
-        const res = await fetch('/api/content-type-builder/content-types')
-        const data = await res.json()
-        if (data.data) {
-          setSchemas(data.data)
-        }
-      } catch (error) {
-        console.error('Failed to fetch schemas for sidebar:', error)
-      } finally {
-        setIsLoading(false)
+  const fetchSchemas = async () => {
+    try {
+      const res = await fetch('/api/content-type-builder/content-types')
+      const data = await res.json()
+      if (data.data) {
+        setSchemas(data.data)
       }
+    } catch (error) {
+      console.error('Failed to fetch schemas for sidebar:', error)
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchSchemas()
+
+    const handleSchemaChange = () => {
+      fetchSchemas()
+    }
+
+    window.addEventListener('cms-schema-changed', handleSchemaChange)
+    return () => {
+      window.removeEventListener('cms-schema-changed', handleSchemaChange)
+    }
   }, [])
 
   const collectionTypes = schemas.filter(s => s.kind === 'collectionType' || !s.kind)
