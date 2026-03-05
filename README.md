@@ -87,8 +87,7 @@ Querying a file system directly is slow, so Jayson maintains a high-performance 
 
 ---
 
-
-## 7. Roadmap & Future Plans
+## 6. Roadmap & Future Plans
 
 Jayson is currently in Alpha. Planned features include:
 
