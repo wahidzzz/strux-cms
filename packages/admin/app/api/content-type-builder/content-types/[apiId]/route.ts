@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getCMS } from '@/lib/cms'
 import { createSchemaRouteHandler } from '@cms/api'
+import { requireAuth } from '@/lib/auth-helper'
 
 export async function GET(
   request: Request,
@@ -9,7 +10,7 @@ export async function GET(
   try {
     const cms = await getCMS()
     const handler = createSchemaRouteHandler()
-    const context = { role: 'admin', userId: 'local', user: null as any }
+    const context = await requireAuth(request)
     
     const response = await handler.get({ params: { apiId: params.apiId }, context }, cms.getSchemaEngine())
     
@@ -19,7 +20,8 @@ export async function GET(
     
     return NextResponse.json(response)
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    const status = err.status || 500
+    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status })
   }
 }
 
@@ -30,7 +32,7 @@ export async function PUT(
   try {
     const cms = await getCMS()
     const handler = createSchemaRouteHandler()
-    const context = { role: 'admin', userId: 'local', user: null as any }
+    const context = await requireAuth(request)
     
     const body = await request.json()
     const payload = body.data ? body : { data: body }
@@ -46,7 +48,8 @@ export async function PUT(
     
     return NextResponse.json(response)
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    const status = err.status || 500
+    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status })
   }
 }
 
@@ -57,7 +60,7 @@ export async function DELETE(
   try {
     const cms = await getCMS()
     const handler = createSchemaRouteHandler()
-    const context = { role: 'admin', userId: 'local', user: null as any }
+    const context = await requireAuth(request)
     
     const response = await handler.delete(
       { params: { apiId: params.apiId }, context }, 
@@ -71,6 +74,7 @@ export async function DELETE(
     
     return NextResponse.json(response)
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    const status = err.status || 500
+    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status })
   }
 }

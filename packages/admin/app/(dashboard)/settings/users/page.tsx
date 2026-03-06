@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Shield, User as UserIcon, Calendar, Loader2 } from 'lucide-react'
+import { Plus, Edit, Trash2, Shield, User as UserIcon, Calendar, Loader2, Crown } from 'lucide-react'
 import { UserModal } from './components/UserModal'
 
 export default function UsersPage() {
@@ -107,8 +107,11 @@ export default function UsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                        <Shield className="w-3.5 h-3.5" />
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${user.role === 'super_admin'
+                          ? 'bg-amber-500 text-white'
+                          : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                        }`}>
+                        {user.role === 'super_admin' ? <Crown className="w-3 h-3" /> : <Shield className="w-3.5 h-3.5" />}
                         {user.role}
                       </span>
                     </td>
@@ -127,13 +130,15 @@ export default function UsersPage() {
                         >
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button
-                          onClick={() => handleDelete(user)}
-                          className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
-                          title="Delete User"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        {user.role !== 'super_admin' && (
+                          <button
+                            onClick={() => handleDelete(user)}
+                            className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
+                            title="Delete User"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

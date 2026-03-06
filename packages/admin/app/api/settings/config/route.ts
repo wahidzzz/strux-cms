@@ -1,20 +1,24 @@
 import { NextResponse } from 'next/server'
 import { getCMS } from '@/lib/cms'
+import { requireSuperAdmin } from '@/lib/auth-helper'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    await requireSuperAdmin(request)
     const cms = await getCMS()
     // By accessing the internal config mechanism, we proxy the global settings
     const config = cms.getConfig()
     
     return NextResponse.json({ data: config })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    const status = err.status || 500
+    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status })
   }
 }
 
 export async function PUT(request: Request) {
   try {
+    await requireSuperAdmin(request)
     const cms = await getCMS()
     const body = await request.json()
     const payload = body.data || body
@@ -40,6 +44,7 @@ export async function PUT(request: Request) {
     
     return NextResponse.json({ data: payload })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    const status = err.status || 500
+    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status })
   }
 }

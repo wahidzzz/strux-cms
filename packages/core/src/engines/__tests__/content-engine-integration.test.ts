@@ -18,6 +18,7 @@ import { SchemaEngine } from '../schema-engine.js'
 import { QueryEngine } from '../query-engine.js'
 import { GitEngine } from '../git-engine.js'
 import { RBACEngine } from '../rbac-engine.js'
+import { MetadataEngine } from '../metadata-engine.js'
 import type { RequestContext } from '../../types/index.js'
 import { mkdtemp, rm } from 'fs/promises'
 import { tmpdir } from 'os'
@@ -30,7 +31,9 @@ describe('ContentEngine - Engine Integration', () => {
   let schemaEngine: SchemaEngine
   let queryEngine: QueryEngine
   let gitEngine: GitEngine
+  let contentGitEngine: GitEngine
   let rbacEngine: RBACEngine
+  let metadataEngine: MetadataEngine
   let contentEngine: ContentEngine
   let adminContext: RequestContext
 
@@ -39,25 +42,34 @@ describe('ContentEngine - Engine Integration', () => {
     basePath = await mkdtemp(join(tmpdir(), 'cms-integration-test-'))
 
     // Initialize all engines
-    fileEngine = new FileEngine(basePath)
+    fileEngine = new FileEngine()
     schemaEngine = new SchemaEngine(basePath)
-    queryEngine = new QueryEngine(basePath, schemaEngine)
+    queryEngine = new QueryEngine(join(basePath, 'content', 'api'), fileEngine, schemaEngine)
     gitEngine = new GitEngine(basePath)
+    contentGitEngine = new GitEngine(join(basePath, 'content'))
     rbacEngine = new RBACEngine(basePath)
+    metadataEngine = new MetadataEngine(basePath, fileEngine)
 
-    // Initialize Git repository
+    // Initialize main Git repository
     execSync('git init', { cwd: basePath, stdio: 'ignore' })
     execSync('git config user.name "Test User"', { cwd: basePath, stdio: 'ignore' })
     execSync('git config user.email "test@example.com"', { cwd: basePath, stdio: 'ignore' })
 
-    // Create content engine with all dependencies
+    // Initialize separate git repo for content (simulates git worktree)
+    execSync('mkdir -p content/api', { cwd: basePath, stdio: 'ignore' })
+    execSync('git init', { cwd: join(basePath, 'content'), stdio: 'ignore' })
+    execSync('git config user.name "Test User"', { cwd: join(basePath, 'content'), stdio: 'ignore' })
+    execSync('git config user.email "test@example.com"', { cwd: join(basePath, 'content'), stdio: 'ignore' })
+
+    // Create content engine using contentGitEngine to match production setup
     contentEngine = new ContentEngine(
       basePath,
       fileEngine,
       schemaEngine,
       queryEngine,
-      gitEngine,
-      rbacEngine
+      contentGitEngine,
+      rbacEngine,
+      metadataEngine
     )
 
     // Create admin context for tests
@@ -66,6 +78,7 @@ describe('ContentEngine - Engine Integration', () => {
         id: 'user-1',
         username: 'admin',
         email: 'admin@example.com',
+        role: 'admin',
       },
       role: 'admin',
     }
@@ -94,6 +107,9 @@ kind: 'collectionType',
 
     // Load RBAC config (create default config)
     await rbacEngine.loadRBACConfig()
+
+    // Initialize metadata engine
+    await metadataEngine.init()
 
     // Rebuild indexes
     await queryEngine.rebuildAllIndexes()
@@ -145,7 +161,7 @@ kind: 'collectionType',
     })
 
     it('should call GitEngine.commit after write', async () => {
-      const commitSpy = vi.spyOn(gitEngine, 'commit')
+      const commitSpy = vi.spyOn(contentGitEngine, 'commit')
 
       const entry = await contentEngine.create(
         'article',
@@ -157,8 +173,8 @@ kind: 'collectionType',
       )
 
       expect(commitSpy).toHaveBeenCalledWith(
-        [expect.stringContaining(`content/api/article/${entry.id}.json`)],
-        expect.stringContaining('create'),
+        [expect.stringContaining(`api/article/${entry.documentId}.json`)],
+        expect.stringMatching(/create/i),
         expect.objectContaining({
           name: 'admin',
           email: 'admin@example.com',
@@ -226,7 +242,7 @@ kind: 'collectionType',
         callOrder.push('write')
       })
 
-      vi.spyOn(gitEngine, 'commit').mockImplementation(async () => {
+      vi.spyOn(contentGitEngine, 'commit').mockImplementation(async () => {
         callOrder.push('commit')
         return 'abc123'
       })
@@ -244,8 +260,8 @@ kind: 'collectionType',
         adminContext
       )
 
-      // Verify correct order: RBAC -> Validate -> Write -> Commit -> Index
-      expect(callOrder).toEqual(['rbac', 'validate', 'write', 'commit', 'index'])
+      // Verify correct order: RBAC -> Validate -> Write (content) -> Commit -> Write (metadata) -> Index
+      expect(callOrder).toEqual(['rbac', 'validate', 'write', 'commit', 'write', 'index'])
     })
   })
 
@@ -265,7 +281,7 @@ kind: 'collectionType',
       const canSpy = vi.spyOn(rbacEngine, 'can')
       const validateSpy = vi.spyOn(schemaEngine, 'validate')
       const writeAtomicSpy = vi.spyOn(fileEngine, 'writeAtomic')
-      const commitSpy = vi.spyOn(gitEngine, 'commit')
+      const commitSpy = vi.spyOn(contentGitEngine, 'commit')
       const updateIndexSpy = vi.spyOn(queryEngine, 'updateIndex')
 
       // Update the entry
@@ -309,7 +325,7 @@ kind: 'collectionType',
       // Spy on all engines
       const canSpy = vi.spyOn(rbacEngine, 'can')
       const deleteFileSpy = vi.spyOn(fileEngine, 'deleteFile')
-      const commitSpy = vi.spyOn(gitEngine, 'commit')
+      const commitSpy = vi.spyOn(contentGitEngine, 'commit')
       const removeFromIndexSpy = vi.spyOn(queryEngine, 'removeFromIndex')
 
       // Delete the entry
@@ -345,7 +361,7 @@ kind: 'collectionType',
       // Spy on all engines
       const canSpy = vi.spyOn(rbacEngine, 'can')
       const writeAtomicSpy = vi.spyOn(fileEngine, 'writeAtomic')
-      const commitSpy = vi.spyOn(gitEngine, 'commit')
+      const commitSpy = vi.spyOn(contentGitEngine, 'commit')
       const updateIndexSpy = vi.spyOn(queryEngine, 'updateIndex')
 
       // Publish the entry
@@ -382,7 +398,7 @@ kind: 'collectionType',
       // Spy on all engines
       const canSpy = vi.spyOn(rbacEngine, 'can')
       const writeAtomicSpy = vi.spyOn(fileEngine, 'writeAtomic')
-      const commitSpy = vi.spyOn(gitEngine, 'commit')
+      const commitSpy = vi.spyOn(contentGitEngine, 'commit')
       const updateIndexSpy = vi.spyOn(queryEngine, 'updateIndex')
 
       // Unpublish the entry
@@ -423,7 +439,7 @@ kind: 'collectionType',
 
     it('should not write or commit if validation fails', async () => {
       const writeAtomicSpy = vi.spyOn(fileEngine, 'writeAtomic')
-      const commitSpy = vi.spyOn(gitEngine, 'commit')
+      const commitSpy = vi.spyOn(contentGitEngine, 'commit')
 
       try {
         await contentEngine.create(
@@ -451,6 +467,7 @@ kind: 'collectionType',
           id: 'user-2',
           username: 'guest',
           email: 'guest@example.com',
+          role: 'public',
         },
         role: 'public',
       }
@@ -472,7 +489,7 @@ kind: 'collectionType',
 
     it('should not write or commit if permission denied', async () => {
       const writeAtomicSpy = vi.spyOn(fileEngine, 'writeAtomic')
-      const commitSpy = vi.spyOn(gitEngine, 'commit')
+      const commitSpy = vi.spyOn(contentGitEngine, 'commit')
 
       // Mock RBAC to deny permission
       vi.spyOn(rbacEngine, 'can').mockResolvedValue(false)
@@ -568,13 +585,14 @@ kind: 'collectionType',
       await contentEngine.publish('article', entry.id, adminContext)
 
       // Get Git history
-      const history = await gitEngine.getHistory()
+      const history = await contentGitEngine.getHistory()
 
       // Verify commits exist for create, update, and publish
       expect(history.length).toBeGreaterThanOrEqual(3)
-      expect(history.some(commit => commit.message.includes('create'))).toBe(true)
-      expect(history.some(commit => commit.message.includes('update'))).toBe(true)
-      expect(history.some(commit => commit.message.includes('publish'))).toBe(true)
+      const messages = history.map(c => c.message.toLowerCase())
+      expect(messages.some(m => m.includes('create'))).toBe(true)
+      expect(messages.some(m => m.includes('update'))).toBe(true)
+      expect(messages.some(m => m.includes('publish'))).toBe(true)
     })
   })
 })

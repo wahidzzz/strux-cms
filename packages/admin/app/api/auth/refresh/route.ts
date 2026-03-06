@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getCMS } from '@/lib/cms'
 import { createAuthRouteHandler } from '@cms/api'
+import { cookies } from 'next/headers'
 
 const handler = createAuthRouteHandler()
 
@@ -9,10 +10,21 @@ export async function POST(request: Request) {
     const cms = await getCMS()
     const authEngine = cms.getAuthEngine()
     const config = cms.getConfig()
+    
+    // Get refresh token from cookie
+    const cookieStore = cookies()
+    const refreshToken = cookieStore.get('refresh_token')?.value
+    
+    if (!refreshToken) {
+      return NextResponse.json(
+        { error: 'Refresh token is required' },
+        { status: 400 }
+      )
+    }
 
-    const body = await request.json()
-    const response = await handler.login(
-      { body },
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    const response = await handler.refresh(
+      { body: { refreshToken }, ip },
       authEngine,
       config.jwt.secret
     )
@@ -23,9 +35,9 @@ export async function POST(request: Request) {
 
     // Set cookies
     const res = NextResponse.json(response)
-
+    
     if (response.jwt) {
-      res.cookies.set('token', response.jwt as string, {
+      res.cookies.set('token', response.jwt, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
@@ -47,7 +59,7 @@ export async function POST(request: Request) {
     return res
   } catch (error: any) {
     return NextResponse.json(
-      { status: 500, name: 'InternalServerError', message: error.message },
+      { error: error.message || 'Internal Server Error' },
       { status: 500 }
     )
   }

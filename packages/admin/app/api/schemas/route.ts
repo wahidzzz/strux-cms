@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getCMS } from '@/lib/cms'
 import { createSchemaRouteHandler } from '@cms/api'
+import { requireAuth } from '@/lib/auth-helper'
 
 // Mock incoming requests
 const mockReq = {
@@ -40,12 +41,17 @@ export async function GET(request: Request) {
   try {
     const cms = await getCMS()
     const schemaHandler = createSchemaRouteHandler()
+    const context = await requireAuth(request)
     const req = await parseRequest(request)
     
     // We provide cms context explicitly to list method as first argument if needed
-    const result = await schemaHandler.list({ ...req, context: { role: 'admin' } }, cms.getSchemaEngine())
+    const result = await schemaHandler.list({ ...req, context }, cms.getSchemaEngine())
     return NextResponse.json(result)
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    const status = error.status || 500
+    return NextResponse.json(
+      { error: error.message || 'Internal Server Error' },
+      { status }
+    )
   }
 }

@@ -463,6 +463,17 @@ export interface User {
 }
 
 /**
+ * Refresh token for persistent authentication
+ */
+export interface RefreshToken {
+  token: string
+  userId: string
+  expiresAt: string
+  revokedAt?: string
+  createdByIp: string
+}
+
+/**
  * Paginated result wrapper for query responses.
  * 
  * Follows Strapi's response format with data and metadata.
@@ -607,7 +618,7 @@ export interface Role {
   id: string
   name: string
   description: string
-  type: 'admin' | 'editor' | 'authenticated' | 'public' | 'custom'
+  type: 'super_admin' | 'admin' | 'editor' | 'authenticated' | 'public' | 'custom'
   permissions: Permission[]
 }
 
@@ -874,6 +885,65 @@ export interface CMSConfig {
   jwt: JWTConfig
   upload: UploadConfig
   server?: ServerConfig
+  apiKeys?: ApiKeysConfig
+  security?: SecurityConfig
+}
+
+/**
+ * API Keys configuration.
+ * 
+ * @property {ApiKeyEntry[]} keys - Array of registered API keys
+ */
+export interface ApiKeysConfig {
+  keys: ApiKeyEntry[]
+}
+
+/**
+ * Represents a single API key entry.
+ * 
+ * @property {string} id - Unique key identifier
+ * @property {string} name - Human-readable name for the key
+ * @property {string} keyHash - Bcrypt hash of the actual key
+ * @property {string} prefix - First 8 chars of the key for display
+ * @property {string[]} permissions - Permission scopes (e.g. ['*'] or ['content:read'])
+ * @property {string} createdAt - ISO 8601 datetime
+ * @property {string} [expiresAt] - Optional expiry datetime
+ * @property {string} createdBy - User ID who created the key
+ */
+export interface ApiKeyEntry {
+  id: string
+  name: string
+  keyHash: string
+  prefix: string
+  permissions: string[]
+  createdAt: string
+  expiresAt?: string
+  createdBy: string
+}
+
+/**
+ * System Security Configuration
+ */
+export interface SecurityConfig {
+  rateLimit: {
+    enabled: boolean
+    maxRequests: number // requests per window
+    windowMs: number    // window size in ms
+  }
+  ipBlocking: {
+    enabled: boolean
+    blacklist: string[]
+    whitelist: string[]
+  }
+  cors: {
+    enabled: boolean
+    origins: string[]
+    methods: string[]
+    allowedHeaders: string[]
+    exposeHeaders?: string[]
+    maxAge?: number
+    credentials?: boolean
+  }
 }
 
 /**

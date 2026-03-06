@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Shield, Users, Sliders } from 'lucide-react'
+import { Shield, Users, Sliders, Key } from 'lucide-react'
 
 export default function SettingsLayout({
   children,
@@ -33,11 +33,18 @@ export default function SettingsLayout({
             Users
           </Link>
           <Link 
-            href="/settings/system" 
+            href="/settings/api-keys"
             className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-foreground hover:bg-muted/50 transition-colors"
           >
-            <Sliders className="w-4 h-4 text-primary" />
-            System Override
+            <Key className="w-4 h-4 text-primary" />
+            API Keys
+          </Link>
+          <Link
+            href="/settings/security"
+            className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-foreground hover:bg-muted/50 transition-colors"
+          >
+            <Shield className="w-4 h-4 text-primary" />
+            Security
           </Link>
         </div>
 

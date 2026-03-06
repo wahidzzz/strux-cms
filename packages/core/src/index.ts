@@ -17,6 +17,7 @@ import { RBACEngine } from './engines/rbac-engine.js'
 import { MediaEngine } from './engines/media-engine.js'
 import { MetadataEngine } from './engines/metadata-engine.js'
 import { AuthEngine } from './engines/auth-engine.js'
+import { ApiKeyEngine } from './engines/api-key-engine.js'
 import type { CMSConfig, RequestContext } from './types/index.js'
 
 // Export all types
@@ -32,6 +33,7 @@ export { QueryEngine } from './engines/query-engine.js'
 export { RBACEngine } from './engines/rbac-engine.js'
 export { MetadataEngine } from './engines/metadata-engine.js'
 export { AuthEngine } from './engines/auth-engine.js'
+export { ApiKeyEngine } from './engines/api-key-engine.js'
 
 /**
  * CMS - Main class for Git-Native JSON CMS
@@ -58,6 +60,7 @@ export class CMS {
     private readonly mediaEngine: MediaEngine
     private readonly metadataEngine: MetadataEngine
     private readonly authEngine: AuthEngine
+    private readonly apiKeyEngine: ApiKeyEngine
     private readonly contentEngine: ContentEngine
     private initialized = false
     private config: CMSConfig | null = null
@@ -84,6 +87,7 @@ export class CMS {
         this.mediaEngine = new MediaEngine(this.fileEngine, basePath)
         this.metadataEngine = new MetadataEngine(basePath, this.fileEngine)
         this.authEngine = new AuthEngine(basePath, this.rbacEngine)
+        this.apiKeyEngine = new ApiKeyEngine(basePath)
         this.contentEngine = new ContentEngine(
             basePath,
             this.fileEngine,
@@ -389,21 +393,7 @@ export class CMS {
      * Validates: Requirements 6.1, 6.2, 9.5
      */
     private async initializeRBACConfiguration(): Promise<void> {
-        const rbacConfigPath = join(this.basePath, '.cms', 'rbac.json')
-
-        try {
-            // Check if RBAC config exists
-            await fs.access(rbacConfigPath)
-            console.log('RBAC configuration file found')
-        } catch {
-            // Config doesn't exist, create default
-            console.log('Creating default RBAC configuration...')
-            await this.rbacEngine.createDefaultConfig()
-            console.log('Default RBAC configuration created')
-            return // Config already loaded by createDefaultConfig
-        }
-
-        // Load existing config
+        // loadRBACConfig now handles creation if missing
         await this.rbacEngine.loadRBACConfig()
     }
 
@@ -515,6 +505,24 @@ export class CMS {
                     origin: '*',
                     credentials: true
                 }
+            },
+            security: {
+                rateLimit: {
+                    enabled: true,
+                    maxRequests: 60,
+                    windowMs: 60 * 1000
+                },
+                ipBlocking: {
+                    enabled: false,
+                    blacklist: [],
+                    whitelist: []
+                },
+                cors: {
+                    enabled: true,
+                    origins: ['*'],
+                    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+                    allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key']
+                }
             }
         }
 
@@ -605,6 +613,13 @@ export class CMS {
     }
 
     /**
+     * Get the ApiKeyEngine instance
+     */
+    getApiKeyEngine(): ApiKeyEngine {
+        return this.apiKeyEngine
+    }
+
+    /**
      * Delete a content type and all its associated data
      * 
      * @param contentType - The API ID of the content type to delete
@@ -677,5 +692,31 @@ export class CMS {
             throw new Error('CMS not initialized - configuration not loaded')
         }
         return this.config
+    }
+
+    /**
+     * Update the CMS configuration
+     * 
+     * @param updates - Partial configuration updates
+     * @throws Error if updates are invalid or CMS not initialized
+     */
+    async updateConfig(updates: Partial<CMSConfig>): Promise<CMSConfig> {
+        const currentConfig = this.getConfig()
+
+        // Deep merge config (shallow merge for sub-objects like jwt, upload, security)
+        const newConfig = {
+            ...currentConfig,
+            ...updates,
+            jwt: updates.jwt ? { ...currentConfig.jwt, ...updates.jwt } : currentConfig.jwt,
+            upload: updates.upload ? { ...currentConfig.upload, ...updates.upload } : currentConfig.upload,
+            server: updates.server ? { ...currentConfig.server, ...updates.server } : currentConfig.server,
+            security: updates.security ? { ...currentConfig.security, ...updates.security } : currentConfig.security
+        }
+
+        const configPath = join(this.basePath, '.cms', 'config.json')
+        await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), 'utf-8')
+
+        this.config = newConfig
+        return newConfig
     }
 }

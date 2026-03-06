@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Shield, Plus, Edit, Trash2, Settings, Loader2 } from 'lucide-react'
+import { Shield, Plus, Edit, Trash2, Settings, Loader2, Crown } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -101,13 +101,18 @@ export default function RolesPage() {
             <div key={role.id} className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-lg bg-primary/10 text-primary">
-                    <Shield className="w-5 h-5" />
+                  <div className={`p-2.5 rounded-lg ${role.type === 'super_admin' ? 'bg-amber-500/10 text-amber-600' : 'bg-primary/10 text-primary'}`}>
+                    {role.type === 'super_admin' ? <Crown className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">{role.name}</h3>
-                    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium mt-1 ${role.type === 'system' ? 'bg-amber-500/10 text-amber-600' : 'bg-emerald-500/10 text-emerald-600'}`}>
-                      {role.type === 'system' ? 'System Default' : 'Custom Role'}
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium mt-1 ${role.type === 'super_admin' ? 'bg-amber-500 text-white' :
+                        role.type === 'admin' ? 'bg-blue-500/10 text-blue-600' :
+                          'bg-emerald-500/10 text-emerald-600'
+                      }`}>
+                      {role.type === 'super_admin' ? 'Super Admin' :
+                        role.type === 'admin' ? 'Administrator' :
+                          'Custom Role'}
                     </span>
                   </div>
                 </div>
@@ -123,7 +128,7 @@ export default function RolesPage() {
                   <Settings className="w-4 h-4" />
                   Configure
                 </Link>
-                {role.type !== 'system' && (
+                {(role.type !== 'system' && role.type !== 'super_admin' && role.type !== 'admin') && (
                   <button
                     onClick={() => handleDelete(role)}
                     className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"

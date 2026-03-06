@@ -12,9 +12,9 @@ export * from './routes/schema.js'
 
 // Export middleware
 export * from './middleware/auth.js'
+export * from './middleware/api-key.js'
+export * from './middleware/security.js'
 
-// API routes for other modules will be implemented in later tasks
-// export * from './routes/media.js'
 // Export auth routes
 export * from './routes/auth.js'
 
@@ -22,4 +22,5 @@ export * from './routes/auth.js'
 export * from './routes/users.js'
 export * from './routes/roles.js'
 
-console.log('API package initialized')
+// Export API key routes
+export * from './routes/api-keys.js'

@@ -228,9 +228,10 @@ export class MediaEngine {
    * **Validates: Requirement 7.5**
    *
    * @param id - The media file ID
+   * @param _context - Request context with user information
    * @returns MediaFile or null if not found
    */
-  async findOne(id: string): Promise<MediaFile | null> {
+  async findOne(id: string, _context?: RequestContext): Promise<MediaFile | null> {
     // Step 1: Read metadata from .cms/media.json
     let metadata: Record<string, MediaFile> = {}
     try {
@@ -266,9 +267,10 @@ export class MediaEngine {
    * **Validates: Requirement 7.5**
    *
    * @param query - Query parameters (filters, sort, pagination)
+   * @param _context - Request context with user information
    * @returns Paginated result with media files
    */
-  async findMany(query?: QueryParams): Promise<PaginatedResult<MediaFile>> {
+  async findMany(query?: QueryParams, _context?: RequestContext): Promise<PaginatedResult<MediaFile>> {
     // Step 1: Read all metadata from .cms/media.json
     let metadata: Record<string, MediaFile> = {}
     try {
@@ -338,10 +340,11 @@ export class MediaEngine {
    *
    * @param id - The media file ID
    * @param data - Update data (alternativeText, caption, folder, name)
+   * @param _context - Request context with user information
    * @returns Updated MediaFile
    * @throws Error if media file not found
    */
-  async update(id: string, data: UpdateMediaData): Promise<MediaFile> {
+  async update(id: string, data: UpdateMediaData, _context?: RequestContext): Promise<MediaFile> {
     await this.fileEngine.acquireLock('media')
     try {
       // Step 1: Read existing metadata
@@ -402,9 +405,10 @@ export class MediaEngine {
    * **Validates: Requirement 7.6**
    *
    * @param id - The media file ID
+   * @param _context - Request context with user information
    * @throws Error if media file not found
    */
-  async delete(id: string): Promise<void> {
+  async delete(id: string, _context?: RequestContext): Promise<void> {
     await this.fileEngine.acquireLock('media')
     try {
       // Step 1: Read existing metadata

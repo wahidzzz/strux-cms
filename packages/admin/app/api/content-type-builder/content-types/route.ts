@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getCMS } from '@/lib/cms'
 import { createSchemaRouteHandler } from '@cms/api'
+import { requireAuth } from '@/lib/auth-helper'
 
 export async function GET(request: Request) {
   try {
     const cms = await getCMS()
     const handler = createSchemaRouteHandler()
-    
-    // We mock the Request context required by the API
-    const context = { role: 'admin', userId: 'local', user: null as any }
+    const context = await requireAuth(request)
     
     const response = await handler.list({ params: {}, context }, cms.getSchemaEngine())
     
@@ -18,7 +17,11 @@ export async function GET(request: Request) {
     
     return NextResponse.json(response)
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    const status = err.status || 500
+    return NextResponse.json(
+      { error: err.message || 'Internal Server Error' },
+      { status }
+    )
   }
 }
 
@@ -26,8 +29,8 @@ export async function POST(request: Request) {
   try {
     const cms = await getCMS()
     const handler = createSchemaRouteHandler()
-    
-    const context = { role: 'admin', userId: 'local', user: null as any }
+    const context = await requireAuth(request)
+
     const body = await request.json()
     const payload = body.data ? body : { data: body }
 
@@ -42,6 +45,10 @@ export async function POST(request: Request) {
     
     return NextResponse.json(response)
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    const status = err.status || 500
+    return NextResponse.json(
+      { error: err.message || 'Internal Server Error' },
+      { status }
+    )
   }
 }

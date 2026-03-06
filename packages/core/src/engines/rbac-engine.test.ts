@@ -105,11 +105,15 @@ describe('RBACEngine', () => {
       expect(adminRole?.permissions[0].action).toBe('*')
     })
 
-    it('should throw error if config file does not exist', async () => {
+    it('should create default config if file does not exist', async () => {
       // Remove config file
       await fs.unlink(join(testDir, '.cms', 'rbac.json'))
 
-      await expect(rbacEngine.loadRBACConfig()).rejects.toThrow('RBAC config not found')
+      await rbacEngine.loadRBACConfig()
+
+      const adminRole = rbacEngine.getRole('admin')
+      expect(adminRole).toBeDefined()
+      expect(adminRole?.id).toBe('admin')
     })
 
     it('should throw error if config is invalid JSON', async () => {
@@ -1337,4 +1341,3 @@ describe('RBACEngine', () => {
     })
   })
 })
-

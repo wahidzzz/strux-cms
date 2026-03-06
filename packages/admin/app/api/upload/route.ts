@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCMS } from '@/lib/cms';
+import { requireAuth, getRequestContext } from '@/lib/auth-helper';
 
 export async function POST(request: Request) {
   try {
@@ -18,8 +19,7 @@ export async function POST(request: Request) {
     const cms = await getCMS();
     const mediaEngine = cms.getMediaEngine();
 
-    // In a real app, this comes from authentication
-    const context = { role: 'admin', userId: 'local', user: null as any };
+    const context = await requireAuth(request);
 
     // Support single or multiple uploads
     const uploadedFiles = [];
@@ -60,11 +60,12 @@ export async function GET(request: Request) {
    try {
      const cms = await getCMS();
      const mediaEngine = cms.getMediaEngine();
+     const context = await getRequestContext(request);
      
      const url = new URL(request.url);
      const query = Object.fromEntries(url.searchParams.entries());
      
-     const result = await mediaEngine.findMany(query);
+     const result = await mediaEngine.findMany(query, context);
      
      return NextResponse.json({
        data: result.data,

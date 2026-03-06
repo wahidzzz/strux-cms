@@ -1,5 +1,17 @@
 {
   "roles": {
+    "super_admin": {
+      "id": "super_admin",
+      "name": "Super Admin",
+      "description": "Supreme authority over the entire system. Cannot be modified or deleted.",
+      "type": "super_admin",
+      "permissions": [
+        {
+          "action": "*",
+          "subject": "all"
+        }
+      ]
+    },
     "admin": {
       "id": "admin",
       "name": "Administrator",
@@ -74,22 +86,12 @@
           "subject": "all"
         }
       ]
-    },
-    "content-approver": {
-      "id": "content-approver",
-      "name": "Content Approver",
-      "description": "Custom role for Content Approver",
-      "permissions": [],
-      "type": "custom"
     }
   },
   "defaultRole": "authenticated",
   "userRoles": {
-    "testuser_iqkf7-49ya1": [
-      "admin"
-    ],
     "wahid-90nof": [
-      "admin"
+      "super_admin"
     ],
     "admin@example-comfixeduser-71jh0": [
       "admin"
@@ -98,7 +100,7 @@
       "authenticated"
     ],
     "admin@example-comdummy2-ox5p4": [
-      "content-approver"
+      "authenticated"
     ],
     "admin-64jiq": [
       "admin"

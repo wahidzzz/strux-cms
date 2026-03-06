@@ -41,11 +41,6 @@ export class RBACEngine {
     this.configPath = join(basePath, '.cms', 'rbac.json')
   }
 
-  /**
-   * Load RBAC configuration from .cms/rbac.json
-   * 
-   * @throws Error if config file doesn't exist or is invalid
-   */
   async loadRBACConfig(): Promise<void> {
     try {
       const content = await fs.readFile(this.configPath, 'utf-8')
@@ -66,7 +61,9 @@ export class RBACEngine {
       }
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-        throw new Error(`RBAC config not found at ${this.configPath}`)
+        // If config doesn't exist, create default
+        console.log(`RBAC config not found at ${this.configPath}. Creating default...`)
+        return this.createDefaultConfig()
       }
       throw error
     }
@@ -90,6 +87,18 @@ export class RBACEngine {
   async createDefaultConfig(): Promise<void> {
     const defaultConfig: RBACConfig = {
       roles: {
+        super_admin: {
+          id: 'super_admin',
+          name: 'Super Admin',
+          description: 'Supreme authority over the entire system. Cannot be modified or deleted.',
+          type: 'super_admin',
+          permissions: [
+            {
+              action: '*',
+              subject: 'all'
+            }
+          ]
+        },
         admin: {
           id: 'admin',
           name: 'Administrator',
@@ -216,6 +225,11 @@ export class RBACEngine {
     if (!role) {
       // If role not found, deny access
       return false
+    }
+
+    // Super admin always has full access
+    if (role.type === 'super_admin') {
+      return true
     }
 
     // Find matching permissions
@@ -524,8 +538,8 @@ export class RBACEngine {
       throw new Error('Role description is required and must be a string')
     }
 
-    if (!role.type || !['admin', 'editor', 'authenticated', 'public', 'custom'].includes(role.type)) {
-      throw new Error('Role type must be one of: admin, editor, authenticated, public, custom')
+    if (!role.type || !['super_admin', 'admin', 'editor', 'authenticated', 'public', 'custom'].includes(role.type)) {
+      throw new Error('Role type must be one of: super_admin, admin, editor, authenticated, public, custom')
     }
 
     if (!Array.isArray(role.permissions)) {
@@ -610,9 +624,14 @@ export class RBACEngine {
     }
 
     if (updates.type !== undefined) {
-      if (!['admin', 'editor', 'authenticated', 'public', 'custom'].includes(updates.type)) {
-        throw new Error('Role type must be one of: admin, editor, authenticated, public, custom')
+      if (!['super_admin', 'admin', 'editor', 'authenticated', 'public', 'custom'].includes(updates.type)) {
+        throw new Error('Role type must be one of: super_admin, admin, editor, authenticated, public, custom')
       }
+    }
+
+    // Protect super_admin role from permission/type modifications
+    if (existingRole.type === 'super_admin') {
+      throw new Error('Cannot modify the Super Admin role')
     }
 
     if (updates.permissions !== undefined) {
@@ -680,7 +699,7 @@ export class RBACEngine {
     }
 
     // Safety check: Cannot delete default system roles
-    const defaultRoles = ['admin', 'editor', 'authenticated', 'public']
+    const defaultRoles = ['super_admin', 'admin', 'editor', 'authenticated', 'public']
     if (defaultRoles.includes(roleId)) {
       throw new Error(`Cannot delete default role "${roleId}"`)
     }
@@ -863,6 +882,18 @@ export class RBACEngine {
     // Write config to file
     const content = JSON.stringify(this.config, null, 2)
     await fs.writeFile(this.configPath, content, 'utf-8')
+  }
+
+  /**
+   * Check if a role is super_admin
+   * 
+   * @param role Role ID or role type
+   * @returns true if the role is super_admin
+   */
+  isSuperAdmin(role: string): boolean {
+    if (!this.config) return false
+    const roleObj = this.config.roles[role]
+    return roleObj?.type === 'super_admin' || role === 'super_admin'
   }
 
 }

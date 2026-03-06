@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getCMS } from '@/lib/cms'
-import { createContentRouteHandler, authenticate } from '@cms/api'
+import { getRequestContext } from '@/lib/auth-helper'
+import { createContentRouteHandler } from '@cms/api'
 
 const handler = createContentRouteHandler()
 
@@ -11,8 +12,8 @@ export async function GET(
   const cms = await getCMS()
   const contentEngine = cms.getContentEngine()
   
-  // Create mock context if no auth (or implement verifyToken logic here)
-  const context = { role: 'admin' }
+  // Use proper auth context instead of hardcoded admin
+  const context = await getRequestContext(request)
   const url = new URL(request.url)
   const query = Object.fromEntries(url.searchParams.entries())
 
@@ -38,7 +39,7 @@ export async function POST(
 ) {
   const cms = await getCMS()
   const contentEngine = cms.getContentEngine()
-  const context = { role: 'admin' }
+  const context = await getRequestContext(request)
   
   try {
     const body = await request.json()

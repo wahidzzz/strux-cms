@@ -41,11 +41,15 @@ export function createAuthRouteHandler() {
         const token = jwt.sign(
           { id: user.id, role: user.role },
           jwtSecret,
-          { expiresIn: '7d' }
+          { expiresIn: '1h' } // Short JWT expiry for security
         )
+
+        // Generate Refresh Token
+        const refreshToken = await authEngine.generateRefreshToken(user.id, (req as any).ip || 'unknown')
 
         return {
           jwt: token,
+          refreshToken,
           user
         }
       } catch (error: any) {
@@ -182,6 +186,58 @@ export function createAuthRouteHandler() {
         return { success: true }
       } catch (error: any) {
         return { error: { status: 400, name: 'UpdateError', message: error.message } }
+      }
+    },
+
+    /**
+     * POST /api/auth/refresh
+     * Refresh JWT using refresh token
+     */
+    async refresh(req: any, authEngine: AuthEngine, jwtSecret: string) {
+      try {
+        const body = req.body || {}
+        const { refreshToken } = body
+
+        if (!refreshToken) {
+          return { error: { status: 400, name: 'ValidationError', message: 'Refresh token is required' } }
+        }
+
+        const { userId, newToken } = await authEngine.rotateRefreshToken(refreshToken, req.ip || 'unknown')
+        const user = await authEngine.getUser(userId)
+
+        if (!user) {
+          throw new Error('User not found')
+        }
+
+        const jwtToken = jwt.sign(
+          { id: user.id, role: user.role },
+          jwtSecret,
+          { expiresIn: '1h' }
+        )
+
+        return {
+          jwt: jwtToken,
+          refreshToken: newToken,
+          user
+        }
+      } catch (error: any) {
+        return { error: { status: 401, name: 'UnauthorizedError', message: error.message } }
+      }
+    },
+
+    /**
+     * POST /api/auth/logout
+     * Revoke refresh token
+     */
+    async logout(req: any, authEngine: AuthEngine) {
+      try {
+        const { refreshToken } = req.body || {}
+        if (refreshToken) {
+          await authEngine.revokeRefreshToken(refreshToken)
+        }
+        return { success: true }
+      } catch (error: any) {
+        return { error: { status: 500, name: 'InternalServerError', message: error.message } }
       }
     }
   }

@@ -10,12 +10,14 @@
 
 import { promises as fs } from 'fs'
 import { join } from 'path'
+import { randomBytes } from 'crypto'
 import bcrypt from 'bcryptjs'
-import type { User } from '../types/index.js'
+import type { User, RefreshToken } from '../types/index.js'
 import { RBACEngine } from './rbac-engine.js'
 
 export class AuthEngine {
   private usersPath: string
+  private refreshTokensPath: string
   private saltRounds = 10
 
   constructor(
@@ -23,6 +25,7 @@ export class AuthEngine {
     private readonly rbacEngine: RBACEngine
   ) {
     this.usersPath = join(basePath, '.cms', 'users')
+    this.refreshTokensPath = join(basePath, '.cms', 'refresh-tokens.json')
   }
 
   /**
@@ -46,6 +49,18 @@ export class AuthEngine {
       throw new Error('User with this email or username already exists')
     }
 
+    // Auto-assign super_admin to the very first user in the system
+    let userRole = userData.role || this.rbacEngine.getDefaultRole()
+    if (existingUsers.length === 0) {
+      // First user ever — make them super_admin
+      userRole = 'super_admin'
+      // Ensure super_admin role exists in config
+      if (!this.rbacEngine.getRole('super_admin')) {
+        // Trigger default config creation which includes super_admin
+        await this.rbacEngine.createDefaultConfig()
+      }
+    }
+
     // Generate unique ID
     const userId = userData.username.toLowerCase().replace(/[^a-z0-p]/g, '-') + '-' + Math.random().toString(36).substring(2, 7)
 
@@ -59,7 +74,7 @@ export class AuthEngine {
       id: userId,
       username: userData.username,
       email: userData.email,
-      role: userData.role || this.rbacEngine.getDefaultRole(),
+      role: userRole,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -154,6 +169,11 @@ export class AuthEngine {
     const existingContent = await fs.readFile(userFilePath, 'utf-8')
     const user = JSON.parse(existingContent) as User & { password?: string }
 
+    // Prevent changing super_admin role
+    if (updates.role && updates.role !== user.role && this.rbacEngine.isSuperAdmin(user.role)) {
+      throw new Error('Cannot change the role of a Super Admin user')
+    }
+
     if (updates.password) {
       user.password = await bcrypt.hash(updates.password, this.saltRounds)
     }
@@ -181,12 +201,129 @@ export class AuthEngine {
    */
   async deleteUser(userId: string): Promise<void> {
     const userFilePath = join(this.usersPath, `${userId}.json`)
+
+    // Read user to check role
+    try {
+      const content = await fs.readFile(userFilePath, 'utf-8')
+      const user = JSON.parse(content) as User
+
+      // Prevent deletion of super admin users
+      if (this.rbacEngine.isSuperAdmin(user.role)) {
+        throw new Error('Cannot delete a Super Admin user')
+      }
+    } catch (error) {
+      if ((error as Error).message.includes('Super Admin')) throw error
+      // If we can't read the file, proceed with deletion attempt
+    }
+
     await fs.unlink(userFilePath)
     
     // Cleanup roles
-    const userRoleIds = (this.rbacEngine as any).config?.userRoles?.[userId] || []
+    const rbacConfig = await (this.rbacEngine as any).loadConfig()
+    const userRoleIds = rbacConfig.userRoles?.[userId] || []
     for (const roleId of userRoleIds) {
       await this.rbacEngine.revokeRole(userId, roleId).catch(() => {})
     }
+  }
+
+  /**
+   * Load refresh tokens from disk
+   */
+  private async loadRefreshTokens(): Promise<RefreshToken[]> {
+    try {
+      const content = await fs.readFile(this.refreshTokensPath, 'utf-8')
+      return JSON.parse(content) as RefreshToken[]
+    } catch {
+      return []
+    }
+  }
+
+  /**
+   * Save refresh tokens back to disk
+   */
+  private async saveRefreshTokens(tokens: RefreshToken[]): Promise<void> {
+    await fs.writeFile(this.refreshTokensPath, JSON.stringify(tokens, null, 2), 'utf-8')
+  }
+
+  /**
+   * Generate a new refresh token for a user
+   */
+  async generateRefreshToken(userId: string, ip: string = 'unknown'): Promise<string> {
+    const token = `refresh_${randomBytes(32).toString('hex')}`
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 30) // 30 days expiry
+
+    const newRefreshToken: RefreshToken = {
+      token,
+      userId,
+      expiresAt: expiresAt.toISOString(),
+      createdByIp: ip
+    }
+
+    const tokens = await this.loadRefreshTokens()
+    tokens.push(newRefreshToken)
+    await this.saveRefreshTokens(tokens)
+
+    return token
+  }
+
+  /**
+   * Validate and rotate a refresh token
+   * Returns a new refresh token and the user ID
+   */
+  async rotateRefreshToken(token: string, ip: string = 'unknown'): Promise<{ userId: string; newToken: string }> {
+    const tokens = await this.loadRefreshTokens()
+    const index = tokens.findIndex(t => t.token === token)
+
+    if (index === -1) {
+      throw new Error('Refresh token not found')
+    }
+
+    const entry = tokens[index]
+
+    if (entry.revokedAt) {
+      // Possible token reuse attack - revoke all user tokens for safety
+      const filtered = tokens.filter(t => t.userId !== entry.userId)
+      await this.saveRefreshTokens(filtered)
+      throw new Error('Refresh token has been revoked')
+    }
+
+    if (new Date(entry.expiresAt) < new Date()) {
+      tokens.splice(index, 1)
+      await this.saveRefreshTokens(tokens)
+      throw new Error('Refresh token has expired')
+    }
+
+    // Revoke old token
+    entry.revokedAt = new Date().toISOString()
+
+    // Generate new one
+    const newToken = await this.generateRefreshToken(entry.userId, ip)
+
+    // Save rotation
+    await this.saveRefreshTokens(tokens)
+
+    return { userId: entry.userId, newToken }
+  }
+
+  /**
+   * Revoke a refresh token (on logout)
+   */
+  async revokeRefreshToken(token: string): Promise<void> {
+    const tokens = await this.loadRefreshTokens()
+    const index = tokens.findIndex(t => t.token === token)
+
+    if (index !== -1) {
+      tokens.splice(index, 1) // Remove instead of marking revoked for less storage
+      await this.saveRefreshTokens(tokens)
+    }
+  }
+
+  /**
+   * List active refresh tokens for a user
+   */
+  async listUserRefreshTokens(userId: string): Promise<RefreshToken[]> {
+    const tokens = await this.loadRefreshTokens()
+    return tokens.filter(t => t.userId === userId && !t.revokedAt && new Date(t.expiresAt) > new Date())
   }
 }

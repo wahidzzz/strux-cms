@@ -36,5 +36,20 @@
       "origin": "*",
       "credentials": true
     }
+  },
+  "apiKeys": {
+    "keys": [
+      {
+        "id": "key_4e78c380ed8b9c74",
+        "name": "new_key",
+        "keyHash": "$2b$10$ZdEprIrlLAjHLrDvGi2dUOORZmc7Wu/YoXaZpjRgdYIipekAqGoGO",
+        "prefix": "jayson_4f49a...",
+        "permissions": [
+          "*"
+        ],
+        "createdAt": "2026-03-06T07:48:06.377Z",
+        "createdBy": "wahid-90nof"
+      }
+    ]
   }
 }
