@@ -17,7 +17,6 @@ import { RBACEngine } from './rbac-engine.js'
 
 export class AuthEngine {
   private usersPath: string
-  private refreshTokensPath: string
   private saltRounds = 10
 
   constructor(
@@ -25,7 +24,6 @@ export class AuthEngine {
     private readonly rbacEngine: RBACEngine
   ) {
     this.usersPath = join(basePath, '.cms', 'users')
-    this.refreshTokensPath = join(basePath, '.cms', 'refresh-tokens.json')
   }
 
   /**
@@ -33,6 +31,11 @@ export class AuthEngine {
    */
   async init(): Promise<void> {
     await fs.mkdir(this.usersPath, { recursive: true })
+
+    // Cleanup old unified tokens file and tokens directory if they exist
+    const basePath = join(this.usersPath, '..')
+    await fs.unlink(join(basePath, 'refresh-tokens.json')).catch(() => { })
+    await fs.rm(join(basePath, 'tokens'), { recursive: true, force: true }).catch(() => { })
   }
 
   /**
@@ -77,7 +80,8 @@ export class AuthEngine {
       role: userRole,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      refreshTokens: []
     }
 
     // Save user to file
@@ -88,7 +92,7 @@ export class AuthEngine {
     await this.rbacEngine.assignRole(userId, newUser.role)
 
     // Return user without password
-    const { password, ...userWithoutPassword } = newUser
+    const { password, refreshTokens, ...userWithoutPassword } = newUser
     return userWithoutPassword
   }
 
@@ -112,7 +116,7 @@ export class AuthEngine {
       return null
     }
 
-    const { password: _, ...userWithoutPassword } = user
+    const { password: _, refreshTokens: __, ...userWithoutPassword } = user
     return userWithoutPassword
   }
 
@@ -125,7 +129,7 @@ export class AuthEngine {
       const content = await fs.readFile(userFilePath, 'utf-8')
       const user = JSON.parse(content) as User & { password?: string }
       
-      const { password, ...userWithoutPassword } = user
+      const { password, refreshTokens, ...userWithoutPassword } = user
       return userWithoutPassword
     } catch {
       return null
@@ -133,11 +137,36 @@ export class AuthEngine {
   }
 
   /**
-   * List all users (without passwords)
+   * Internal helper to load full user object (including password and tokens)
+   */
+  private async getFullUser(userId: string): Promise<(User & { password?: string }) | null> {
+    try {
+      const userFilePath = join(this.usersPath, `${userId}.json`)
+      const content = await fs.readFile(userFilePath, 'utf-8')
+      return JSON.parse(content)
+    } catch {
+      return null
+    }
+  }
+
+  /**
+   * Internal helper to save full user object
+   */
+  private async saveUser(user: User & { password?: string }): Promise<void> {
+    // Prune expired tokens before save
+    const now = new Date()
+    user.refreshTokens = (user.refreshTokens || []).filter(t => new Date(t.expiresAt) > now)
+
+    const userFilePath = join(this.usersPath, `${user.id}.json`)
+    await fs.writeFile(userFilePath, JSON.stringify(user, null, 2), 'utf-8')
+  }
+
+  /**
+   * List all users (without passwords or tokens)
    */
   async listUsers(): Promise<User[]> {
     const internalUsers = await this.listUsersInternal()
-    return internalUsers.map(({ password, ...user }) => user)
+    return internalUsers.map(({ password, refreshTokens, ...user }) => user)
   }
 
   /**
@@ -165,9 +194,8 @@ export class AuthEngine {
    * Update user details or password
    */
   async updateUser(userId: string, updates: Partial<User & { password?: string }>): Promise<User> {
-    const userFilePath = join(this.usersPath, `${userId}.json`)
-    const existingContent = await fs.readFile(userFilePath, 'utf-8')
-    const user = JSON.parse(existingContent) as User & { password?: string }
+    const user = await this.getFullUser(userId)
+    if (!user) throw new Error('User not found')
 
     // Prevent changing super_admin role
     if (updates.role && updates.role !== user.role && this.rbacEngine.isSuperAdmin(user.role)) {
@@ -190,9 +218,9 @@ export class AuthEngine {
 
     user.updatedAt = new Date().toISOString()
 
-    await fs.writeFile(userFilePath, JSON.stringify(user, null, 2), 'utf-8')
+    await this.saveUser(user)
 
-    const { password, ...userWithoutPassword } = user
+    const { password, refreshTokens, ...userWithoutPassword } = user
     return userWithoutPassword
   }
 
@@ -200,22 +228,15 @@ export class AuthEngine {
    * Delete a user
    */
   async deleteUser(userId: string): Promise<void> {
-    const userFilePath = join(this.usersPath, `${userId}.json`)
+    const user = await this.getFullUser(userId)
+    if (!user) return
 
-    // Read user to check role
-    try {
-      const content = await fs.readFile(userFilePath, 'utf-8')
-      const user = JSON.parse(content) as User
-
-      // Prevent deletion of super admin users
-      if (this.rbacEngine.isSuperAdmin(user.role)) {
-        throw new Error('Cannot delete a Super Admin user')
-      }
-    } catch (error) {
-      if ((error as Error).message.includes('Super Admin')) throw error
-      // If we can't read the file, proceed with deletion attempt
+    // Prevent deletion of super admin users
+    if (this.rbacEngine.isSuperAdmin(user.role)) {
+      throw new Error('Cannot delete a Super Admin user')
     }
 
+    const userFilePath = join(this.usersPath, `${userId}.json`)
     await fs.unlink(userFilePath)
     
     // Cleanup roles
@@ -227,103 +248,99 @@ export class AuthEngine {
   }
 
   /**
-   * Load refresh tokens from disk
-   */
-  private async loadRefreshTokens(): Promise<RefreshToken[]> {
-    try {
-      const content = await fs.readFile(this.refreshTokensPath, 'utf-8')
-      return JSON.parse(content) as RefreshToken[]
-    } catch {
-      return []
-    }
-  }
-
-  /**
-   * Save refresh tokens back to disk
-   */
-  private async saveRefreshTokens(tokens: RefreshToken[]): Promise<void> {
-    await fs.writeFile(this.refreshTokensPath, JSON.stringify(tokens, null, 2), 'utf-8')
-  }
-
-  /**
-   * Generate a new refresh token for a user
+   * Generate a new refresh token and append to User storage
+   * Returns a combined "userId:token" string for efficient lookup
    */
   async generateRefreshToken(userId: string, ip: string = 'unknown'): Promise<string> {
-    const token = `refresh_${randomBytes(32).toString('hex')}`
+    const user = await this.getFullUser(userId)
+    if (!user) throw new Error('User not found')
+
+    const tokenSecret = randomBytes(32).toString('hex')
+    const combinedToken = `${userId}:${tokenSecret}`
+
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 30) // 30 days expiry
 
     const newRefreshToken: RefreshToken = {
-      token,
+      token: combinedToken,
       userId,
       expiresAt: expiresAt.toISOString(),
       createdByIp: ip
     }
 
-    const tokens = await this.loadRefreshTokens()
-    tokens.push(newRefreshToken)
-    await this.saveRefreshTokens(tokens)
+    // Replace all previous tokens — one active session per user
+    user.refreshTokens = [newRefreshToken]
 
-    return token
+    await this.saveUser(user)
+
+    return combinedToken
   }
 
   /**
-   * Validate and rotate a refresh token
-   * Returns a new refresh token and the user ID
+   * Validate and rotate a refresh token within the User object
    */
-  async rotateRefreshToken(token: string, ip: string = 'unknown'): Promise<{ userId: string; newToken: string }> {
-    const tokens = await this.loadRefreshTokens()
-    const index = tokens.findIndex(t => t.token === token)
+  async rotateRefreshToken(combinedToken: string, ip: string = 'unknown'): Promise<{ userId: string; newToken: string }> {
+    const [userId, _] = combinedToken.split(':')
+    if (!userId) throw new Error('Invalid refresh token format')
 
-    if (index === -1) {
+    const user = await this.getFullUser(userId)
+    if (!user || !user.refreshTokens) {
       throw new Error('Refresh token not found')
     }
 
-    const entry = tokens[index]
+    const tokenIndex = user.refreshTokens.findIndex(t => t.token === combinedToken)
+    if (tokenIndex === -1) {
+      throw new Error('Refresh token not found')
+    }
+
+    const entry = user.refreshTokens[tokenIndex]
 
     if (entry.revokedAt) {
-      // Possible token reuse attack - revoke all user tokens for safety
-      const filtered = tokens.filter(t => t.userId !== entry.userId)
-      await this.saveRefreshTokens(filtered)
+      // Possible token reuse attack - clear all tokens for safety
+      user.refreshTokens = []
+      await this.saveUser(user)
       throw new Error('Refresh token has been revoked')
     }
 
     if (new Date(entry.expiresAt) < new Date()) {
-      tokens.splice(index, 1)
-      await this.saveRefreshTokens(tokens)
+      user.refreshTokens.splice(tokenIndex, 1)
+      await this.saveUser(user)
       throw new Error('Refresh token has expired')
     }
 
-    // Revoke old token
-    entry.revokedAt = new Date().toISOString()
+    // Remove old token
+    user.refreshTokens.splice(tokenIndex, 1)
 
     // Generate new one
-    const newToken = await this.generateRefreshToken(entry.userId, ip)
+    const newToken = await this.generateRefreshToken(userId, ip)
 
-    // Save rotation
-    await this.saveRefreshTokens(tokens)
+    // saveUser already called in generateRefreshToken
 
-    return { userId: entry.userId, newToken }
+    return { userId, newToken }
   }
 
   /**
    * Revoke a refresh token (on logout)
    */
-  async revokeRefreshToken(token: string): Promise<void> {
-    const tokens = await this.loadRefreshTokens()
-    const index = tokens.findIndex(t => t.token === token)
+  async revokeRefreshToken(combinedToken: string): Promise<void> {
+    const [userId, _] = combinedToken.split(':')
+    if (!userId) return
 
-    if (index !== -1) {
-      tokens.splice(index, 1) // Remove instead of marking revoked for less storage
-      await this.saveRefreshTokens(tokens)
-    }
+    const user = await this.getFullUser(userId)
+    if (!user || !user.refreshTokens) return
+
+    user.refreshTokens = user.refreshTokens.filter(t => t.token !== combinedToken)
+    await this.saveUser(user)
   }
 
   /**
    * List active refresh tokens for a user
    */
   async listUserRefreshTokens(userId: string): Promise<RefreshToken[]> {
-    const tokens = await this.loadRefreshTokens()
-    return tokens.filter(t => t.userId === userId && !t.revokedAt && new Date(t.expiresAt) > new Date())
+    const user = await this.getFullUser(userId)
+    if (!user || !user.refreshTokens) return []
+
+    const now = new Date()
+    return user.refreshTokens.filter(t => !t.revokedAt && new Date(t.expiresAt) > now)
   }
 }

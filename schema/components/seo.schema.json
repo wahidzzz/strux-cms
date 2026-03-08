@@ -1,0 +1,23 @@
+{
+  "displayName": "SEO",
+  "kind": "component",
+  "singularName": "seo",
+  "pluralName": "seos",
+  "apiId": "seo",
+  "attributes": {
+    "meta_title": {
+      "type": "string",
+      "required": true
+    },
+    "meta_description": {
+      "type": "text",
+      "required": true
+    },
+    "keywords": {
+      "type": "string"
+    },
+    "og_image": {
+      "type": "media"
+    }
+  }
+}

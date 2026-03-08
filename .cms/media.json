@@ -284,5 +284,97 @@
         "url": "/uploads/c3efa3efeccd6f9a_small.png"
       }
     }
+  },
+  "fGsZuhKIDmCc2RsPInBX6": {
+    "id": "fGsZuhKIDmCc2RsPInBX6",
+    "name": "3bd0e03fd697c2ae.png",
+    "hash": "3bd0e03fd697c2ae",
+    "ext": ".png",
+    "mime": "image/png",
+    "size": 47869,
+    "url": "/uploads/3bd0e03fd697c2ae.png",
+    "provider": "local",
+    "createdAt": "2026-03-06T10:32:20.504Z",
+    "updatedAt": "2026-03-06T10:32:20.504Z",
+    "width": 810,
+    "height": 570,
+    "formats": {
+      "thumbnail": {
+        "name": "thumbnail",
+        "hash": "3bd0e03fd697c2ae_thumbnail",
+        "ext": ".png",
+        "mime": "image/png",
+        "width": 150,
+        "height": 150,
+        "size": 8242,
+        "url": "/uploads/3bd0e03fd697c2ae_thumbnail.png"
+      },
+      "small": {
+        "name": "small",
+        "hash": "3bd0e03fd697c2ae_small",
+        "ext": ".png",
+        "mime": "image/png",
+        "width": 500,
+        "height": 352,
+        "size": 43167,
+        "url": "/uploads/3bd0e03fd697c2ae_small.png"
+      },
+      "medium": {
+        "name": "medium",
+        "hash": "3bd0e03fd697c2ae_medium",
+        "ext": ".png",
+        "mime": "image/png",
+        "width": 750,
+        "height": 528,
+        "size": 77723,
+        "url": "/uploads/3bd0e03fd697c2ae_medium.png"
+      }
+    }
+  },
+  "Ujs9595IMcLB79x51L-ZI": {
+    "id": "Ujs9595IMcLB79x51L-ZI",
+    "name": "3bd0e03fd697c2ae.png",
+    "hash": "3bd0e03fd697c2ae",
+    "ext": ".png",
+    "mime": "image/png",
+    "size": 47869,
+    "url": "/uploads/3bd0e03fd697c2ae.png",
+    "provider": "local",
+    "createdAt": "2026-03-06T10:32:39.041Z",
+    "updatedAt": "2026-03-06T10:32:39.041Z",
+    "width": 810,
+    "height": 570,
+    "formats": {
+      "thumbnail": {
+        "name": "thumbnail",
+        "hash": "3bd0e03fd697c2ae_thumbnail",
+        "ext": ".png",
+        "mime": "image/png",
+        "width": 150,
+        "height": 150,
+        "size": 8242,
+        "url": "/uploads/3bd0e03fd697c2ae_thumbnail.png"
+      },
+      "small": {
+        "name": "small",
+        "hash": "3bd0e03fd697c2ae_small",
+        "ext": ".png",
+        "mime": "image/png",
+        "width": 500,
+        "height": 352,
+        "size": 43167,
+        "url": "/uploads/3bd0e03fd697c2ae_small.png"
+      },
+      "medium": {
+        "name": "medium",
+        "hash": "3bd0e03fd697c2ae_medium",
+        "ext": ".png",
+        "mime": "image/png",
+        "width": 750,
+        "height": 528,
+        "size": 77723,
+        "url": "/uploads/3bd0e03fd697c2ae_medium.png"
+      }
+    }
   }
 }

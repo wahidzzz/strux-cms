@@ -5,5 +5,13 @@
   "role": "admin",
   "password": "$2b$10$Hcv4cEn2gd9vyqFd1cE0IujGTZ8q.83VNmFT6t52kqUBYOYi.X8Dy",
   "createdAt": "2026-03-04T12:16:59.925Z",
-  "updatedAt": "2026-03-05T06:21:16.278Z"
+  "updatedAt": "2026-03-05T06:21:16.278Z",
+  "refreshTokens": [
+    {
+      "token": "admin-64jiq:3e74f3ef5cdc18040e803a0b53fc7e0733c891e7ae64a6acfd9be8e2c54b52cd",
+      "userId": "admin-64jiq",
+      "expiresAt": "2026-04-05T10:38:15.632Z",
+      "createdByIp": "unknown"
+    }
+  ]
 }

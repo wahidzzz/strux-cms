@@ -1,23 +1,23 @@
 {
-  "test": {
-    "lastId": 1
+  "category": {
+    "lastId": 5
+  },
+  "product-category": {
+    "lastId": 10
   },
   "profile": {
-    "lastId": 2
+    "lastId": 10
   },
   "testiomonial": {
-    "lastId": 1
-  },
-  "new1": {
-    "lastId": 2
-  },
-  "ser-profile": {
-    "lastId": 1
+    "lastId": 10
   },
   "article": {
-    "lastId": 1
+    "lastId": 41
   },
-  "verse-prof": {
+  "product": {
+    "lastId": 50
+  },
+  "global-settings": {
     "lastId": 1
   }
 }

@@ -1,0 +1,31 @@
+{
+  "displayName": "Global Settings",
+  "kind": "singleType",
+  "singularName": "global-setting",
+  "pluralName": "global-settings",
+  "apiId": "global-settings",
+  "description": "Site-wide configuration and metadata.",
+  "attributes": {
+    "site_name": {
+      "type": "string",
+      "required": true
+    },
+    "site_description": {
+      "type": "text"
+    },
+    "logo": {
+      "type": "media"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "footer_text": {
+      "type": "string"
+    },
+    "social_links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "social-link"
+    }
+  }
+}

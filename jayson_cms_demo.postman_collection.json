@@ -1,0 +1,349 @@
+{
+	"info": {
+		"_postman_id": "84729381-0123-4567-89ab-cdef01234567",
+		"name": "Jayson CMS Demo API",
+		"description": "API collection for testing and demonstrating Jayson CMS headless capabilities.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login (Local)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.jwt) {",
+									"    pm.collectionVariables.set(\"jwt_token\", response.jwt);",
+									"    pm.collectionVariables.set(\"refresh_token\", response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"admin\",\n    \"password\": \"admin123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/local",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "local"]
+						}
+					}
+				},
+				{
+					"name": "Get Me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "me"]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "refresh"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "API Keys",
+			"item": [
+				{
+					"name": "List API Keys",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/api-keys",
+							"host": ["{{base_url}}"],
+							"path": ["api", "api-keys"]
+						}
+					}
+				},
+				{
+					"name": "Create API Key",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Frontend App Key\",\n    \"permissions\": [\"article:find\", \"product:find\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/api-keys",
+							"host": ["{{base_url}}"],
+							"path": ["api", "api-keys"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Content Manager",
+			"item": [
+				{
+					"name": "Articles",
+					"item": [
+						{
+							"name": "List Articles",
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "value",
+											"value": "{{api_key}}",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "Authorization",
+											"type": "string"
+										},
+										{
+											"key": "in",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/content/article",
+									"host": ["{{base_url}}"],
+									"path": ["api", "content", "article"]
+								}
+							}
+						},
+						{
+							"name": "Search Articles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/content/article?_q=premium",
+									"host": ["{{base_url}}"],
+									"path": ["api", "content", "article"],
+									"query": [
+										{
+											"key": "_q",
+											"value": "premium"
+										}
+									]
+								}
+							}
+						},
+						{
+							"name": "Filter Published Articles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/content/article?filters={\"status\":{\"$eq\":\"published\"}}",
+									"host": ["{{base_url}}"],
+									"path": ["api", "content", "article"],
+									"query": [
+										{
+											"key": "filters",
+											"value": "{\"status\":{\"$eq\":\"published\"}}"
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Products",
+					"item": [
+						{
+							"name": "List Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/content/product",
+									"host": ["{{base_url}}"],
+									"path": ["api", "content", "product"]
+								}
+							}
+						},
+						{
+							"name": "Filter by Price Range",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/content/product?filters={\"price\":{\"$gt\":100}}",
+									"host": ["{{base_url}}"],
+									"path": ["api", "content", "product"],
+									"query": [
+										{
+											"key": "filters",
+											"value": "{\"price\":{\"$gt\":100}}"
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Global Settings (SingleType)",
+					"item": [
+						{
+							"name": "Get Global Settings",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/content/global-settings/global-settings",
+									"host": ["{{base_url}}"],
+									"path": ["api", "content", "global-settings", "global-settings"]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Content Type Builder",
+			"item": [
+				{
+					"name": "List All Content Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/content-type-builder/content-types",
+							"host": ["{{base_url}}"],
+							"path": ["api", "content-type-builder", "content-types"]
+						}
+					}
+				},
+				{
+					"name": "Get Article Schema",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/content-type-builder/content-types/article",
+							"host": ["{{base_url}}"],
+							"path": ["api", "content-type-builder", "content-types", "article"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "api_key",
+			"value": "your_api_key_here",
+			"type": "string"
+		}
+	]
+}

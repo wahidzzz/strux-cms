@@ -1,0 +1,18 @@
+{
+  "displayName": "Social Link",
+  "kind": "component",
+  "singularName": "social-link",
+  "pluralName": "social-links",
+  "apiId": "social-link",
+  "attributes": {
+    "platform": {
+      "type": "enumeration",
+      "enum": ["Twitter", "GitHub", "LinkedIn", "Facebook", "Instagram"],
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

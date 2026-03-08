@@ -280,6 +280,7 @@ export interface QueryParams {
   fields?: string[]
   populate?: PopulateParam
   publicationState?: 'live' | 'preview'
+  _q?: string
 }
 
 /**
@@ -460,6 +461,7 @@ export interface User {
   role: string
   createdAt?: string
   updatedAt?: string
+  refreshTokens?: RefreshToken[]
 }
 
 /**

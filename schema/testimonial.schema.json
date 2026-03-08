@@ -1,0 +1,30 @@
+{
+  "displayName": "Testimonial",
+  "kind": "collectionType",
+  "singularName": "testimonial",
+  "pluralName": "testimonials",
+  "description": "Customer feedback and endorsements.",
+  "apiId": "testimonial",
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "feedback": {
+      "type": "text",
+      "required": true
+    },
+    "company": {
+      "type": "string",
+      "required": false
+    },
+    "position": {
+      "type": "string",
+      "required": false
+    },
+    "avatar": {
+      "type": "media",
+      "required": false
+    }
+  }
+}

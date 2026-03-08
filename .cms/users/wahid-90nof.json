@@ -5,5 +5,13 @@
   "role": "super_admin",
   "password": "$2b$10$jDelDMUXyIYRhYoMfxx/QOrdNH9.8sYeQnQGBVxia8Xb7JHvwSN1O",
   "createdAt": "2026-03-04T12:22:13.647Z",
-  "updatedAt": "2026-03-06T06:28:00.000Z"
+  "updatedAt": "2026-03-06T06:28:00.000Z",
+  "refreshTokens": [
+    {
+      "token": "wahid-90nof:f7d299d246b8b4300d2d53d620b9ad6a59840de47a4e099a01f6e8a652919719",
+      "userId": "wahid-90nof",
+      "expiresAt": "2026-04-07T14:54:06.718Z",
+      "createdByIp": "unknown"
+    }
+  ]
 }

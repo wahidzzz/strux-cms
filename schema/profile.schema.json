@@ -1,30 +1,41 @@
 {
-  "displayName": "profile",
+  "displayName": "Profile",
   "kind": "collectionType",
   "singularName": "profile",
   "pluralName": "profiles",
-  "description": "",
+  "description": "User profiles for authors and team members.",
   "apiId": "profile",
   "attributes": {
-    "new-field": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
       "type": "string",
       "required": false
     },
-    "new-field2": {
+    "twitter_handle": {
       "type": "string",
+      "required": false
+    },
+    "bio": {
+      "type": "text",
+      "required": false
+    },
+    "role": {
+      "type": "string",
+      "required": false
+    },
+    "joined_at": {
+      "type": "date",
       "required": false
     },
     "image": {
       "type": "media",
       "required": false
     },
-    "dynma": {
-      "type": "dynamiczone",
-      "required": false
-    },
-    "relatio": {
+    "articles": {
       "type": "relation",
-      "required": false,
       "relation": {
         "target": "article",
         "relation": "oneToMany"

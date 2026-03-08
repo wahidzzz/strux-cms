@@ -451,6 +451,15 @@ export class QueryEngine {
       results = results.filter((entry) => this.matchesFilter(entry, params.filters!))
     }
 
+    // Step 4.5: Apply full-text search
+    if (params._q) {
+      const searchStr = params._q.toLowerCase()
+      results = results.filter((entry) => {
+        const text = (entry as any)._searchableText || ''
+        return text.includes(searchStr)
+      })
+    }
+
     // Step 5: Apply sorting
     if (params.sort && params.sort.length > 0) {
       results = this.applySorting(results, params.sort)
@@ -498,6 +507,15 @@ export class QueryEngine {
     // Apply filters
     if (params.filters) {
       results = results.filter((entry) => this.matchesFilter(entry, params.filters!))
+    }
+
+    // Apply full-text search
+    if (params._q) {
+      const searchStr = params._q.toLowerCase()
+      results = results.filter((entry) => {
+        const text = (entry as any)._searchableText || ''
+        return text.includes(searchStr)
+      })
     }
 
     return results.length

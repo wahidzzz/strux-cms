@@ -1,0 +1,19 @@
+{
+  "displayName": "Category",
+  "kind": "collectionType",
+  "singularName": "category",
+  "pluralName": "categories",
+  "description": "Categories for content organization.",
+  "apiId": "category",
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    }
+  }
+}
