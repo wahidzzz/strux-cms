@@ -1,0 +1,22 @@
+{
+  "id": 40,
+  "documentId": "prod_40",
+  "name": "Pro Desk 40",
+  "slug": "pro-desk-40",
+  "description": "<h1>Pro Desk 40</h1><p>Premium quality desk for your workspace.</p>",
+  "price": 860,
+  "sku": "SKU-PROD_40",
+  "stock": 89,
+  "on_sale": true,
+  "sale_price": 688,
+  "images": "https://picsum.photos/seed/prod_40/600/600",
+  "product_category": "cat_prod_3",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.088Z",
+  "updatedAt": "2026-03-08T15:15:46.088Z",
+  "publishedAt": "2026-03-08T15:15:46.088Z"
+}

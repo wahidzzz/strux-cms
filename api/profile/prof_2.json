@@ -1,0 +1,15 @@
+{
+  "id": 2,
+  "documentId": "prof_2",
+  "name": "Sarah Chen",
+  "email": "sarah@chen.design",
+  "twitter_handle": "@schen_ux",
+  "bio": "Sarah Chen is a lead designer with over 10 years of experience in the industry.",
+  "role": "Lead Designer",
+  "joined_at": "2022-01-15",
+  "image": "https://i.pravatar.cc/150?u=schen_ux",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.060Z",
+  "updatedAt": "2026-03-08T15:15:46.060Z",
+  "publishedAt": "2026-03-08T15:15:46.060Z"
+}

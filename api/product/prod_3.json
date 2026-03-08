@@ -1,0 +1,22 @@
+{
+  "id": 3,
+  "documentId": "prod_3",
+  "name": "Classic Desk 3",
+  "slug": "classic-desk-3",
+  "description": "<h1>Classic Desk 3</h1><p>Premium quality desk for your workspace.</p>",
+  "price": 691,
+  "sku": "SKU-PROD_3",
+  "stock": 70,
+  "on_sale": false,
+  "sale_price": 552,
+  "images": "https://picsum.photos/seed/prod_3/600/600",
+  "product_category": "cat_prod_3",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.079Z",
+  "updatedAt": "2026-03-08T15:15:46.079Z",
+  "publishedAt": "2026-03-08T15:15:46.079Z"
+}

@@ -1,0 +1,22 @@
+{
+  "id": 28,
+  "documentId": "prod_28",
+  "name": "NextGen Laptop 28",
+  "slug": "nextgen-laptop-28",
+  "description": "<h1>NextGen Laptop 28</h1><p>Premium quality laptop for your workspace.</p>",
+  "price": 384,
+  "sku": "SKU-PROD_28",
+  "stock": 103,
+  "on_sale": false,
+  "sale_price": 307,
+  "images": "https://picsum.photos/seed/prod_28/600/600",
+  "product_category": "cat_prod_10",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.086Z",
+  "updatedAt": "2026-03-08T15:15:46.086Z",
+  "publishedAt": "2026-03-08T15:15:46.086Z"
+}

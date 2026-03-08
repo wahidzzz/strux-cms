@@ -1,0 +1,11 @@
+{
+  "id": 5,
+  "documentId": "cat_prod_5",
+  "name": "Software",
+  "slug": "software",
+  "description": "High-quality software for your everyday needs.",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.057Z",
+  "updatedAt": "2026-03-08T15:15:46.057Z",
+  "publishedAt": "2026-03-08T15:15:46.057Z"
+}

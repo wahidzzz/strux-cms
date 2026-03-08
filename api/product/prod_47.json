@@ -1,0 +1,22 @@
+{
+  "id": 47,
+  "documentId": "prod_47",
+  "name": "NextGen Tablet 47",
+  "slug": "nextgen-tablet-47",
+  "description": "<h1>NextGen Tablet 47</h1><p>Premium quality tablet for your workspace.</p>",
+  "price": 402,
+  "sku": "SKU-PROD_47",
+  "stock": 21,
+  "on_sale": false,
+  "sale_price": 321,
+  "images": "https://picsum.photos/seed/prod_47/600/600",
+  "product_category": "cat_prod_9",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.089Z",
+  "updatedAt": "2026-03-08T15:15:46.089Z",
+  "publishedAt": "2026-03-08T15:15:46.089Z"
+}

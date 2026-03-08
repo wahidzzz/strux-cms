@@ -1,0 +1,15 @@
+{
+  "id": 1,
+  "documentId": "prof_1",
+  "name": "Alex Rivers",
+  "email": "alex@rivers.dev",
+  "twitter_handle": "@arivers",
+  "bio": "Alex Rivers is a senior developer with over 10 years of experience in the industry.",
+  "role": "Senior Developer",
+  "joined_at": "2022-01-15",
+  "image": "https://i.pravatar.cc/150?u=arivers",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.059Z",
+  "updatedAt": "2026-03-08T15:15:46.059Z",
+  "publishedAt": "2026-03-08T15:15:46.059Z"
+}

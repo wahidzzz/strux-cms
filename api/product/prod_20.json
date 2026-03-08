@@ -1,0 +1,22 @@
+{
+  "id": 20,
+  "documentId": "prod_20",
+  "name": "Essential Monitor 20",
+  "slug": "essential-monitor-20",
+  "description": "<h1>Essential Monitor 20</h1><p>Premium quality monitor for your workspace.</p>",
+  "price": 673,
+  "sku": "SKU-PROD_20",
+  "stock": 67,
+  "on_sale": true,
+  "sale_price": 538,
+  "images": "https://picsum.photos/seed/prod_20/600/600",
+  "product_category": "cat_prod_2",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.083Z",
+  "updatedAt": "2026-03-08T15:15:46.083Z",
+  "publishedAt": "2026-03-08T15:15:46.083Z"
+}

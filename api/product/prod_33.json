@@ -1,0 +1,22 @@
+{
+  "id": 33,
+  "documentId": "prod_33",
+  "name": "X Monitor 33",
+  "slug": "x-monitor-33",
+  "description": "<h1>X Monitor 33</h1><p>Premium quality monitor for your workspace.</p>",
+  "price": 735,
+  "sku": "SKU-PROD_33",
+  "stock": 45,
+  "on_sale": false,
+  "sale_price": 588,
+  "images": "https://picsum.photos/seed/prod_33/600/600",
+  "product_category": "cat_prod_8",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.087Z",
+  "updatedAt": "2026-03-08T15:15:46.087Z",
+  "publishedAt": "2026-03-08T15:15:46.087Z"
+}

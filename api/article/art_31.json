@@ -1,0 +1,28 @@
+{
+  "id": 31,
+  "documentId": "art_31",
+  "title": "Accessibility for All: Masterclass 31",
+  "slug": "accessibility-for-all-masterclass-31",
+  "summary": "An in-depth look at accessibility for all and its impact on modern development.",
+  "content": "<h1>Accessibility for All: Masterclass 31</h1><p>This is a detailed article exploring accessibility for all...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 8,
+  "is_featured": false,
+  "tags": [
+    "tech",
+    "accessibility"
+  ],
+  "author": "prof_3",
+  "category": "cat_art_5",
+  "featured_image": "https://picsum.photos/seed/art_31/800/450",
+  "seo": {
+    "meta_title": "Accessibility for All: Masterclass 31 | Jayson CMS",
+    "meta_description": "Read about accessibility for all on Jayson CMS.",
+    "keywords": "cms, accessibility, for all",
+    "og_image": "https://picsum.photos/seed/art_31_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.075Z",
+  "updatedAt": "2026-03-08T15:15:46.075Z",
+  "publishedAt": "2026-03-08T15:15:46.075Z"
+}

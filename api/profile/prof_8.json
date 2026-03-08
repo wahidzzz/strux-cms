@@ -1,0 +1,15 @@
+{
+  "id": 8,
+  "documentId": "prof_8",
+  "name": "Sam Taylor",
+  "email": "sam@taylor.media",
+  "twitter_handle": "@staylor_write",
+  "bio": "Sam Taylor is a content strategist with over 10 years of experience in the industry.",
+  "role": "Content Strategist",
+  "joined_at": "2022-01-15",
+  "image": "https://i.pravatar.cc/150?u=staylor_write",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.062Z",
+  "updatedAt": "2026-03-08T15:15:46.062Z",
+  "publishedAt": "2026-03-08T15:15:46.062Z"
+}

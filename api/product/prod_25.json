@@ -1,0 +1,22 @@
+{
+  "id": 25,
+  "documentId": "prod_25",
+  "name": "Classic Keyboard 25",
+  "slug": "classic-keyboard-25",
+  "description": "<h1>Classic Keyboard 25</h1><p>Premium quality keyboard for your workspace.</p>",
+  "price": 347,
+  "sku": "SKU-PROD_25",
+  "stock": 45,
+  "on_sale": true,
+  "sale_price": 277,
+  "images": "https://picsum.photos/seed/prod_25/600/600",
+  "product_category": "cat_prod_5",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.085Z",
+  "updatedAt": "2026-03-08T15:15:46.085Z",
+  "publishedAt": "2026-03-08T15:15:46.085Z"
+}

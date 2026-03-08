@@ -1,0 +1,15 @@
+{
+  "id": 5,
+  "documentId": "prof_5",
+  "name": "David Smith",
+  "email": "david@smith.io",
+  "twitter_handle": "@dsmith_tech",
+  "bio": "David Smith is a tech journalist with over 10 years of experience in the industry.",
+  "role": "Tech Journalist",
+  "joined_at": "2022-01-15",
+  "image": "https://i.pravatar.cc/150?u=dsmith_tech",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.061Z",
+  "updatedAt": "2026-03-08T15:15:46.061Z",
+  "publishedAt": "2026-03-08T15:15:46.061Z"
+}

@@ -1,0 +1,22 @@
+{
+  "id": 9,
+  "documentId": "prod_9",
+  "name": "Classic Keyboard 9",
+  "slug": "classic-keyboard-9",
+  "description": "<h1>Classic Keyboard 9</h1><p>Premium quality keyboard for your workspace.</p>",
+  "price": 167,
+  "sku": "SKU-PROD_9",
+  "stock": 87,
+  "on_sale": false,
+  "sale_price": 133,
+  "images": "https://picsum.photos/seed/prod_9/600/600",
+  "product_category": "cat_prod_10",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.080Z",
+  "updatedAt": "2026-03-08T15:15:46.080Z",
+  "publishedAt": "2026-03-08T15:15:46.080Z"
+}

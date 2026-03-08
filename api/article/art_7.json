@@ -1,0 +1,28 @@
+{
+  "id": 7,
+  "documentId": "art_7",
+  "title": "State Management: Masterclass 7",
+  "slug": "state-management-masterclass-7",
+  "summary": "An in-depth look at state management and its impact on modern development.",
+  "content": "<h1>State Management: Masterclass 7</h1><p>This is a detailed article exploring state management...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 11,
+  "is_featured": false,
+  "tags": [
+    "tech",
+    "state"
+  ],
+  "author": "prof_5",
+  "category": "cat_art_4",
+  "featured_image": "https://picsum.photos/seed/art_7/800/450",
+  "seo": {
+    "meta_title": "State Management: Masterclass 7 | Jayson CMS",
+    "meta_description": "Read about state management on Jayson CMS.",
+    "keywords": "cms, state, management",
+    "og_image": "https://picsum.photos/seed/art_7_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.068Z",
+  "updatedAt": "2026-03-08T15:15:46.068Z",
+  "publishedAt": "2026-03-08T15:15:46.068Z"
+}

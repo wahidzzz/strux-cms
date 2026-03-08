@@ -1,0 +1,22 @@
+{
+  "id": 1,
+  "documentId": "prod_1",
+  "name": "NextGen Mouse 1",
+  "slug": "nextgen-mouse-1",
+  "description": "<h1>NextGen Mouse 1</h1><p>Premium quality mouse for your workspace.</p>",
+  "price": 909,
+  "sku": "SKU-PROD_1",
+  "stock": 73,
+  "on_sale": false,
+  "sale_price": 727,
+  "images": "https://picsum.photos/seed/prod_1/600/600",
+  "product_category": "cat_prod_10",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.078Z",
+  "updatedAt": "2026-03-08T15:15:46.078Z",
+  "publishedAt": "2026-03-08T15:15:46.078Z"
+}

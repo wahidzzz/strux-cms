@@ -1,0 +1,22 @@
+{
+  "id": 39,
+  "documentId": "prod_39",
+  "name": "Essential Desk 39",
+  "slug": "essential-desk-39",
+  "description": "<h1>Essential Desk 39</h1><p>Premium quality desk for your workspace.</p>",
+  "price": 897,
+  "sku": "SKU-PROD_39",
+  "stock": 50,
+  "on_sale": false,
+  "sale_price": 717,
+  "images": "https://picsum.photos/seed/prod_39/600/600",
+  "product_category": "cat_prod_2",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.088Z",
+  "updatedAt": "2026-03-08T15:15:46.088Z",
+  "publishedAt": "2026-03-08T15:15:46.088Z"
+}

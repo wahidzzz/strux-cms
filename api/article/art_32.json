@@ -1,0 +1,28 @@
+{
+  "id": 32,
+  "documentId": "art_32",
+  "title": "Performance Optimization: Masterclass 32",
+  "slug": "performance-optimization-masterclass-32",
+  "summary": "An in-depth look at performance optimization and its impact on modern development.",
+  "content": "<h1>Performance Optimization: Masterclass 32</h1><p>This is a detailed article exploring performance optimization...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 12,
+  "is_featured": false,
+  "tags": [
+    "tech",
+    "performance"
+  ],
+  "author": "prof_1",
+  "category": "cat_art_2",
+  "featured_image": "https://picsum.photos/seed/art_32/800/450",
+  "seo": {
+    "meta_title": "Performance Optimization: Masterclass 32 | Jayson CMS",
+    "meta_description": "Read about performance optimization on Jayson CMS.",
+    "keywords": "cms, performance, optimization",
+    "og_image": "https://picsum.photos/seed/art_32_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.076Z",
+  "updatedAt": "2026-03-08T15:15:46.076Z",
+  "publishedAt": "2026-03-08T15:15:46.076Z"
+}

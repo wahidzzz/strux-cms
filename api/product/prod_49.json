@@ -1,0 +1,22 @@
+{
+  "id": 49,
+  "documentId": "prod_49",
+  "name": "X Drone 49",
+  "slug": "x-drone-49",
+  "description": "<h1>X Drone 49</h1><p>Premium quality drone for your workspace.</p>",
+  "price": 573,
+  "sku": "SKU-PROD_49",
+  "stock": 29,
+  "on_sale": false,
+  "sale_price": 458,
+  "images": "https://picsum.photos/seed/prod_49/600/600",
+  "product_category": "cat_prod_10",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.090Z",
+  "updatedAt": "2026-03-08T15:15:46.090Z",
+  "publishedAt": "2026-03-08T15:15:46.090Z"
+}

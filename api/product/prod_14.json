@@ -1,0 +1,22 @@
+{
+  "id": 14,
+  "documentId": "prod_14",
+  "name": "Classic Desk 14",
+  "slug": "classic-desk-14",
+  "description": "<h1>Classic Desk 14</h1><p>Premium quality desk for your workspace.</p>",
+  "price": 953,
+  "sku": "SKU-PROD_14",
+  "stock": 85,
+  "on_sale": false,
+  "sale_price": 762,
+  "images": "https://picsum.photos/seed/prod_14/600/600",
+  "product_category": "cat_prod_3",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.081Z",
+  "updatedAt": "2026-03-08T15:15:46.081Z",
+  "publishedAt": "2026-03-08T15:15:46.081Z"
+}

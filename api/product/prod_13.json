@@ -1,0 +1,22 @@
+{
+  "id": 13,
+  "documentId": "prod_13",
+  "name": "Pro Headset 13",
+  "slug": "pro-headset-13",
+  "description": "<h1>Pro Headset 13</h1><p>Premium quality headset for your workspace.</p>",
+  "price": 419,
+  "sku": "SKU-PROD_13",
+  "stock": 45,
+  "on_sale": false,
+  "sale_price": 335,
+  "images": "https://picsum.photos/seed/prod_13/600/600",
+  "product_category": "cat_prod_7",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.081Z",
+  "updatedAt": "2026-03-08T15:15:46.081Z",
+  "publishedAt": "2026-03-08T15:15:46.081Z"
+}

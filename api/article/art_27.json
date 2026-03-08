@@ -1,0 +1,28 @@
+{
+  "id": 27,
+  "documentId": "art_27",
+  "title": "Serverless Functions: Masterclass 27",
+  "slug": "serverless-functions-masterclass-27",
+  "summary": "An in-depth look at serverless functions and its impact on modern development.",
+  "content": "<h1>Serverless Functions: Masterclass 27</h1><p>This is a detailed article exploring serverless functions...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 7,
+  "is_featured": false,
+  "tags": [
+    "tech",
+    "serverless"
+  ],
+  "author": "prof_1",
+  "category": "cat_art_1",
+  "featured_image": "https://picsum.photos/seed/art_27/800/450",
+  "seo": {
+    "meta_title": "Serverless Functions: Masterclass 27 | Jayson CMS",
+    "meta_description": "Read about serverless functions on Jayson CMS.",
+    "keywords": "cms, serverless, functions",
+    "og_image": "https://picsum.photos/seed/art_27_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.074Z",
+  "updatedAt": "2026-03-08T15:15:46.074Z",
+  "publishedAt": "2026-03-08T15:15:46.074Z"
+}

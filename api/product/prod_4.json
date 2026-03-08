@@ -1,0 +1,22 @@
+{
+  "id": 4,
+  "documentId": "prod_4",
+  "name": "NextGen Monitor 4",
+  "slug": "nextgen-monitor-4",
+  "description": "<h1>NextGen Monitor 4</h1><p>Premium quality monitor for your workspace.</p>",
+  "price": 954,
+  "sku": "SKU-PROD_4",
+  "stock": 60,
+  "on_sale": false,
+  "sale_price": 763,
+  "images": "https://picsum.photos/seed/prod_4/600/600",
+  "product_category": "cat_prod_7",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.079Z",
+  "updatedAt": "2026-03-08T15:15:46.079Z",
+  "publishedAt": "2026-03-08T15:15:46.079Z"
+}

@@ -1,0 +1,22 @@
+{
+  "id": 8,
+  "documentId": "prod_8",
+  "name": "Classic Headset 8",
+  "slug": "classic-headset-8",
+  "description": "<h1>Classic Headset 8</h1><p>Premium quality headset for your workspace.</p>",
+  "price": 928,
+  "sku": "SKU-PROD_8",
+  "stock": 79,
+  "on_sale": false,
+  "sale_price": 742,
+  "images": "https://picsum.photos/seed/prod_8/600/600",
+  "product_category": "cat_prod_7",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.080Z",
+  "updatedAt": "2026-03-08T15:15:46.080Z",
+  "publishedAt": "2026-03-08T15:15:46.080Z"
+}

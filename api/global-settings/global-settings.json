@@ -1,0 +1,23 @@
+{
+  "id": 1,
+  "documentId": "global-settings",
+  "site_name": "Jayson CMS Demo",
+  "site_description": "A professional Git-native Headless CMS for modern developers.",
+  "logo": "https://picsum.photos/seed/logo/200/50",
+  "contact_email": "hello@jayson.cms",
+  "footer_text": "© 2026 Jayson CMS.",
+  "social_links": [
+    {
+      "platform": "Twitter",
+      "url": "https://twitter.com/jayson_cms"
+    },
+    {
+      "platform": "GitHub",
+      "url": "https://github.com/jayson-cms"
+    }
+  ],
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.090Z",
+  "updatedAt": "2026-03-08T15:15:46.090Z",
+  "publishedAt": "2026-03-08T15:15:46.090Z"
+}

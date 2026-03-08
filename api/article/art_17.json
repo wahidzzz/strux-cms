@@ -1,0 +1,28 @@
+{
+  "id": 17,
+  "documentId": "art_17",
+  "title": "Git-Native CMS: Masterclass 17",
+  "slug": "git-native-cms-masterclass-17",
+  "summary": "An in-depth look at git-native cms and its impact on modern development.",
+  "content": "<h1>Git-Native CMS: Masterclass 17</h1><p>This is a detailed article exploring git-native cms...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 12,
+  "is_featured": false,
+  "tags": [
+    "tech",
+    "git-native"
+  ],
+  "author": "prof_8",
+  "category": "cat_art_3",
+  "featured_image": "https://picsum.photos/seed/art_17/800/450",
+  "seo": {
+    "meta_title": "Git-Native CMS: Masterclass 17 | Jayson CMS",
+    "meta_description": "Read about git-native cms on Jayson CMS.",
+    "keywords": "cms, git-native, cms",
+    "og_image": "https://picsum.photos/seed/art_17_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.071Z",
+  "updatedAt": "2026-03-08T15:15:46.071Z",
+  "publishedAt": "2026-03-08T15:15:46.071Z"
+}

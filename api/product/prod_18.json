@@ -1,0 +1,22 @@
+{
+  "id": 18,
+  "documentId": "prod_18",
+  "name": "Elite Headset 18",
+  "slug": "elite-headset-18",
+  "description": "<h1>Elite Headset 18</h1><p>Premium quality headset for your workspace.</p>",
+  "price": 785,
+  "sku": "SKU-PROD_18",
+  "stock": 52,
+  "on_sale": false,
+  "sale_price": 628,
+  "images": "https://picsum.photos/seed/prod_18/600/600",
+  "product_category": "cat_prod_7",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.082Z",
+  "updatedAt": "2026-03-08T15:15:46.082Z",
+  "publishedAt": "2026-03-08T15:15:46.082Z"
+}

@@ -1,0 +1,15 @@
+{
+  "id": 10,
+  "documentId": "prof_10",
+  "name": "Liam Brooks",
+  "email": "liam@brooks.cloud",
+  "twitter_handle": "@lbrooks_ops",
+  "bio": "Liam Brooks is a devops architect with over 10 years of experience in the industry.",
+  "role": "DevOps Architect",
+  "joined_at": "2022-01-15",
+  "image": "https://i.pravatar.cc/150?u=lbrooks_ops",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.062Z",
+  "updatedAt": "2026-03-08T15:15:46.062Z",
+  "publishedAt": "2026-03-08T15:15:46.062Z"
+}

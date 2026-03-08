@@ -1,0 +1,11 @@
+{
+  "id": 3,
+  "documentId": "cat_prod_3",
+  "name": "Apparel",
+  "slug": "apparel",
+  "description": "High-quality apparel for your everyday needs.",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.056Z",
+  "updatedAt": "2026-03-08T15:15:46.056Z",
+  "publishedAt": "2026-03-08T15:15:46.056Z"
+}

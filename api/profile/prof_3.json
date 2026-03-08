@@ -1,0 +1,15 @@
+{
+  "id": 3,
+  "documentId": "prof_3",
+  "name": "Marcus Knight",
+  "email": "marcus@knight.pm",
+  "twitter_handle": "@mknight",
+  "bio": "Marcus Knight is a product manager with over 10 years of experience in the industry.",
+  "role": "Product Manager",
+  "joined_at": "2022-01-15",
+  "image": "https://i.pravatar.cc/150?u=mknight",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.060Z",
+  "updatedAt": "2026-03-08T15:15:46.060Z",
+  "publishedAt": "2026-03-08T15:15:46.060Z"
+}

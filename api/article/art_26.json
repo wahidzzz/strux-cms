@@ -1,0 +1,28 @@
+{
+  "id": 26,
+  "documentId": "art_26",
+  "title": "Modern UI Patterns: Masterclass 26",
+  "slug": "modern-ui-patterns-masterclass-26",
+  "summary": "An in-depth look at modern ui patterns and its impact on modern development.",
+  "content": "<h1>Modern UI Patterns: Masterclass 26</h1><p>This is a detailed article exploring modern ui patterns...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 8,
+  "is_featured": false,
+  "tags": [
+    "tech",
+    "modern"
+  ],
+  "author": "prof_6",
+  "category": "cat_art_2",
+  "featured_image": "https://picsum.photos/seed/art_26/800/450",
+  "seo": {
+    "meta_title": "Modern UI Patterns: Masterclass 26 | Jayson CMS",
+    "meta_description": "Read about modern ui patterns on Jayson CMS.",
+    "keywords": "cms, modern, ui patterns",
+    "og_image": "https://picsum.photos/seed/art_26_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.074Z",
+  "updatedAt": "2026-03-08T15:15:46.074Z",
+  "publishedAt": "2026-03-08T15:15:46.074Z"
+}

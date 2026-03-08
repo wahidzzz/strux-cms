@@ -1,0 +1,22 @@
+{
+  "id": 43,
+  "documentId": "prod_43",
+  "name": "X Headset 43",
+  "slug": "x-headset-43",
+  "description": "<h1>X Headset 43</h1><p>Premium quality headset for your workspace.</p>",
+  "price": 347,
+  "sku": "SKU-PROD_43",
+  "stock": 29,
+  "on_sale": false,
+  "sale_price": 277,
+  "images": "https://picsum.photos/seed/prod_43/600/600",
+  "product_category": "cat_prod_6",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.089Z",
+  "updatedAt": "2026-03-08T15:15:46.089Z",
+  "publishedAt": "2026-03-08T15:15:46.089Z"
+}

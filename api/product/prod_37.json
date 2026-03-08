@@ -1,0 +1,22 @@
+{
+  "id": 37,
+  "documentId": "prod_37",
+  "name": "Pro Drone 37",
+  "slug": "pro-drone-37",
+  "description": "<h1>Pro Drone 37</h1><p>Premium quality drone for your workspace.</p>",
+  "price": 729,
+  "sku": "SKU-PROD_37",
+  "stock": 39,
+  "on_sale": false,
+  "sale_price": 583,
+  "images": "https://picsum.photos/seed/prod_37/600/600",
+  "product_category": "cat_prod_1",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.088Z",
+  "updatedAt": "2026-03-08T15:15:46.088Z",
+  "publishedAt": "2026-03-08T15:15:46.088Z"
+}

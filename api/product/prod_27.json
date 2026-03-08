@@ -1,0 +1,22 @@
+{
+  "id": 27,
+  "documentId": "prod_27",
+  "name": "Pro Headset 27",
+  "slug": "pro-headset-27",
+  "description": "<h1>Pro Headset 27</h1><p>Premium quality headset for your workspace.</p>",
+  "price": 557,
+  "sku": "SKU-PROD_27",
+  "stock": 81,
+  "on_sale": false,
+  "sale_price": 445,
+  "images": "https://picsum.photos/seed/prod_27/600/600",
+  "product_category": "cat_prod_1",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.085Z",
+  "updatedAt": "2026-03-08T15:15:46.086Z",
+  "publishedAt": "2026-03-08T15:15:46.086Z"
+}

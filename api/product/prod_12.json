@@ -1,0 +1,22 @@
+{
+  "id": 12,
+  "documentId": "prod_12",
+  "name": "X Monitor 12",
+  "slug": "x-monitor-12",
+  "description": "<h1>X Monitor 12</h1><p>Premium quality monitor for your workspace.</p>",
+  "price": 267,
+  "sku": "SKU-PROD_12",
+  "stock": 40,
+  "on_sale": false,
+  "sale_price": 213,
+  "images": "https://picsum.photos/seed/prod_12/600/600",
+  "product_category": "cat_prod_9",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.081Z",
+  "updatedAt": "2026-03-08T15:15:46.081Z",
+  "publishedAt": "2026-03-08T15:15:46.081Z"
+}

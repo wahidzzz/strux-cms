@@ -1,0 +1,22 @@
+{
+  "id": 5,
+  "documentId": "prod_5",
+  "name": "Pro Desk 5",
+  "slug": "pro-desk-5",
+  "description": "<h1>Pro Desk 5</h1><p>Premium quality desk for your workspace.</p>",
+  "price": 245,
+  "sku": "SKU-PROD_5",
+  "stock": 102,
+  "on_sale": true,
+  "sale_price": 196,
+  "images": "https://picsum.photos/seed/prod_5/600/600",
+  "product_category": "cat_prod_1",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.079Z",
+  "updatedAt": "2026-03-08T15:15:46.079Z",
+  "publishedAt": "2026-03-08T15:15:46.079Z"
+}

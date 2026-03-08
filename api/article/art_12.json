@@ -1,0 +1,28 @@
+{
+  "id": 12,
+  "documentId": "art_12",
+  "title": "Content Strategy: Masterclass 12",
+  "slug": "content-strategy-masterclass-12",
+  "summary": "An in-depth look at content strategy and its impact on modern development.",
+  "content": "<h1>Content Strategy: Masterclass 12</h1><p>This is a detailed article exploring content strategy...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 14,
+  "is_featured": false,
+  "tags": [
+    "tech",
+    "content"
+  ],
+  "author": "prof_1",
+  "category": "cat_art_5",
+  "featured_image": "https://picsum.photos/seed/art_12/800/450",
+  "seo": {
+    "meta_title": "Content Strategy: Masterclass 12 | Jayson CMS",
+    "meta_description": "Read about content strategy on Jayson CMS.",
+    "keywords": "cms, content, strategy",
+    "og_image": "https://picsum.photos/seed/art_12_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.070Z",
+  "updatedAt": "2026-03-08T15:15:46.070Z",
+  "publishedAt": "2026-03-08T15:15:46.070Z"
+}

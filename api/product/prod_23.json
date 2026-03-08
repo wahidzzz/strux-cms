@@ -1,0 +1,22 @@
+{
+  "id": 23,
+  "documentId": "prod_23",
+  "name": "Ultra Desk 23",
+  "slug": "ultra-desk-23",
+  "description": "<h1>Ultra Desk 23</h1><p>Premium quality desk for your workspace.</p>",
+  "price": 877,
+  "sku": "SKU-PROD_23",
+  "stock": 30,
+  "on_sale": false,
+  "sale_price": 701,
+  "images": "https://picsum.photos/seed/prod_23/600/600",
+  "product_category": "cat_prod_4",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.085Z",
+  "updatedAt": "2026-03-08T15:15:46.085Z",
+  "publishedAt": "2026-03-08T15:15:46.085Z"
+}

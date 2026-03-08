@@ -1,0 +1,28 @@
+{
+  "id": 30,
+  "documentId": "art_30",
+  "title": "Open Source Growth: Masterclass 30",
+  "slug": "open-source-growth-masterclass-30",
+  "summary": "An in-depth look at open source growth and its impact on modern development.",
+  "content": "<h1>Open Source Growth: Masterclass 30</h1><p>This is a detailed article exploring open source growth...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 11,
+  "is_featured": true,
+  "tags": [
+    "tech",
+    "open"
+  ],
+  "author": "prof_4",
+  "category": "cat_art_2",
+  "featured_image": "https://picsum.photos/seed/art_30/800/450",
+  "seo": {
+    "meta_title": "Open Source Growth: Masterclass 30 | Jayson CMS",
+    "meta_description": "Read about open source growth on Jayson CMS.",
+    "keywords": "cms, open, source growth",
+    "og_image": "https://picsum.photos/seed/art_30_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.075Z",
+  "updatedAt": "2026-03-08T15:15:46.075Z",
+  "publishedAt": "2026-03-08T15:15:46.075Z"
+}

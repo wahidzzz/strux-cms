@@ -1,0 +1,28 @@
+{
+  "id": 25,
+  "documentId": "art_25",
+  "title": "GraphQL vs REST: Masterclass 25",
+  "slug": "graphql-vs-rest-masterclass-25",
+  "summary": "An in-depth look at graphql vs rest and its impact on modern development.",
+  "content": "<h1>GraphQL vs REST: Masterclass 25</h1><p>This is a detailed article exploring graphql vs rest...</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "publish_date": "2026-03-08",
+  "reading_time": 6,
+  "is_featured": false,
+  "tags": [
+    "tech",
+    "graphql"
+  ],
+  "author": "prof_9",
+  "category": "cat_art_3",
+  "featured_image": "https://picsum.photos/seed/art_25/800/450",
+  "seo": {
+    "meta_title": "GraphQL vs REST: Masterclass 25 | Jayson CMS",
+    "meta_description": "Read about graphql vs rest on Jayson CMS.",
+    "keywords": "cms, graphql, vs rest",
+    "og_image": "https://picsum.photos/seed/art_25_seo/1200/630"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.073Z",
+  "updatedAt": "2026-03-08T15:15:46.073Z",
+  "publishedAt": "2026-03-08T15:15:46.073Z"
+}

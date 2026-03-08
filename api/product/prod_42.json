@@ -1,0 +1,22 @@
+{
+  "id": 42,
+  "documentId": "prod_42",
+  "name": "NextGen Mouse 42",
+  "slug": "nextgen-mouse-42",
+  "description": "<h1>NextGen Mouse 42</h1><p>Premium quality mouse for your workspace.</p>",
+  "price": 226,
+  "sku": "SKU-PROD_42",
+  "stock": 50,
+  "on_sale": false,
+  "sale_price": 180,
+  "images": "https://picsum.photos/seed/prod_42/600/600",
+  "product_category": "cat_prod_4",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.088Z",
+  "updatedAt": "2026-03-08T15:15:46.088Z",
+  "publishedAt": "2026-03-08T15:15:46.088Z"
+}

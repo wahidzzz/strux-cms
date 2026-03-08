@@ -1,0 +1,22 @@
+{
+  "id": 26,
+  "documentId": "prod_26",
+  "name": "NextGen Desk 26",
+  "slug": "nextgen-desk-26",
+  "description": "<h1>NextGen Desk 26</h1><p>Premium quality desk for your workspace.</p>",
+  "price": 492,
+  "sku": "SKU-PROD_26",
+  "stock": 45,
+  "on_sale": false,
+  "sale_price": 393,
+  "images": "https://picsum.photos/seed/prod_26/600/600",
+  "product_category": "cat_prod_6",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.085Z",
+  "updatedAt": "2026-03-08T15:15:46.085Z",
+  "publishedAt": "2026-03-08T15:15:46.085Z"
+}

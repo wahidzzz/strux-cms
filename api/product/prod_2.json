@@ -1,0 +1,22 @@
+{
+  "id": 2,
+  "documentId": "prod_2",
+  "name": "X Keyboard 2",
+  "slug": "x-keyboard-2",
+  "description": "<h1>X Keyboard 2</h1><p>Premium quality keyboard for your workspace.</p>",
+  "price": 375,
+  "sku": "SKU-PROD_2",
+  "stock": 50,
+  "on_sale": false,
+  "sale_price": 300,
+  "images": "https://picsum.photos/seed/prod_2/600/600",
+  "product_category": "cat_prod_8",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.079Z",
+  "updatedAt": "2026-03-08T15:15:46.079Z",
+  "publishedAt": "2026-03-08T15:15:46.079Z"
+}

@@ -1,0 +1,22 @@
+{
+  "id": 10,
+  "documentId": "prod_10",
+  "name": "X Camera 10",
+  "slug": "x-camera-10",
+  "description": "<h1>X Camera 10</h1><p>Premium quality camera for your workspace.</p>",
+  "price": 584,
+  "sku": "SKU-PROD_10",
+  "stock": 104,
+  "on_sale": true,
+  "sale_price": 467,
+  "images": "https://picsum.photos/seed/prod_10/600/600",
+  "product_category": "cat_prod_5",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.080Z",
+  "updatedAt": "2026-03-08T15:15:46.080Z",
+  "publishedAt": "2026-03-08T15:15:46.080Z"
+}

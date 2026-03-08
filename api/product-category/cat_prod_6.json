@@ -1,0 +1,11 @@
+{
+  "id": 6,
+  "documentId": "cat_prod_6",
+  "name": "Gadgets",
+  "slug": "gadgets",
+  "description": "High-quality gadgets for your everyday needs.",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.057Z",
+  "updatedAt": "2026-03-08T15:15:46.057Z",
+  "publishedAt": "2026-03-08T15:15:46.057Z"
+}

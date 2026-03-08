@@ -1,0 +1,15 @@
+{
+  "id": 9,
+  "documentId": "prof_9",
+  "name": "Chloe May",
+  "email": "chloe@may.dev",
+  "twitter_handle": "@cmay_codes",
+  "bio": "Chloe May is a frontend engineer with over 10 years of experience in the industry.",
+  "role": "Frontend Engineer",
+  "joined_at": "2022-01-15",
+  "image": "https://i.pravatar.cc/150?u=cmay_codes",
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.062Z",
+  "updatedAt": "2026-03-08T15:15:46.062Z",
+  "publishedAt": "2026-03-08T15:15:46.062Z"
+}

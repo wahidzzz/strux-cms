@@ -1,0 +1,22 @@
+{
+  "id": 30,
+  "documentId": "prod_30",
+  "name": "Pro Monitor 30",
+  "slug": "pro-monitor-30",
+  "description": "<h1>Pro Monitor 30</h1><p>Premium quality monitor for your workspace.</p>",
+  "price": 694,
+  "sku": "SKU-PROD_30",
+  "stock": 64,
+  "on_sale": true,
+  "sale_price": 555,
+  "images": "https://picsum.photos/seed/prod_30/600/600",
+  "product_category": "cat_prod_5",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.086Z",
+  "updatedAt": "2026-03-08T15:15:46.086Z",
+  "publishedAt": "2026-03-08T15:15:46.086Z"
+}

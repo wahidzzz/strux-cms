@@ -1,0 +1,22 @@
+{
+  "id": 22,
+  "documentId": "prod_22",
+  "name": "Pro Camera 22",
+  "slug": "pro-camera-22",
+  "description": "<h1>Pro Camera 22</h1><p>Premium quality camera for your workspace.</p>",
+  "price": 682,
+  "sku": "SKU-PROD_22",
+  "stock": 46,
+  "on_sale": false,
+  "sale_price": 545,
+  "images": "https://picsum.photos/seed/prod_22/600/600",
+  "product_category": "cat_prod_9",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.083Z",
+  "updatedAt": "2026-03-08T15:15:46.083Z",
+  "publishedAt": "2026-03-08T15:15:46.083Z"
+}

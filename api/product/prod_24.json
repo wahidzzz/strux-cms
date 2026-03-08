@@ -1,0 +1,22 @@
+{
+  "id": 24,
+  "documentId": "prod_24",
+  "name": "X Chair 24",
+  "slug": "x-chair-24",
+  "description": "<h1>X Chair 24</h1><p>Premium quality chair for your workspace.</p>",
+  "price": 871,
+  "sku": "SKU-PROD_24",
+  "stock": 73,
+  "on_sale": false,
+  "sale_price": 696,
+  "images": "https://picsum.photos/seed/prod_24/600/600",
+  "product_category": "cat_prod_7",
+  "specs": {
+    "material": "Aluminum",
+    "warranty": "2 years"
+  },
+  "status": "published",
+  "createdAt": "2026-03-08T15:15:46.085Z",
+  "updatedAt": "2026-03-08T15:15:46.085Z",
+  "publishedAt": "2026-03-08T15:15:46.085Z"
+}
