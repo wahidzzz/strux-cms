@@ -598,14 +598,23 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
               
               {!isNew && initialEntry && (
                 <>
-                  <div className="flex justify-between items-center text-sm mt-4">
-                      <span className="text-muted-foreground">Toggle Publish</span>
+                  <div className="flex justify-between items-center text-sm mt-4 p-3 bg-muted/30 rounded-lg border border-border">
+                    <div className="flex flex-col">
+                      <span className="font-medium">Visibility Actions</span>
+                      <span className="text-muted-foreground text-xs">
+                        {initialEntry.publishedAt ? 'Currently live to users' : 'Currently hidden from users'}
+                      </span>
+                    </div>
                       <button 
                         onClick={handlePublishToggle}
                         disabled={isSaving}
-                        className="text-xs text-primary hover:underline"
+                      type="button"
+                      className={initialEntry.publishedAt
+                        ? "px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 border border-destructive/20 rounded transition-colors"
+                        : "px-3 py-1.5 text-xs font-medium text-green-600 hover:bg-green-500/10 border border-green-500/20 rounded transition-colors"
+                      }
                       >
-                          {initialEntry.publishedAt ? 'Unpublish' : 'Publish Now'}
+                      {initialEntry.publishedAt ? 'Unpublish Document' : 'Publish Now'}
                       </button>
                   </div>
                   <div className="flex justify-between items-center text-sm">

@@ -1,5 +1,5 @@
 /**
- * Git-Native JSON CMS - API Package
+ * Jayson CMS - API Package
  * 
  * REST API layer providing Strapi-compatible endpoints for content management.
  */
@@ -9,6 +9,9 @@ export * from './routes/content.js'
 
 // Export schema routes
 export * from './routes/schema.js'
+
+// Export settings routes
+export * from './routes/settings.js'
 
 // Export middleware
 export * from './middleware/auth.js'

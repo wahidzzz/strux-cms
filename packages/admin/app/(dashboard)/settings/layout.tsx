@@ -19,6 +19,13 @@ export default function SettingsLayout({
         {/* Settings Navigation */}
         <div className="w-full md:w-64 shrink-0 space-y-1">
           <Link 
+            href="/settings/general"
+            className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-foreground hover:bg-muted/50 transition-colors"
+          >
+            <Sliders className="w-4 h-4 text-primary" />
+            General
+          </Link>
+          <Link 
             href="/settings/roles" 
             className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-foreground hover:bg-muted/50 transition-colors"
           >

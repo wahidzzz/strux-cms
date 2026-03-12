@@ -150,7 +150,7 @@ export default function RoleDetailPage({ params }: { params: { id: string } }) {
       sum + ACTIONS.filter(a => isActionApplicable(s.id, a) && hasPermission(s.id, a)).length, 0
     )
     return { totalApplicable, totalChecked }
-  }, [allSubjects, workingPermissions, isImmutable])
+  }, [allSubjects, hasPermission])
 
   // Row check state
   const getRowState = (subject: string): 'all' | 'some' | 'none' => {

@@ -1,5 +1,5 @@
 /**
- * Git-Native JSON CMS - Core Package
+ * Jayson CMS - Core Package
  * 
  * Framework-agnostic core engines for content management with JSON file storage
  * and Git versioning.
@@ -18,6 +18,7 @@ import { MediaEngine } from './engines/media-engine.js'
 import { MetadataEngine } from './engines/metadata-engine.js'
 import { AuthEngine } from './engines/auth-engine.js'
 import { ApiKeyEngine } from './engines/api-key-engine.js'
+import { SettingsEngine } from './engines/settings-engine.js'
 import type { CMSConfig, RequestContext } from './types/index.js'
 
 // Export all types
@@ -34,9 +35,10 @@ export { RBACEngine } from './engines/rbac-engine.js'
 export { MetadataEngine } from './engines/metadata-engine.js'
 export { AuthEngine } from './engines/auth-engine.js'
 export { ApiKeyEngine } from './engines/api-key-engine.js'
+export { SettingsEngine } from './engines/settings-engine.js'
 
 /**
- * CMS - Main class for Git-Native JSON CMS
+ * CMS - Main class for Jayson CMS
  * 
  * Orchestrates all engines and provides system initialization.
  * 
@@ -62,6 +64,7 @@ export class CMS {
     private readonly authEngine: AuthEngine
     private readonly apiKeyEngine: ApiKeyEngine
     private readonly contentEngine: ContentEngine
+    private readonly settingsEngine: SettingsEngine
     private initialized = false
     private config: CMSConfig | null = null
 
@@ -76,6 +79,7 @@ export class CMS {
         // Initialize all engines
         this.fileEngine = new FileEngine()
         this.schemaEngine = new SchemaEngine(join(basePath, 'schema'))
+        this.settingsEngine = new SettingsEngine(basePath)
         this.gitEngine = new GitEngine(basePath)
         this.contentGitEngine = new GitEngine(join(basePath, 'content'))
         this.queryEngine = new QueryEngine(
@@ -124,7 +128,7 @@ export class CMS {
         }
 
         const startTime = Date.now()
-        console.log('Initializing Git-Native JSON CMS...')
+        console.log('Initializing Jayson CMS...')
 
         try {
             // Step 1: Initialize Git repository if not exists
@@ -141,6 +145,11 @@ export class CMS {
             console.log('Initializing metadata...')
             await this.metadataEngine.init()
             console.log('Metadata initialized')
+
+            // Step 3.6: Initialize settings engine
+            console.log('Initializing settings...')
+            await this.settingsEngine.init()
+            console.log('Settings initialized')
 
             // Step 4: Load all schemas and compile validators
             console.log('Loading schemas...')
@@ -227,7 +236,7 @@ export class CMS {
             const readmePath = join(this.basePath, 'README.md')
             await fs.writeFile(
                 readmePath,
-                '# Git-Native JSON CMS\n\nContent management system with Git versioning.\n'
+                '# Jayson CMS\n\nContent management system with Git versioning.\n'
             )
             await this.gitEngine.commit(
                 ['README.md'],
@@ -589,6 +598,13 @@ export class CMS {
      */
     getMediaEngine(): MediaEngine {
         return this.mediaEngine
+    }
+
+    /**
+     * Get the SettingsEngine instance
+     */
+    getSettingsEngine(): SettingsEngine {
+        return this.settingsEngine
     }
 
     /**

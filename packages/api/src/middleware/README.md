@@ -1,6 +1,6 @@
 # Authentication Middleware
 
-JWT-based authentication middleware for the Git-Native JSON CMS API.
+JWT-based authentication middleware for the Jayson CMS API.
 
 ## Overview
 
@@ -306,7 +306,7 @@ Validates requirements:
 
 # Error Handler Middleware
 
-Centralized error handling middleware for the Git-Native JSON CMS API.
+Centralized error handling middleware for the Jayson CMS API.
 
 ## Overview
 

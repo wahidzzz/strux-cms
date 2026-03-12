@@ -1,5 +1,5 @@
 /**
- * Core type definitions for Git-Native JSON CMS
+ * Core type definitions for Jayson CMS
  * 
  * This module provides all TypeScript interfaces and types for the CMS system,
  * including content entries, schemas, queries, RBAC, media, and Git operations.

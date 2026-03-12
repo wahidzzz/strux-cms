@@ -18,7 +18,8 @@ export default async function Page({ params, searchParams }: Props) {
       <div className="flex items-center justify-center h-[50vh]">
         <div className="text-center">
           <h2 className="text-xl font-semibold">Content type not found</h2>
-          <p className="text-muted-foreground mt-1">The requested content type "{contentType}" does not exist.</p>
+          <p className="text-gray-400 mt-2">Manage all &quot;Jayson CMS&quot; content entries</p>
+          <p className="text-muted-foreground mt-1">The requested content type &quot;{contentType}&quot; does not exist.</p>
         </div>
       </div>
     )

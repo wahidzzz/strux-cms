@@ -1,6 +1,6 @@
 # Project Setup Guide
 
-This document describes the initial project setup for the Git-Native JSON CMS.
+This document describes the initial project setup for the Jayson CMS.
 
 ## Project Structure
 

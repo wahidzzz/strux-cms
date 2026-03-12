@@ -14,8 +14,10 @@ import {
   ChevronRight,
   LogOut
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/lib/auth-store'
+import { useSettings } from './settings-provider'
+import { ThemeToggle } from './theme-toggle'
+import { cn } from '@/lib/utils'
 
 const mainNavigation = [
   { name: 'Content-Type Builder', href: '/content-type-builder', icon: Database },
@@ -27,6 +29,7 @@ export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const logout = useAuthStore((state) => state.logout)
+  const { settings } = useSettings()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [schemas, setSchemas] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -114,10 +117,16 @@ export function Sidebar() {
           {/* Logo */}
           <div className="flex items-center h-16 px-6 border-b border-border bg-muted/20">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="bg-primary rounded-lg p-1.5">
-                <Layers className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="text-lg font-bold tracking-tight">Jayson CMS</span>
+              {settings?.logoUrl ? (
+                <img src={settings.logoUrl} alt="Logo" className="w-8 h-8 rounded" />
+              ) : (
+                  <div className="bg-primary rounded-lg p-1.5">
+                    <Layers className="h-5 w-5 text-primary-foreground" />
+                  </div>
+              )}
+              <span className="text-lg font-bold tracking-tight truncate max-w-[140px]">
+                {settings?.brandName || 'Jayson CMS'}
+              </span>
             </Link>
           </div>
 
@@ -200,13 +209,16 @@ export function Sidebar() {
           {/* Footer */}
           <div className="px-6 py-4 border-t border-border bg-muted/10 space-y-4">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                  Connected
-                </p>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Connected
+                  </p>
+                </div>
+                <ThemeToggle />
               </div>
-              <p className="text-[10px] text-muted-foreground font-mono">
+              <p className="text-[10px] text-muted-foreground font-mono mt-1">
                 v0.1.0-alpha
               </p>
             </div>
