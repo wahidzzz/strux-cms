@@ -546,22 +546,46 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
             Delete
           </button>
         )}
-        <button
-          onClick={() => handleSave(false)}
-          disabled={isSaving}
-          className="px-4 py-2 border border-border rounded-md text-sm font-medium hover:bg-accent transition-colors flex items-center gap-2 disabled:opacity-50"
-        >
-          <Save className="w-4 h-4" />
-          Save {initialEntry?.publishedAt ? 'Changes' : 'Draft'}
-        </button>
-        <button
-          onClick={() => handleSave(true)}
-          disabled={isSaving}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:opacity-50"
-        >
-          <CheckCircle className="w-4 h-4" />
-          {initialEntry?.publishedAt ? 'Saved & Published' : 'Publish'}
-        </button>
+        <div className="flex items-center gap-3">
+          {initialEntry?.publishedAt ? (
+            <>
+              <button
+                onClick={handlePublishToggle}
+                disabled={isSaving}
+                className="px-4 py-2 border border-destructive/30 text-destructive bg-destructive/5 rounded-md text-sm font-medium hover:bg-destructive/10 transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                Unpublish
+              </button>
+              <button
+                onClick={() => handleSave(false)}
+                disabled={isSaving}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                <Save className="w-4 h-4" />
+                Save Changes
+              </button>
+            </>
+          ) : (
+            <>
+                <button
+                  onClick={() => handleSave(false)}
+                  disabled={isSaving}
+                  className="px-4 py-2 border border-border rounded-md text-sm font-medium hover:bg-accent transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  Save Draft
+                </button>
+                <button
+                  onClick={() => handleSave(true)}
+                  disabled={isSaving}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Publish
+                </button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -598,25 +622,7 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
               
               {!isNew && initialEntry && (
                 <>
-                  <div className="flex justify-between items-center text-sm mt-4 p-3 bg-muted/30 rounded-lg border border-border">
-                    <div className="flex flex-col">
-                      <span className="font-medium">Visibility Actions</span>
-                      <span className="text-muted-foreground text-xs">
-                        {initialEntry.publishedAt ? 'Currently live to users' : 'Currently hidden from users'}
-                      </span>
-                    </div>
-                      <button 
-                        onClick={handlePublishToggle}
-                        disabled={isSaving}
-                      type="button"
-                      className={initialEntry.publishedAt
-                        ? "px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 border border-destructive/20 rounded transition-colors"
-                        : "px-3 py-1.5 text-xs font-medium text-green-600 hover:bg-green-500/10 border border-green-500/20 rounded transition-colors"
-                      }
-                      >
-                      {initialEntry.publishedAt ? 'Unpublish Document' : 'Publish Now'}
-                      </button>
-                  </div>
+
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">Last update</span>
                     <span className="flex items-center gap-1 font-mono text-xs">
