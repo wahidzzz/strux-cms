@@ -552,8 +552,9 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
               <button
                 onClick={handlePublishToggle}
                 disabled={isSaving}
-                className="px-4 py-2 border border-destructive/30 text-destructive bg-destructive/5 rounded-md text-sm font-medium hover:bg-destructive/10 transition-colors flex items-center gap-2 disabled:opacity-50"
+                className="px-4 py-2 border border-amber-500/30 text-amber-600 bg-amber-500/5 rounded-md text-sm font-medium hover:bg-amber-500/10 transition-colors flex items-center gap-2 disabled:opacity-50"
               >
+                <EyeOff className="w-4 h-4" />
                 Unpublish
               </button>
               <button
