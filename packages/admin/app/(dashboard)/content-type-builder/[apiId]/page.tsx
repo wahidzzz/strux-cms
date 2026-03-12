@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import SchemaForm from './(components)/SchemaForm'
 import { getCMS } from '@/lib/cms'
-import { Database, Plus, Settings, ChevronRight, Edit2, Trash2 } from 'lucide-react'
-import { notFound } from 'next/navigation'
+import { Database, Plus, Settings, ChevronRight } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,9 +12,7 @@ export default async function ContentTypeDetailPage({ params }: { params: { apiI
   
   const currentSchema = contentTypes.find(s => s.apiId === params.apiId)
   
-  if (!currentSchema && params.apiId !== 'create') {
-    return notFound()
-  }
+
 
   const isCreate = params.apiId === 'create'
 
@@ -25,7 +22,7 @@ export default async function ContentTypeDetailPage({ params }: { params: { apiI
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Content-Type Builder</h1>
           <p className="text-muted-foreground">
-            {isCreate ? 'Create a new content type' : `Manage ${currentSchema?.displayName} fields`}
+            {isCreate ? 'Create a new content type' : currentSchema ? `Manage ${currentSchema.displayName} fields` : 'Schema not found'}
           </p>
         </div>
         
@@ -122,7 +119,32 @@ export default async function ContentTypeDetailPage({ params }: { params: { apiI
         
         {/* Main Content Area */}
         <div className="col-span-1 md:col-span-3 space-y-6">
-          <SchemaForm initialSchema={isCreate ? null : currentSchema} isCreate={isCreate} allSchemas={contentTypes} />
+          {(!currentSchema && !isCreate) ? (
+            <div className="border border-border border-dashed rounded-xl bg-muted/10 flex flex-col items-center justify-center p-12 min-h-[400px]">
+              <Database className="w-16 h-16 text-muted-foreground/30 mb-4" />
+              <h2 className="text-xl font-semibold mb-2">Schema Not Found</h2>
+              <p className="text-muted-foreground text-center max-w-sm mb-6">
+                The content type or component &quot;{params.apiId}&quot; does not exist. It may have been deleted or renamed.
+              </p>
+              <div className="flex gap-4">
+                <Link
+                  href="/content-type-builder/create"
+                  className="flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-md hover:bg-primary/20 transition-colors font-medium text-sm"
+                >
+                  <Plus className="w-4 h-4" />
+                  Create new
+                </Link>
+                <Link
+                  href="/content-type-builder"
+                  className="flex items-center gap-2 bg-muted/50 text-foreground px-4 py-2 rounded-md hover:bg-muted transition-colors font-medium text-sm border border-border"
+                >
+                  Back to overview
+                </Link>
+              </div>
+            </div>
+          ) : (
+              <SchemaForm initialSchema={isCreate ? null : currentSchema} isCreate={isCreate} allSchemas={contentTypes} />
+          )}
         </div>
       </div>
     </div>
