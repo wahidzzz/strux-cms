@@ -14,7 +14,13 @@ export default async function Page({ params, searchParams }: Props) {
   const { contentType } = params
   const cms = await getCMS()
   
-  const schema = await cms.getSchemaEngine().loadSchema(contentType)
+  let schema;
+  try {
+    schema = await cms.getSchemaEngine().loadSchema(contentType)
+  } catch (err) {
+    schema = null
+  }
+
   if (!schema) {
     return (
       <div className="border border-border border-dashed rounded-xl bg-muted/10 flex flex-col items-center justify-center p-12 min-h-[400px]">
