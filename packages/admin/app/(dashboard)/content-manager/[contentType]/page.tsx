@@ -1,6 +1,8 @@
 import React from 'react'
 import { getCMS } from '@/lib/cms'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { Database } from 'lucide-react'
 import ContentList from './(components)/ContentList'
 
 type Props = {
@@ -15,11 +17,25 @@ export default async function Page({ params, searchParams }: Props) {
   const schema = await cms.getSchemaEngine().loadSchema(contentType)
   if (!schema) {
     return (
-      <div className="flex items-center justify-center h-[50vh]">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold">Content type not found</h2>
-          <p className="text-gray-400 mt-2">Manage all &quot;Jayson CMS&quot; content entries</p>
-          <p className="text-muted-foreground mt-1">The requested content type &quot;{contentType}&quot; does not exist.</p>
+      <div className="border border-border border-dashed rounded-xl bg-muted/10 flex flex-col items-center justify-center p-12 min-h-[400px]">
+        <Database className="w-16 h-16 text-muted-foreground/30 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">Content Type Not Found</h2>
+        <p className="text-muted-foreground text-center max-w-sm mb-6">
+          The requested content type &quot;{contentType}&quot; does not exist.
+        </p>
+        <div className="flex gap-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors font-medium text-sm"
+          >
+            Back to Dashboard
+          </Link>
+          <Link
+            href="/content-type-builder"
+            className="flex items-center gap-2 bg-muted/50 text-foreground px-4 py-2 rounded-md hover:bg-muted transition-colors font-medium text-sm border border-border"
+          >
+            Go to Content-Type Builder
+          </Link>
         </div>
       </div>
     )

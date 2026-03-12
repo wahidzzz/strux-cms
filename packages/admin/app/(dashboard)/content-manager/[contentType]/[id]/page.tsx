@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { getCMS } from '@/lib/cms'
-import { ArrowLeft } from 'lucide-react'
-import { notFound } from 'next/navigation'
+import { ArrowLeft, Database, FileX } from 'lucide-react'
 
 import ContentForm from '../(components)/ContentForm'
 
@@ -23,7 +22,21 @@ export default async function ContentEditPage({ params }: Props) {
   try {
     schema = await cms.getSchemaEngine().loadSchema(contentType)
   } catch (error) {
-    return notFound()
+    return (
+      <div className="border border-border border-dashed rounded-xl bg-muted/10 flex flex-col items-center justify-center p-12 min-h-[400px]">
+        <Database className="w-16 h-16 text-muted-foreground/30 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">Content Type Not Found</h2>
+        <p className="text-muted-foreground text-center max-w-sm mb-6">
+          The associated content type &quot;{contentType}&quot; does not exist.
+        </p>
+        <Link
+          href="/"
+          className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors font-medium text-sm"
+        >
+          Back to Dashboard
+        </Link>
+      </div>
+    )
   }
 
   let entry = null
@@ -31,10 +44,21 @@ export default async function ContentEditPage({ params }: Props) {
     entry = await cms.getContentEngine().findOne(contentType, id, {})
     if (!entry) {
       return (
-        <div className="p-8 text-center">
-          <h2 className="text-xl font-bold">Entry Not Found</h2>
-          <p className="text-muted-foreground mt-2">The entry with ID &quot;{id}&quot; could not be found.</p>
-          <Link href={`/content-manager/${contentType}`} className="text-primary hover:underline mt-4 inline-block">Back</Link>
+        <div className="border border-border border-dashed rounded-xl bg-muted/10 flex flex-col items-center justify-center p-12 min-h-[400px]">
+          <FileX className="w-16 h-16 text-muted-foreground/30 mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Entry Not Found</h2>
+          <p className="text-muted-foreground text-center max-w-sm mb-6">
+            The entry with ID &quot;{id}&quot; could not be found. It may have been deleted.
+          </p>
+          <div className="flex gap-4">
+            <Link
+              href={`/content-manager/${contentType}`}
+              className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors font-medium text-sm"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to {schema.displayName}
+            </Link>
+          </div>
         </div>
       )
     }
