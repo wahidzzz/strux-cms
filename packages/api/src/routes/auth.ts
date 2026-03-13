@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken'
 /**
  * Create Auth route handlers
  */
+const isValidEmail = (email: any): boolean => typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+const isValidPassword = (password: any): boolean => typeof password === 'string' && password.length >= 8
+
 export function createAuthRouteHandler() {
   return {
     /**
@@ -15,12 +18,12 @@ export function createAuthRouteHandler() {
         const body = req.body || {}
         const { identifier, password } = body
 
-        if (!identifier || !password) {
+        if (!identifier || typeof identifier !== 'string' || !password || typeof password !== 'string') {
           return {
             error: {
               status: 400,
               name: 'ValidationError',
-              message: 'Identifier and password are required'
+              message: 'Identifier and password must be valid strings'
             }
           }
         }
@@ -71,16 +74,37 @@ export function createAuthRouteHandler() {
       try {
         const body = req.body || {}
         
+        if (!body.username || typeof body.username !== 'string') {
+          return { error: { status: 400, name: 'ValidationError', message: 'Valid username is required' } }
+        }
+        if (!isValidEmail(body.email)) {
+          return { error: { status: 400, name: 'ValidationError', message: 'Valid email is required' } }
+        }
+        if (!isValidPassword(body.password)) {
+          return { error: { status: 400, name: 'ValidationError', message: 'Password must be a string at least 8 characters long' } }
+        }
+
         // Check if there are already users
         const users = await authEngine.listUsers()
         
-        // If users exist, require authentication to register new ones
+        let assignedRole = 'author' // Default safe role
+        
+        // If users exist, require authentication to register new ones / assign roles
         if (users.length > 0) {
-          // In a real app, we'd check req.context for admin permissions
-          // For now, we'll assume it's protected at the route level if needed
+          if (req.context && req.context.role === 'admin' && typeof body.role === 'string') {
+            assignedRole = body.role
+          }
+        } else {
+          // First user gets admin role or specified role
+          assignedRole = typeof body.role === 'string' ? body.role : 'admin'
         }
 
-        const user = await authEngine.register(body)
+        const user = await authEngine.register({
+          username: body.username,
+          email: body.email,
+          password: body.password,
+          role: assignedRole
+        })
 
         return {
           user
@@ -140,10 +164,18 @@ export function createAuthRouteHandler() {
         }
 
         const body = req.body || {}
-        const user = await authEngine.updateUser(context.userId, {
-          username: body.username,
-          email: body.email
-        })
+        
+        const updates: any = {}
+        if (body.username !== undefined) {
+          if (typeof body.username !== 'string') return { error: { status: 400, name: 'ValidationError', message: 'Username must be a string' } }
+          updates.username = body.username
+        }
+        if (body.email !== undefined) {
+          if (!isValidEmail(body.email)) return { error: { status: 400, name: 'ValidationError', message: 'Valid email is required' } }
+          updates.email = body.email
+        }
+
+        const user = await authEngine.updateUser(context.userId, updates)
 
         return { user }
       } catch (error: any) {
@@ -165,8 +197,11 @@ export function createAuthRouteHandler() {
         const body = req.body || {}
         const { currentPassword, newPassword } = body
 
-        if (!currentPassword || !newPassword) {
-          return { error: { status: 400, name: 'ValidationError', message: 'Current and new passwords are required' } }
+        if (!currentPassword || typeof currentPassword !== 'string') {
+          return { error: { status: 400, name: 'ValidationError', message: 'Current password must be a string' } }
+        }
+        if (!isValidPassword(newPassword)) {
+          return { error: { status: 400, name: 'ValidationError', message: 'New password must be a string at least 8 characters long' } }
         }
 
         // Verify current password first

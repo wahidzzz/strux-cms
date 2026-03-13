@@ -1,8 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express'
-import { CMS, RequestContext } from '@cms/core'
+import { CMS } from '@cms/core'
 import { authenticate } from '../middleware/auth.js'
 
-export function createSettingsRouter(cms: CMS, jwtSecret: string) {
+export function createSettingsRouter(cms: CMS, jwtSecret: string): Router {
   const router = Router()
 
   // GET global settings (publicly accessible for login pages)
@@ -25,21 +25,19 @@ export function createSettingsRouter(cms: CMS, jwtSecret: string) {
       )
 
       if (!authResult.success) {
-        return res.status(authResult.error!.status).json({
+        res.status(authResult.error!.status).json({
           message: authResult.error!.message
         })
+        return
       }
 
       const role = authResult.context?.role
       if (role !== 'super_admin' && role !== 'admin') {
-        return res.status(403).json({ message: 'Forbidden' })
+        res.status(403).json({ message: 'Forbidden' })
+        return
       }
 
       const settings = await cms.getSettingsEngine().updateSettings(req.body)
-      
-      // Auto-commit settings change if needed (currently we just save it)
-      // Optional: trigger git commit. For now, it's just in a json file.
-
       res.json(settings)
     } catch (error) {
       next(error)
