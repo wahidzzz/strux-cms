@@ -1,6 +1,6 @@
 # create-strux-app
 
-Scaffold a new [Strux CMS](https://github.com/wahidzzz/jayson-cms) project in seconds.
+Scaffold a new [Strux CMS](https://github.com/wahidzzz/strux-cms) project in seconds.
 
 ## Quick Start
 

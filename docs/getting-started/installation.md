@@ -32,7 +32,7 @@ If you prefer manual control:
 
 ```bash
 # Clone the repository
-git clone https://github.com/wahidzzz/jayson-cms.git my-project
+git clone https://github.com/wahidzzz/strux-cms.git my-project
 cd my-project
 
 # Install dependencies

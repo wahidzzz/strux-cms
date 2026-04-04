@@ -17,7 +17,7 @@ const kleur = require('kleur');
 const { execSync } = require('child_process');
 
 // ─── Constants ────────────────────────────────────────────
-const REPO_URL = 'https://github.com/wahidzzz/jayson-cms.git';
+const REPO_URL = 'https://github.com/wahidzzz/strux-cms.git';
 const TEMPLATES_DIR = path.join(__dirname, '..', 'templates');
 
 const BANNER = `
@@ -375,7 +375,7 @@ async function main() {
   log(`  ${kleur.gray('Admin panel:')}  ${kleur.underline('http://localhost:3001')}`);
   log(`  ${kleur.gray('API server:')}   ${kleur.underline('http://localhost:3000')}`);
   log('');
-  log(`  ${kleur.gray('Docs:')}  ${kleur.underline('https://github.com/wahidzzz/jayson-cms')}`);
+  log(`  ${kleur.gray('Docs:')}  ${kleur.underline('https://github.com/wahidzzz/strux-cms')}`);
   log('');
 }
 
