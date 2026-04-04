@@ -287,15 +287,17 @@ export class CMS {
 
             if (!branchExists) {
                 console.log(`Creating branch ${branchName}...`)
-                // Create an orphan branch for data to keep it separate from code history
-                await this.gitEngine.execGit(['checkout', '--orphan', branchName])
-                await this.gitEngine.execGit(['rm', '-rf', '.'])
-                await fs.writeFile(join(this.basePath, '.gitkeep'), '')
-                await this.gitEngine.execGit(['add', '.gitkeep'])
-                await this.gitEngine.execGit(['commit', '-m', 'Initial data branch commit'])
-
-                // Return to original branch immediately
-                await this.gitEngine.execGit(['checkout', currentBranch])
+                try {
+                    // Create an orphan branch safely without touching the working directory
+                    // 1. Get hash of an empty tree
+                    const emptyTreeHash = await this.gitEngine.execGit(['hash-object', '-t', 'tree', '/dev/null'])
+                    // 2. Create a commit with this empty tree
+                    const commitHash = await this.gitEngine.execGit(['commit-tree', emptyTreeHash.trim(), '-m', 'Initial data branch commit'])
+                    // 3. Create the branch pointing to this commit
+                    await this.gitEngine.execGit(['branch', branchName, commitHash.trim()])
+                } catch (err) {
+                    console.error('Failed to create orphan branch:', err)
+                }
             }
 
             // 2. Check if content directory is a worktree

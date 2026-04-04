@@ -554,6 +554,25 @@ button {
 .code-header {
   padding: 0.625rem 1.25rem;
   border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.code-copy-btn {
+  color: var(--fg-faint);
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
+  padding: 0.25rem;
+  border-radius: var(--radius);
+}
+
+.code-copy-btn:hover {
+  color: var(--fg);
+  background: var(--accent-soft);
+}
+
+.code-copy-btn.copied {
+  color: hsl(142, 76%, 50%);
 }
 
 .code-filename {

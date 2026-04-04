@@ -59,6 +59,23 @@
     });
   }
 
+  // --- Copy code snippets ---
+  const codeCopyBtns = document.querySelectorAll('.code-copy-btn');
+  codeCopyBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const panel = btn.closest('.code-panel');
+      if (panel) {
+        const codeBlock = panel.querySelector('.code-block');
+        if (codeBlock) {
+          navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+            btn.classList.add('copied');
+            setTimeout(() => btn.classList.remove('copied'), 2000);
+          });
+        }
+      }
+    });
+  });
+
   // --- Scroll reveal with IntersectionObserver ---
   const revealElements = document.querySelectorAll(
     '.feature-card, .arch-card, .cta-card, .section-header'
