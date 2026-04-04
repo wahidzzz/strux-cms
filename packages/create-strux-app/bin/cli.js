@@ -378,7 +378,14 @@ async function main() {
         cwd: targetDir,
         stdio: 'inherit'
       });
-      success('Dependencies installed');
+      
+      info('Building packages (compiling TypeScript)...');
+      execSync(`${pmCmd} run build`, {
+        cwd: targetDir,
+        stdio: 'inherit'
+      });
+      
+      success('Dependencies installed and packages built');
     } catch {
       warn('Dependency installation failed. Run manual installation (e.g. "npm install").');
     }
