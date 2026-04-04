@@ -1,0 +1,9 @@
+[build]
+  publish = "website"
+
+# No build command needed — it's already static HTML/CSS/JS
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
