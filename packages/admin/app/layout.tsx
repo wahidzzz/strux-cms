@@ -10,6 +10,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Strux CMS Admin',
   description: 'Production-grade CMS using JSON file storage and Git versioning',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({
