@@ -50,3 +50,4 @@ Thumbs.db
 # Note: In production, these should be tracked by Git
 .cms/index.json
 /content/
+.kiro/
