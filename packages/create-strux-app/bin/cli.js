@@ -369,7 +369,8 @@ async function main() {
         }
       }
 
-      execSync(`${pmCmd} install`, {
+      const installArgs = pmCmd === 'npm' ? ' --legacy-peer-deps' : '';
+      execSync(`${pmCmd} install${installArgs}`, {
         cwd: targetDir,
         stdio: 'inherit'
       });
