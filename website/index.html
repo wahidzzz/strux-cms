@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strux CMS — Git-Native JSON Content Management</title>
+  <meta name="description" content="Strux is a revolutionary Git-native CMS that stores content as JSON files. Zero database infrastructure, native Git versioning, and blazing-fast performance.">
+  <meta property="og:title" content="Strux CMS — Git-Native JSON Content Management">
+  <meta property="og:description" content="Replace your database with Git. Strux stores content as JSON, versions with Git, and deploys anywhere.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://strux-cms.dev">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Strux CMS",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "description": "Git-native JSON Content Management System with zero database infrastructure"
+  }
+  </script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner container">
+      <a href="/" class="nav-logo">
+        <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.9"/>
+          <rect x="16" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="2" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="16" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span>Strux</span>
+      </a>
+      <div class="nav-links">
+        <a href="features.html" class="nav-link">Features</a>
+        <a href="docs.html" class="nav-link">Docs</a>
+        <a href="getting-started.html" class="nav-link">Get Started</a>
+        <a href="demo.html" class="nav-link">Demo</a>
+        <a href="https://github.com/wahidzzz/jayson-cms" class="nav-link nav-link--github" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-grid"></div>
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Alpha Release — Now Open Source
+      </div>
+      <h1 class="hero-title">
+        Content Management,<br>
+        <span class="hero-gradient">Powered by Git.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Strux replaces your database with the file system and Git. 
+        Store content as JSON, version with commits, deploy anywhere. 
+        Zero infrastructure. Infinite history.
+      </p>
+      <div class="hero-actions">
+        <a href="getting-started.html" class="btn btn-primary btn-lg">
+          Get Started
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <div class="hero-install">
+          <code class="install-code">
+            <span class="install-prompt">$</span> npx create-strux-app my-project
+          </code>
+          <button class="install-copy" id="copy-btn" aria-label="Copy command">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value">&lt;50ms</span>
+          <span class="stat-label">Read Latency</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">0</span>
+          <span class="stat-label">Database Required</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">∞</span>
+          <span class="stat-label">Content History</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Features</span>
+        <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+        <p class="section-subtitle">
+          Built for developers who value simplicity, speed, and version control.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card feature-card--highlight">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </div>
+          <h3 class="feature-title">Zero Database</h3>
+          <p class="feature-desc">No PostgreSQL, no MongoDB, no Redis. Your file system is the database. JSON files are your tables. Git is your engine.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v12"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 01-9 9"/></svg>
+          </div>
+          <h3 class="feature-title">Git-Native Versioning</h3>
+          <p class="feature-desc">Every content change is a Git commit. Branch to stage campaigns. Merge to publish. Full audit trail with author attribution.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <h3 class="feature-title">JSON Schema Modeling</h3>
+          <p class="feature-desc">Define content types with JSON Schema. Collection types, single types, components, and dynamic zones — all declarative.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          </div>
+          <h3 class="feature-title">Relationships</h3>
+          <p class="feature-desc">one-to-one, one-to-many, many-to-one, many-to-many. Deep population with automatic resolution at query time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <h3 class="feature-title">Dynamic Zones</h3>
+          <p class="feature-desc">Flexible content blocks that editors can compose freely. Build pages from reusable components without developer intervention.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="feature-title">RBAC Security</h3>
+          <p class="feature-desc">Role-based access control with field-level security. Admin, Editor, Authenticated, Public roles with conditional ownership rules.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Example Section -->
+  <section class="code-section" id="code">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Developer Experience</span>
+        <h2 class="section-title">Content as Code.</h2>
+        <p class="section-subtitle">Define schemas, create content, query data — all with simple JSON.</p>
+      </div>
+      <div class="code-tabs">
+        <div class="code-tab-bar">
+          <button class="code-tab active" data-tab="schema">Schema</button>
+          <button class="code-tab" data-tab="content">Content</button>
+          <button class="code-tab" data-tab="query">Query</button>
+        </div>
+        <div class="code-panel active" id="panel-schema">
+          <div class="code-header">
+            <span class="code-filename">schema/article.schema.json</span>
+          </div>
+          <pre class="code-block"><code>{
+  <span class="hl-key">"displayName"</span>: <span class="hl-str">"Article"</span>,
+  <span class="hl-key">"kind"</span>: <span class="hl-str">"collectionType"</span>,
+  <span class="hl-key">"attributes"</span>: {
+    <span class="hl-key">"title"</span>:   { <span class="hl-key">"type"</span>: <span class="hl-str">"string"</span>, <span class="hl-key">"required"</span>: <span class="hl-bool">true</span> },
+    <span class="hl-key">"slug"</span>:    { <span class="hl-key">"type"</span>: <span class="hl-str">"uid"</span>, <span class="hl-key">"targetField"</span>: <span class="hl-str">"title"</span> },
+    <span class="hl-key">"content"</span>: { <span class="hl-key">"type"</span>: <span class="hl-str">"richtext"</span>, <span class="hl-key">"required"</span>: <span class="hl-bool">true</span> },
+    <span class="hl-key">"author"</span>:  {
+      <span class="hl-key">"type"</span>: <span class="hl-str">"relation"</span>,
+      <span class="hl-key">"relation"</span>: { <span class="hl-key">"target"</span>: <span class="hl-str">"profile"</span>, <span class="hl-key">"relation"</span>: <span class="hl-str">"manyToOne"</span> }
+    }
+  }
+}</code></pre>
+        </div>
+        <div class="code-panel" id="panel-content">
+          <div class="code-header">
+            <span class="code-filename">content/api/articles/hello-world.json</span>
+          </div>
+          <pre class="code-block"><code>{
+  <span class="hl-key">"id"</span>: <span class="hl-str">"a1b2c3d4"</span>,
+  <span class="hl-key">"title"</span>: <span class="hl-str">"Hello World"</span>,
+  <span class="hl-key">"slug"</span>: <span class="hl-str">"hello-world"</span>,
+  <span class="hl-key">"content"</span>: <span class="hl-str">"Welcome to Strux CMS..."</span>,
+  <span class="hl-key">"author"</span>: <span class="hl-str">"profile-id-001"</span>,
+  <span class="hl-key">"createdAt"</span>: <span class="hl-str">"2026-04-04T12:00:00Z"</span>,
+  <span class="hl-key">"updatedAt"</span>: <span class="hl-str">"2026-04-04T12:00:00Z"</span>
+}</code></pre>
+        </div>
+        <div class="code-panel" id="panel-query">
+          <div class="code-header">
+            <span class="code-filename">API Query</span>
+          </div>
+          <pre class="code-block"><code><span class="hl-comment">// GET /api/articles?populate=author&sort=createdAt:desc</span>
+
+{
+  <span class="hl-key">"data"</span>: [
+    {
+      <span class="hl-key">"id"</span>: <span class="hl-str">"a1b2c3d4"</span>,
+      <span class="hl-key">"title"</span>: <span class="hl-str">"Hello World"</span>,
+      <span class="hl-key">"author"</span>: {
+        <span class="hl-key">"id"</span>: <span class="hl-str">"profile-id-001"</span>,
+        <span class="hl-key">"name"</span>: <span class="hl-str">"Jane Doe"</span>,
+        <span class="hl-key">"email"</span>: <span class="hl-str">"jane@example.com"</span>
+      }
+    }
+  ],
+  <span class="hl-key">"meta"</span>: { <span class="hl-key">"total"</span>: <span class="hl-num">1</span>, <span class="hl-key">"page"</span>: <span class="hl-num">1</span> }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture Section -->
+  <section class="architecture" id="architecture">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Architecture</span>
+        <h2 class="section-title">Built Different.</h2>
+        <p class="section-subtitle">A modular engine architecture designed for reliability and performance.</p>
+      </div>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-label">Core Engines</div>
+          <div class="arch-items">
+            <span class="arch-chip">FileEngine</span>
+            <span class="arch-chip">GitEngine</span>
+            <span class="arch-chip">SchemaEngine</span>
+            <span class="arch-chip">QueryEngine</span>
+            <span class="arch-chip">ContentEngine</span>
+            <span class="arch-chip">RBACEngine</span>
+            <span class="arch-chip">MediaEngine</span>
+            <span class="arch-chip">AuthEngine</span>
+          </div>
+        </div>
+        <div class="arch-card">
+          <div class="arch-label">Performance</div>
+          <div class="arch-metrics">
+            <div class="metric">
+              <span class="metric-val">&lt;3s</span>
+              <span class="metric-lbl">Boot (10k entries)</span>
+            </div>
+            <div class="metric">
+              <span class="metric-val">&lt;50ms</span>
+              <span class="metric-lbl">Read Latency</span>
+            </div>
+            <div class="metric">
+              <span class="metric-val">&lt;200ms</span>
+              <span class="metric-lbl">Write P95</span>
+            </div>
+          </div>
+        </div>
+        <div class="arch-card">
+          <div class="arch-label">Storage</div>
+          <div class="arch-diagram">
+            <div class="arch-flow">
+              <span class="arch-node">JSON Files</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node">Git Commits</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node">In-Memory Index</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta" id="cta">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-glow"></div>
+        <h2 class="cta-title">Ready to ditch the database?</h2>
+        <p class="cta-subtitle">Get started with Strux in under a minute.</p>
+        <div class="cta-actions">
+          <a href="getting-started.html" class="btn btn-primary btn-lg">
+            Quick Start Guide
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://github.com/wahidzzz/jayson-cms" class="btn btn-ghost btn-lg" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            Star on GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo">
+          <svg class="logo-icon" width="24" height="24" viewBox="0 0 28 28" fill="none">
+            <rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.9"/>
+            <rect x="16" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+            <rect x="2" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+            <rect x="16" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.3"/>
+          </svg>
+          <span>Strux</span>
+        </a>
+        <p class="footer-tagline">Content as Code. Powered by Git.</p>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="features.html">Features</a>
+          <a href="demo.html">Demo</a>
+          <a href="getting-started.html">Get Started</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="docs.html">Documentation</a>
+          <a href="docs.html#api-usage">API Reference</a>
+          <a href="docs.html#deployment">Deployment</a>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <a href="https://github.com/wahidzzz/jayson-cms" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/wahidzzz/jayson-cms/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/wahidzzz/jayson-cms/discussions" target="_blank" rel="noopener">Discussions</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Strux CMS. Open Source under MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

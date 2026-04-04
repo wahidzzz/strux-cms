@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features — Strux CMS</title>
+  <meta name="description" content="Explore Strux CMS features: Dynamic Zones, Relationships, Git versioning, RBAC, JSON Schema validation, and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner container">
+      <a href="/" class="nav-logo">
+        <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.9"/>
+          <rect x="16" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="2" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="16" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span>Strux</span>
+      </a>
+      <div class="nav-links">
+        <a href="features.html" class="nav-link nav-link--active">Features</a>
+        <a href="docs.html" class="nav-link">Docs</a>
+        <a href="getting-started.html" class="nav-link">Get Started</a>
+        <a href="demo.html" class="nav-link">Demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+      <!-- Page Header -->
+      <header class="page-header">
+        <span class="section-tag">Features</span>
+        <h1 class="page-title">Built for the<br><span class="hero-gradient">modern developer.</span></h1>
+        <p class="page-subtitle">Every feature designed around simplicity, Git workflows, and developer experience.</p>
+      </header>
+
+      <!-- Feature Deep Dives -->
+      <section class="feature-deep">
+        <div class="deep-card">
+          <div class="deep-content">
+            <span class="deep-number">01</span>
+            <h2>Content as JSON Files</h2>
+            <p>Every piece of content is a plain JSON file on disk. No opaque databases, no migrations, no ORM overhead. Read your data with <code>cat</code>, edit with any text editor, version with Git.</p>
+            <ul class="deep-list">
+              <li>Human-readable data format</li>
+              <li>File-system is the single source of truth</li>
+              <li>Works with any frontend — Next.js, Astro, Hugo</li>
+              <li>Zero vendor lock-in</li>
+            </ul>
+          </div>
+          <div class="deep-visual">
+            <pre class="code-block"><code>{
+  <span class="hl-key">"id"</span>: <span class="hl-str">"nano-id-abc123"</span>,
+  <span class="hl-key">"title"</span>: <span class="hl-str">"My First Post"</span>,
+  <span class="hl-key">"content"</span>: <span class="hl-str">"Hello, world!"</span>,
+  <span class="hl-key">"createdAt"</span>: <span class="hl-str">"2026-04-04"</span>
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="deep-card deep-card--reverse">
+          <div class="deep-content">
+            <span class="deep-number">02</span>
+            <h2>Git-Native Versioning</h2>
+            <p>Content changes are automatically committed to a dedicated <code>cms-data</code> branch using Git worktrees. Stage content on branches, merge to publish. Full history, full attribution.</p>
+            <ul class="deep-list">
+              <li>Automatic Git commits for every save</li>
+              <li>Branch-based content staging</li>
+              <li>Author attribution on every commit</li>
+              <li>Orphan branch isolation (no code pollution)</li>
+            </ul>
+          </div>
+          <div class="deep-visual">
+            <div class="git-viz">
+              <div class="git-branch">
+                <span class="git-label">main</span>
+                <div class="git-line"></div>
+              </div>
+              <div class="git-branch git-branch--data">
+                <span class="git-label">cms-data</span>
+                <div class="git-line"></div>
+                <div class="git-commits">
+                  <span class="git-commit" title="Add article: Hello World"></span>
+                  <span class="git-commit" title="Update product: Widget"></span>
+                  <span class="git-commit" title="Add category: Tech"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="deep-card">
+          <div class="deep-content">
+            <span class="deep-number">03</span>
+            <h2>Relationships</h2>
+            <p>Link content types together with four relationship types. Deep population resolves nested data at query time automatically.</p>
+            <ul class="deep-list">
+              <li><strong>one-to-one</strong> — Profile → User</li>
+              <li><strong>one-to-many</strong> — Author → Articles</li>
+              <li><strong>many-to-one</strong> — Articles → Category</li>
+              <li><strong>many-to-many</strong> — Articles ↔ Tags</li>
+            </ul>
+          </div>
+          <div class="deep-visual">
+            <div class="rel-diagram">
+              <div class="rel-node">Article</div>
+              <div class="rel-lines">
+                <div class="rel-line">
+                  <span class="rel-arrow">→</span>
+                  <span class="rel-type">manyToOne</span>
+                </div>
+              </div>
+              <div class="rel-node">Category</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="deep-card deep-card--reverse">
+          <div class="deep-content">
+            <span class="deep-number">04</span>
+            <h2>Dynamic Zones</h2>
+            <p>Flexible, component-based content areas. Define reusable components (Hero, FAQ, Gallery) and let editors compose pages freely.</p>
+            <ul class="deep-list">
+              <li>Compose pages from reusable blocks</li>
+              <li>No developer needed for content layout changes</li>
+              <li>Type-safe component schemas</li>
+              <li>Supports nesting and ordering</li>
+            </ul>
+          </div>
+          <div class="deep-visual">
+            <div class="dz-preview">
+              <div class="dz-block"><span>Hero</span></div>
+              <div class="dz-block dz-block--alt"><span>Feature Grid</span></div>
+              <div class="dz-block"><span>Testimonials</span></div>
+              <div class="dz-block dz-block--alt"><span>CTA</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="deep-card">
+          <div class="deep-content">
+            <span class="deep-number">05</span>
+            <h2>RBAC & Field-Level Security</h2>
+            <p>Role-based access control at both API and field level. Ownership-based rules, conditional templates, and four built-in roles.</p>
+            <ul class="deep-list">
+              <li>Admin, Editor, Authenticated, Public roles</li>
+              <li>Field-level read/write restrictions</li>
+              <li>Ownership conditions: <code>createdBy: '${user.id}'</code></li>
+              <li>JSON-configurable permissions (rbac.json)</li>
+            </ul>
+          </div>
+          <div class="deep-visual">
+            <div class="rbac-grid">
+              <div class="rbac-role rbac-admin">Admin</div>
+              <div class="rbac-perms">Full Access</div>
+              <div class="rbac-role rbac-editor">Editor</div>
+              <div class="rbac-perms">Own Content</div>
+              <div class="rbac-role rbac-public">Public</div>
+              <div class="rbac-perms">Read Only</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="deep-card deep-card--reverse">
+          <div class="deep-content">
+            <span class="deep-number">06</span>
+            <h2>In-Memory Query Engine</h2>
+            <p>Lightning-fast queries powered by an in-memory index. Real-time sync via Chokidar watches the file system for external changes.</p>
+            <ul class="deep-list">
+              <li>&lt;50ms avg read latency</li>
+              <li>Chokidar file-system watcher for live reindex</li>
+              <li>Filter, sort, paginate, populate in one query</li>
+              <li>No restart needed after git pull</li>
+            </ul>
+          </div>
+          <div class="deep-visual">
+            <div class="perf-bars">
+              <div class="perf-bar">
+                <span class="perf-label">Read</span>
+                <div class="perf-fill" style="width: 15%">
+                  <span class="perf-val">&lt;50ms</span>
+                </div>
+              </div>
+              <div class="perf-bar">
+                <span class="perf-label">Write</span>
+                <div class="perf-fill perf-fill--write" style="width: 40%">
+                  <span class="perf-val">&lt;200ms</span>
+                </div>
+              </div>
+              <div class="perf-bar">
+                <span class="perf-label">Boot</span>
+                <div class="perf-fill perf-fill--boot" style="width: 60%">
+                  <span class="perf-val">&lt;3s</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta" style="padding-bottom: 2rem;">
+        <div class="cta-card">
+          <div class="cta-glow"></div>
+          <h2 class="cta-title">Ready to get started?</h2>
+          <p class="cta-subtitle">Set up Strux in under a minute.</p>
+          <div class="cta-actions">
+            <a href="getting-started.html" class="btn btn-primary btn-lg">Quick Start →</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Strux CMS. Open Source under MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

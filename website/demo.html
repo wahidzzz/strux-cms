@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo — Strux CMS</title>
+  <meta name="description" content="See Strux CMS in action. Explore the admin panel, content modeling, API responses, and Git-tracked content workflow.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pages.css">
+  <style>
+    /* Demo-specific interactive styles */
+    .demo-showcase {
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+      margin-bottom: 4rem;
+    }
+
+    .showcase-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .showcase-section--reverse {
+      direction: rtl;
+    }
+
+    .showcase-section--reverse > * {
+      direction: ltr;
+    }
+
+    .showcase-info {
+      padding-top: 1rem;
+    }
+
+    .showcase-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .showcase-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .showcase-desc {
+      font-size: 0.9375rem;
+      color: var(--fg-muted);
+      line-height: 1.75;
+      margin-bottom: 1.5rem;
+    }
+
+    .showcase-highlights {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .showcase-highlights li {
+      font-size: 0.875rem;
+      color: var(--fg-muted);
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .showcase-highlights li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: hsl(142, 76%, 50%);
+      font-weight: 700;
+    }
+
+    /* Admin panel mockup */
+    .admin-mockup {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 8px 40px hsla(0, 0%, 0%, 0.25);
+    }
+
+    .mockup-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .mockup-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .mockup-dot--red { background: hsl(0, 75%, 55%); }
+    .mockup-dot--yellow { background: hsl(45, 90%, 55%); }
+    .mockup-dot--green { background: hsl(142, 70%, 50%); }
+
+    .mockup-url {
+      flex: 1;
+      text-align: center;
+      font-size: 0.6875rem;
+      color: var(--fg-faint);
+      font-family: var(--font-mono);
+    }
+
+    .mockup-body {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      min-height: 280px;
+    }
+
+    .mockup-sidebar {
+      background: var(--bg-soft);
+      border-right: 1px solid var(--border-soft);
+      padding: 0.75rem;
+    }
+
+    .mockup-nav-item {
+      padding: 0.5rem 0.625rem;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--fg-faint);
+      border-radius: 6px;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all var(--duration) var(--ease);
+      cursor: pointer;
+    }
+
+    .mockup-nav-item:hover,
+    .mockup-nav-item.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .mockup-nav-icon {
+      width: 14px;
+      height: 14px;
+      opacity: 0.6;
+    }
+
+    .mockup-main {
+      padding: 1.25rem;
+    }
+
+    .mockup-heading {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .mockup-table {
+      width: 100%;
+      font-size: 0.6875rem;
+    }
+
+    .mockup-table th {
+      text-align: left;
+      padding: 0.5rem 0.625rem;
+      color: var(--fg-faint);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .mockup-table td {
+      padding: 0.625rem;
+      color: var(--fg-muted);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .mockup-status {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      font-size: 0.625rem;
+      font-weight: 600;
+      border-radius: 100px;
+    }
+
+    .mockup-status--published {
+      background: hsla(142, 70%, 50%, 0.12);
+      color: hsl(142, 70%, 50%);
+    }
+
+    .mockup-status--draft {
+      background: hsla(30, 80%, 55%, 0.12);
+      color: hsl(30, 80%, 55%);
+    }
+
+    /* Terminal mockup */
+    .terminal-mockup {
+      background: hsl(220, 25%, 6%);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 8px 40px hsla(0, 0%, 0%, 0.25);
+      font-family: var(--font-mono);
+    }
+
+    .terminal-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: hsl(220, 25%, 8%);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .terminal-body {
+      padding: 1.25rem;
+      font-size: 0.75rem;
+      line-height: 1.8;
+      color: var(--fg-muted);
+      min-height: 260px;
+    }
+
+    .term-prompt { color: hsl(142, 76%, 55%); }
+    .term-cmd { color: var(--fg); }
+    .term-output { color: var(--fg-faint); }
+    .term-highlight { color: var(--accent); }
+    .term-success { color: hsl(142, 76%, 55%); }
+
+    .term-line {
+      display: block;
+      animation: type-in 0.3s var(--ease) both;
+    }
+
+    .term-line:nth-child(1) { animation-delay: 0s; }
+    .term-line:nth-child(2) { animation-delay: 0.15s; }
+    .term-line:nth-child(3) { animation-delay: 0.3s; }
+    .term-line:nth-child(4) { animation-delay: 0.45s; }
+    .term-line:nth-child(5) { animation-delay: 0.6s; }
+    .term-line:nth-child(6) { animation-delay: 0.75s; }
+    .term-line:nth-child(7) { animation-delay: 0.9s; }
+    .term-line:nth-child(8) { animation-delay: 1.05s; }
+
+    @keyframes type-in {
+      from { opacity: 0; transform: translateX(-4px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* API response mockup */
+    .api-mockup {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 8px 40px hsla(0, 0%, 0%, 0.25);
+    }
+
+    .api-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .api-method {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      background: hsla(142, 70%, 50%, 0.12);
+      color: hsl(142, 70%, 50%);
+    }
+
+    .api-url {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+    }
+
+    .api-status {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: hsl(142, 70%, 50%);
+      font-weight: 600;
+    }
+
+    .api-body {
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1.8;
+      color: var(--fg-muted);
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    /* Interactive schema builder mockup */
+    .schema-mockup {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 8px 40px hsla(0, 0%, 0%, 0.25);
+    }
+
+    .schema-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .schema-type-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .schema-badge {
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 0.125rem 0.5rem;
+      border-radius: 100px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .schema-body {
+      padding: 1.25rem;
+    }
+
+    .schema-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.625rem 0.75rem;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      margin-bottom: 0.5rem;
+      transition: border-color var(--duration) var(--ease);
+    }
+
+    .schema-field:hover {
+      border-color: var(--accent);
+    }
+
+    .schema-field-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .schema-field-type {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      background: var(--bg-soft);
+      color: var(--fg-faint);
+    }
+
+    .schema-add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.625rem;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      font-size: 0.75rem;
+      color: var(--fg-faint);
+      cursor: pointer;
+      transition: all var(--duration) var(--ease);
+      margin-top: 0.5rem;
+    }
+
+    .schema-add-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    /* CTA section */
+    .demo-cta {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-cta-glow {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 200px;
+      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .demo-cta h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+
+    .demo-cta p {
+      font-size: 1rem;
+      color: var(--fg-muted);
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .demo-cta-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    @media (max-width: 768px) {
+      .showcase-section {
+        grid-template-columns: 1fr;
+      }
+      .showcase-section--reverse {
+        direction: ltr;
+      }
+      .mockup-body {
+        grid-template-columns: 1fr;
+      }
+      .mockup-sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav-inner container">
+      <a href="/" class="nav-logo">
+        <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.9"/>
+          <rect x="16" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="2" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="16" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span>Strux</span>
+      </a>
+      <div class="nav-links">
+        <a href="features.html" class="nav-link">Features</a>
+        <a href="docs.html" class="nav-link">Docs</a>
+        <a href="getting-started.html" class="nav-link">Get Started</a>
+        <a href="demo.html" class="nav-link nav-link--active">Demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+      <header class="page-header">
+        <h1 class="page-title">See Strux <span class="hero-gradient">in Action</span></h1>
+        <p class="page-subtitle">Explore the admin panel, content modeling, API layer, and Git-tracked content workflow.</p>
+      </header>
+
+      <div class="demo-showcase">
+
+        <!-- 1. Admin Panel -->
+        <section class="showcase-section reveal">
+          <div class="showcase-info">
+            <span class="showcase-tag">Admin Panel</span>
+            <h2 class="showcase-title">Intuitive Content Management</h2>
+            <p class="showcase-desc">A modern admin interface built with Next.js and Radix UI. Manage content types, create entries, upload media, and collaborate with your team — all from a beautiful dashboard.</p>
+            <ul class="showcase-highlights">
+              <li>List, create, edit, and delete entries</li>
+              <li>Rich text editor with media embedding</li>
+              <li>Real-time content validation</li>
+              <li>Role-based access control</li>
+              <li>Dark mode by default</li>
+            </ul>
+          </div>
+          <div class="admin-mockup">
+            <div class="mockup-titlebar">
+              <span class="mockup-dot mockup-dot--red"></span>
+              <span class="mockup-dot mockup-dot--yellow"></span>
+              <span class="mockup-dot mockup-dot--green"></span>
+              <span class="mockup-url">localhost:3001 — Strux Admin</span>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-sidebar">
+                <div class="mockup-nav-item active">
+                  <svg class="mockup-nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12v2H2V3zm0 4h8v2H2V7zm0 4h10v2H2v-2z"/></svg>
+                  Articles
+                </div>
+                <div class="mockup-nav-item">
+                  <svg class="mockup-nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h10l1 3H2l1-3zm0 4h10v8H3V6z"/></svg>
+                  Categories
+                </div>
+                <div class="mockup-nav-item">
+                  <svg class="mockup-nav-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.5-5 6-5s6 2 6 5H2z"/></svg>
+                  Authors
+                </div>
+                <div class="mockup-nav-item">
+                  <svg class="mockup-nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M3 3h10v10H3V3zm2 2v6h6V5H5z"/></svg>
+                  Media
+                </div>
+                <div class="mockup-nav-item">
+                  <svg class="mockup-nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2L2 6v6l6 4 6-4V6L8 2z"/></svg>
+                  Settings
+                </div>
+              </div>
+              <div class="mockup-main">
+                <div class="mockup-heading">Articles <span style="font-weight:400;font-size:0.75rem;color:var(--fg-faint);">(12 entries)</span></div>
+                <table class="mockup-table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Status</th>
+                      <th>Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Getting Started with Strux</td>
+                      <td><span class="mockup-status mockup-status--published">Published</span></td>
+                      <td>2 min ago</td>
+                    </tr>
+                    <tr>
+                      <td>Content Modeling Best Practices</td>
+                      <td><span class="mockup-status mockup-status--published">Published</span></td>
+                      <td>1 hour ago</td>
+                    </tr>
+                    <tr>
+                      <td>Dynamic Zones Deep Dive</td>
+                      <td><span class="mockup-status mockup-status--draft">Draft</span></td>
+                      <td>3 hours ago</td>
+                    </tr>
+                    <tr>
+                      <td>API Reference Guide</td>
+                      <td><span class="mockup-status mockup-status--published">Published</span></td>
+                      <td>Yesterday</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Schema Builder -->
+        <section class="showcase-section showcase-section--reverse reveal">
+          <div class="showcase-info">
+            <span class="showcase-tag">Content Modeling</span>
+            <h2 class="showcase-title">Schema-First Design</h2>
+            <p class="showcase-desc">Define your content types with JSON schemas. Every schema is a plain file — readable, version-controlled, and instantly reflected in the admin panel and API.</p>
+            <ul class="showcase-highlights">
+              <li>12 built-in field types</li>
+              <li>Relational fields with smart population</li>
+              <li>Dynamic zones for flexible layouts</li>
+              <li>Hot-reload: edit schema, see changes instantly</li>
+              <li>AJV-powered runtime validation</li>
+            </ul>
+          </div>
+          <div class="schema-mockup">
+            <div class="schema-titlebar">
+              <span class="schema-type-label">📋 article.schema.json</span>
+              <span class="schema-badge">Collection Type</span>
+            </div>
+            <div class="schema-body">
+              <div class="schema-field">
+                <span class="schema-field-name">title</span>
+                <span class="schema-field-type">string · required</span>
+              </div>
+              <div class="schema-field">
+                <span class="schema-field-name">slug</span>
+                <span class="schema-field-type">uid</span>
+              </div>
+              <div class="schema-field">
+                <span class="schema-field-name">content</span>
+                <span class="schema-field-type">richtext · required</span>
+              </div>
+              <div class="schema-field">
+                <span class="schema-field-name">cover_image</span>
+                <span class="schema-field-type">media</span>
+              </div>
+              <div class="schema-field">
+                <span class="schema-field-name">category</span>
+                <span class="schema-field-type">relation → category</span>
+              </div>
+              <div class="schema-field">
+                <span class="schema-field-name">is_featured</span>
+                <span class="schema-field-type">boolean</span>
+              </div>
+              <div class="schema-add-btn">+ Add Field</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. REST API -->
+        <section class="showcase-section reveal">
+          <div class="showcase-info">
+            <span class="showcase-tag">REST API</span>
+            <h2 class="showcase-title">Instant, Auto-Generated API</h2>
+            <p class="showcase-desc">Every content type automatically gets full CRUD endpoints. No code generation, no manual routing — just define a schema and start fetching.</p>
+            <ul class="showcase-highlights">
+              <li>Full CRUD: GET, POST, PUT, DELETE</li>
+              <li>Filtering, sorting & pagination</li>
+              <li>Relationship population with <code>?populate=*</code></li>
+              <li>Full-text search across fields</li>
+              <li>JWT-based authentication</li>
+            </ul>
+          </div>
+          <div class="api-mockup">
+            <div class="api-header">
+              <span class="api-method">GET</span>
+              <span class="api-url">/api/articles?populate=category&sort=createdAt:desc</span>
+              <span class="api-status">200 OK</span>
+            </div>
+            <div class="api-body">
+<pre>{
+  <span class="hl-key">"data"</span>: [
+    {
+      <span class="hl-key">"id"</span>: <span class="hl-str">"a1b2c3d4"</span>,
+      <span class="hl-key">"title"</span>: <span class="hl-str">"Getting Started with Strux"</span>,
+      <span class="hl-key">"slug"</span>: <span class="hl-str">"getting-started-with-strux"</span>,
+      <span class="hl-key">"is_featured"</span>: <span class="hl-bool">true</span>,
+      <span class="hl-key">"category"</span>: {
+        <span class="hl-key">"id"</span>: <span class="hl-str">"cat-001"</span>,
+        <span class="hl-key">"name"</span>: <span class="hl-str">"Tutorials"</span>
+      },
+      <span class="hl-key">"createdAt"</span>: <span class="hl-str">"2026-04-04T12:00:00Z"</span>,
+      <span class="hl-key">"updatedAt"</span>: <span class="hl-str">"2026-04-04T14:30:00Z"</span>
+    }
+  ],
+  <span class="hl-key">"meta"</span>: {
+    <span class="hl-key">"pagination"</span>: {
+      <span class="hl-key">"page"</span>: <span class="hl-num">1</span>,
+      <span class="hl-key">"pageSize"</span>: <span class="hl-num">10</span>,
+      <span class="hl-key">"total"</span>: <span class="hl-num">12</span>
+    }
+  }
+}</pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Git Workflow -->
+        <section class="showcase-section showcase-section--reverse reveal">
+          <div class="showcase-info">
+            <span class="showcase-tag">Git Integration</span>
+            <h2 class="showcase-title">Content Versioned by Git</h2>
+            <p class="showcase-desc">Every save, update, and delete is a Git commit. Track who changed what, when, and why. Roll back to any point in history. Branch content like you branch code.</p>
+            <ul class="showcase-highlights">
+              <li>Automatic commits on every content change</li>
+              <li>Author attribution from authenticated users</li>
+              <li>Full content history and diff support</li>
+              <li>Branch-based staging environments</li>
+              <li>Merge content like you merge code</li>
+            </ul>
+          </div>
+          <div class="terminal-mockup">
+            <div class="terminal-titlebar">
+              <span class="mockup-dot mockup-dot--red"></span>
+              <span class="mockup-dot mockup-dot--yellow"></span>
+              <span class="mockup-dot mockup-dot--green"></span>
+              <span class="mockup-url">Terminal — content history</span>
+            </div>
+            <div class="terminal-body">
+              <span class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">git log --oneline content/</span></span>
+              <span class="term-line"><span class="term-highlight">a1b2c3d</span> <span class="term-output">Update article: "Getting Started with Strux"</span></span>
+              <span class="term-line"><span class="term-highlight">e5f6a7b</span> <span class="term-output">Create article: "Dynamic Zones Deep Dive"</span></span>
+              <span class="term-line"><span class="term-highlight">c8d9e0f</span> <span class="term-output">Update category: "Tutorials" → slug changed</span></span>
+              <span class="term-line"><span class="term-highlight">1a2b3c4</span> <span class="term-output">Delete article: "Old Draft Post"</span></span>
+              <span class="term-line"><span class="term-highlight">5e6f7a8</span> <span class="term-output">Create article: "API Reference Guide"</span></span>
+              <span class="term-line">&nbsp;</span>
+              <span class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">git diff HEAD~1 content/api/article/</span></span>
+              <span class="term-line"><span class="term-success">+ "is_featured": true</span></span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Bottom CTA -->
+      <div class="demo-cta reveal">
+        <div class="demo-cta-glow"></div>
+        <h2>Ready to build with <span class="hero-gradient">Strux</span>?</h2>
+        <p>Get started in under 60 seconds. No accounts, no credit cards, no database setup.</p>
+        <div class="demo-cta-actions">
+          <a href="getting-started.html" class="btn btn-primary btn-lg">Get Started</a>
+          <a href="https://github.com/wahidzzz/jayson-cms" class="btn btn-ghost btn-lg" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            View on GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Strux CMS. Open Source under MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

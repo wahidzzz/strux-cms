@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation — Strux CMS</title>
+  <meta name="description" content="Comprehensive documentation for Strux CMS covering installation, content modeling, relationships, dynamic zones, API usage, and deployment.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav-inner container">
+      <a href="/" class="nav-logo">
+        <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.9"/>
+          <rect x="16" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="2" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="16" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span>Strux</span>
+      </a>
+      <div class="nav-links">
+        <a href="features.html" class="nav-link">Features</a>
+        <a href="docs.html" class="nav-link nav-link--active">Docs</a>
+        <a href="getting-started.html" class="nav-link">Get Started</a>
+        <a href="demo.html" class="nav-link">Demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+      <div class="docs-layout">
+        <!-- Sidebar -->
+        <aside class="docs-sidebar">
+          <nav class="docs-nav">
+            <span class="docs-nav-section">Getting Started</span>
+            <a href="#introduction" class="docs-nav-link active">Introduction</a>
+            <a href="#installation" class="docs-nav-link">Installation</a>
+            <a href="#project-structure" class="docs-nav-link">Project Structure</a>
+
+            <span class="docs-nav-section">Core Concepts</span>
+            <a href="#collection-types" class="docs-nav-link">Collection Types</a>
+            <a href="#single-types" class="docs-nav-link">Single Types</a>
+            <a href="#relationships" class="docs-nav-link">Relationships</a>
+            <a href="#dynamic-zones" class="docs-nav-link">Dynamic Zones</a>
+
+            <span class="docs-nav-section">Guides</span>
+            <a href="#content-modeling" class="docs-nav-link">Content Modeling</a>
+            <a href="#api-usage" class="docs-nav-link">API Usage</a>
+            <a href="#deployment" class="docs-nav-link">Deployment</a>
+          </nav>
+        </aside>
+
+        <!-- Content -->
+        <div class="docs-content">
+          <h2 id="introduction">Introduction</h2>
+          <p>Strux is a <strong>Git-native, JSON-based Content Management System</strong> that turns your file system into a database and Git into your database engine. Instead of PostgreSQL or MongoDB, all content lives as plain JSON files versioned by Git.</p>
+
+          <div class="docs-callout">
+            <p><strong>Content-as-Code:</strong> Everything — schemas, content, config — is a file. Version it, branch it, merge it, diff it. Just like your code.</p>
+          </div>
+
+          <h3>Why Strux?</h3>
+          <ul>
+            <li><strong>Zero database infrastructure</strong> — no hosting, no backups, no migrations</li>
+            <li><strong>Native Git versioning</strong> — full history, author attribution, branch-based staging</li>
+            <li><strong>Perfect CI/CD integration</strong> — frontends read from the file system at build time</li>
+            <li><strong>Developer-first</strong> — JSON schemas, REST API, TypeScript throughout</li>
+          </ul>
+
+          <h2 id="installation">Installation</h2>
+          <h3>Quick Start (Recommended)</h3>
+          <pre><code>npx create-strux-app my-project
+cd my-project
+pnpm install
+pnpm dev</code></pre>
+
+          <h3>Manual Setup</h3>
+          <p>Clone the repository and install dependencies manually:</p>
+          <pre><code>git clone https://github.com/wahidzzz/jayson-cms.git my-project
+cd my-project
+pnpm install
+pnpm build
+pnpm dev</code></pre>
+
+          <h3>Requirements</h3>
+          <table>
+            <thead>
+              <tr><th>Dependency</th><th>Version</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Node.js</td><td>≥ 20.0.0</td></tr>
+              <tr><td>Git</td><td>≥ 2.30</td></tr>
+              <tr><td>pnpm (recommended)</td><td>≥ 8.0</td></tr>
+            </tbody>
+          </table>
+
+          <h2 id="project-structure">Project Structure</h2>
+          <p>Strux is organized as a Turborepo monorepo with three packages:</p>
+          <pre><code>my-project/
+├── packages/
+│   ├── core/          # Core engines (FileEngine, GitEngine, etc.)
+│   ├── api/           # REST API layer
+│   └── admin/         # Next.js admin interface
+├── content/           # Content storage (JSON files)
+│   └── api/           # Organized by content type
+├── schema/            # Content type definitions
+│   ├── article.schema.json
+│   ├── category.schema.json
+│   └── profile.schema.json
+├── uploads/           # Media file storage
+├── .cms/              # System files (RBAC, users, index)
+├── package.json       # Root workspace config
+└── turbo.json         # Build pipeline</code></pre>
+
+          <h3>Package Overview</h3>
+          <table>
+            <thead>
+              <tr><th>Package</th><th>Purpose</th><th>Key Tech</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>@cms/core</code></td><td>Business logic, data engines</td><td>TypeScript, AJV, Chokidar</td></tr>
+              <tr><td><code>@cms/api</code></td><td>REST API endpoints</td><td>Express, JWT, bcrypt</td></tr>
+              <tr><td><code>@cms/admin</code></td><td>Admin panel UI</td><td>Next.js 14, Tailwind, Radix UI</td></tr>
+            </tbody>
+          </table>
+
+          <h2 id="collection-types">Collection Types</h2>
+          <p>Collection types represent content that can have multiple entries — like blog posts, products, or users. Each collection type is defined by a JSON Schema file in the <code>schema/</code> directory.</p>
+
+          <h3>Defining a Collection Type</h3>
+          <pre><code>{
+  "displayName": "Article",
+  "kind": "collectionType",
+  "singularName": "article",
+  "pluralName": "articles",
+  "description": "Blog posts and news articles.",
+  "apiId": "article",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "is_featured": {
+      "type": "boolean",
+      "required": false
+    }
+  }
+}</code></pre>
+
+          <h3>Supported Field Types</h3>
+          <table>
+            <thead>
+              <tr><th>Type</th><th>Description</th><th>Example</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>string</code></td><td>Short text</td><td>Titles, names</td></tr>
+              <tr><td><code>text</code></td><td>Long text</td><td>Summaries, excerpts</td></tr>
+              <tr><td><code>richtext</code></td><td>Rich text (HTML)</td><td>Article body</td></tr>
+              <tr><td><code>number</code></td><td>Integer or float</td><td>Price, count</td></tr>
+              <tr><td><code>boolean</code></td><td>True/false</td><td>Published, featured</td></tr>
+              <tr><td><code>date</code></td><td>Date string</td><td>Published date</td></tr>
+              <tr><td><code>json</code></td><td>Arbitrary JSON</td><td>Metadata, tags</td></tr>
+              <tr><td><code>uid</code></td><td>Unique identifier/slug</td><td>URL slug</td></tr>
+              <tr><td><code>media</code></td><td>File reference</td><td>Images, documents</td></tr>
+              <tr><td><code>relation</code></td><td>Content relationship</td><td>Author → Articles</td></tr>
+              <tr><td><code>component</code></td><td>Reusable component</td><td>SEO meta, address</td></tr>
+              <tr><td><code>dynamiczone</code></td><td>Flexible block area</td><td>Page sections</td></tr>
+            </tbody>
+          </table>
+
+          <h2 id="single-types">Single Types</h2>
+          <p>Single types represent content with only one entry — like global settings, a homepage, or site metadata.</p>
+          <pre><code>{
+  "displayName": "Global Settings",
+  "kind": "singleType",
+  "singularName": "global-settings",
+  "attributes": {
+    "site_name": { "type": "string", "required": true },
+    "tagline": { "type": "string" },
+    "logo": { "type": "media" },
+    "social_links": { "type": "json" }
+  }
+}</code></pre>
+
+          <div class="docs-callout">
+            <p><strong>Note:</strong> Single types always have exactly one entry. The admin panel shows an edit form instead of a list view.</p>
+          </div>
+
+          <h2 id="relationships">Relationships</h2>
+          <p>Strux supports four types of relationships between content types:</p>
+
+          <h3>one-to-one</h3>
+          <p>A single entry relates to exactly one entry in another type.</p>
+          <pre><code>// In user.schema.json
+"profile": {
+  "type": "relation",
+  "relation": {
+    "target": "profile",
+    "relation": "oneToOne"
+  }
+}</code></pre>
+
+          <h3>one-to-many</h3>
+          <p>One entry can relate to many entries in another type.</p>
+          <pre><code>// In author.schema.json
+"articles": {
+  "type": "relation",
+  "relation": {
+    "target": "article",
+    "relation": "oneToMany"
+  }
+}</code></pre>
+
+          <h3>many-to-one</h3>
+          <p>Many entries relate to one entry (the inverse of one-to-many).</p>
+          <pre><code>// In article.schema.json
+"category": {
+  "type": "relation",
+  "relation": {
+    "target": "category",
+    "relation": "manyToOne"
+  }
+}</code></pre>
+
+          <h3>many-to-many</h3>
+          <p>Multiple entries can relate to multiple entries in another type.</p>
+          <pre><code>// In article.schema.json
+"tags": {
+  "type": "relation",
+  "relation": {
+    "target": "tag",
+    "relation": "manyToMany"
+  }
+}</code></pre>
+
+          <h3>Population</h3>
+          <p>Relationships are resolved at query time using the <code>populate</code> query parameter:</p>
+          <pre><code>GET /api/articles?populate=author,category
+GET /api/articles?populate=*  // Populate all relations</code></pre>
+
+          <h2 id="dynamic-zones">Dynamic Zones</h2>
+          <p>Dynamic zones let editors compose pages from reusable content blocks (components). Each block has its own schema and can be added, removed, or reordered by editors.</p>
+
+          <h3>Defining Components</h3>
+          <p>Components live in the <code>schema/components/</code> directory:</p>
+          <pre><code>// schema/components/hero.json
+{
+  "displayName": "Hero",
+  "attributes": {
+    "heading": { "type": "string", "required": true },
+    "subheading": { "type": "text" },
+    "background_image": { "type": "media" },
+    "cta_text": { "type": "string" },
+    "cta_url": { "type": "string" }
+  }
+}</code></pre>
+
+          <h3>Using Dynamic Zones in Schemas</h3>
+          <pre><code>// In page.schema.json
+"body": {
+  "type": "dynamiczone",
+  "components": ["hero", "feature-grid", "testimonials", "cta"]
+}</code></pre>
+
+          <h3>Content Structure</h3>
+          <p>Dynamic zone content is stored as an array of typed blocks:</p>
+          <pre><code>{
+  "body": [
+    {
+      "__component": "hero",
+      "heading": "Welcome to Our Site",
+      "subheading": "We build amazing things"
+    },
+    {
+      "__component": "feature-grid",
+      "features": [...]
+    }
+  ]
+}</code></pre>
+
+          <h2 id="content-modeling">Content Modeling Guide</h2>
+          <p>Effective content modeling is the foundation of a good CMS experience. Here are best practices for Strux:</p>
+
+          <h3>1. Start with the API Consumer</h3>
+          <p>Think about how your frontend will consume the data. Design schemas that match your component structure.</p>
+
+          <h3>2. Use Components for Reusable Structures</h3>
+          <p>If multiple content types share the same fields (e.g., SEO metadata, address blocks), extract them into components.</p>
+
+          <h3>3. Choose the Right Relationship Type</h3>
+          <table>
+            <thead>
+              <tr><th>Scenario</th><th>Relationship</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>User has one profile</td><td>one-to-one</td></tr>
+              <tr><td>Author writes many articles</td><td>one-to-many</td></tr>
+              <tr><td>Article belongs to one category</td><td>many-to-one</td></tr>
+              <tr><td>Article has many tags, tag has many articles</td><td>many-to-many</td></tr>
+            </tbody>
+          </table>
+
+          <h3>4. Use Dynamic Zones for Flexible Pages</h3>
+          <p>For landing pages or marketing pages where the layout varies, use dynamic zones instead of fixed fields.</p>
+
+          <h2 id="api-usage">API Usage</h2>
+          <p>Strux provides a REST API for full CRUD operations on your content.</p>
+
+          <h3>Base URL</h3>
+          <pre><code>http://localhost:3000/api</code></pre>
+
+          <h3>Endpoints</h3>
+          <table>
+            <thead>
+              <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>GET</code></td><td>/api/:pluralName</td><td>List all entries</td></tr>
+              <tr><td><code>GET</code></td><td>/api/:pluralName/:id</td><td>Get single entry</td></tr>
+              <tr><td><code>POST</code></td><td>/api/:pluralName</td><td>Create entry</td></tr>
+              <tr><td><code>PUT</code></td><td>/api/:pluralName/:id</td><td>Update entry</td></tr>
+              <tr><td><code>DELETE</code></td><td>/api/:pluralName/:id</td><td>Delete entry</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Query Parameters</h3>
+          <pre><code>// Pagination
+GET /api/articles?page=1&pageSize=10
+
+// Sorting
+GET /api/articles?sort=createdAt:desc
+
+// Filtering
+GET /api/articles?filters[is_featured]=true
+
+// Population
+GET /api/articles?populate=author,category
+
+// Search
+GET /api/articles?search=hello</code></pre>
+
+          <h3>Authentication</h3>
+          <pre><code>// Register
+POST /api/auth/register
+{ "email": "user@example.com", "password": "secure123", "username": "user1" }
+
+// Login
+POST /api/auth/login
+{ "email": "user@example.com", "password": "secure123" }
+
+// Returns: { "token": "jwt-token-here", "user": { ... } }
+
+// Use token in subsequent requests
+Authorization: Bearer jwt-token-here</code></pre>
+
+          <h2 id="deployment">Deployment Guide</h2>
+          <p>Strux can be deployed anywhere Node.js runs. Here are the most common deployment patterns:</p>
+
+          <h3>Self-Hosted (VPS / VM)</h3>
+          <pre><code># Build for production
+pnpm build
+
+# Start the server
+NODE_ENV=production pnpm start
+
+# Or use PM2
+pm2 start npm --name "strux" -- start</code></pre>
+
+          <h3>Docker</h3>
+          <pre><code>FROM node:20-alpine
+WORKDIR /app
+COPY . .
+RUN npm install -g pnpm && pnpm install && pnpm build
+EXPOSE 3000
+CMD ["pnpm", "start"]</code></pre>
+
+          <h3>Environment Variables</h3>
+          <table>
+            <thead>
+              <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>PORT</code></td><td>3000</td><td>Server port</td></tr>
+              <tr><td><code>JWT_SECRET</code></td><td>—</td><td>Secret for JWT signing (required)</td></tr>
+              <tr><td><code>NODE_ENV</code></td><td>development</td><td>Environment mode</td></tr>
+              <tr><td><code>CONTENT_DIR</code></td><td>./content</td><td>Content storage path</td></tr>
+              <tr><td><code>SCHEMA_DIR</code></td><td>./schema</td><td>Schema definitions path</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-callout">
+            <p><strong>Important:</strong> Always set a strong <code>JWT_SECRET</code> in production. Never commit it to your repository.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Strux CMS. Open Source under MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+    // Docs sidebar active link tracking
+    (function() {
+      const links = document.querySelectorAll('.docs-nav-link');
+      const sections = document.querySelectorAll('.docs-content h2[id]');
+
+      function updateActive() {
+        let current = '';
+        sections.forEach(s => {
+          if (window.scrollY >= s.offsetTop - 120) {
+            current = s.id;
+          }
+        });
+        links.forEach(l => {
+          l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+        });
+      }
+
+      window.addEventListener('scroll', updateActive, { passive: true });
+      updateActive();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started — Strux CMS</title>
+  <meta name="description" content="Set up Strux CMS in under a minute. Install, configure, and start building content-driven applications.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav-inner container">
+      <a href="/" class="nav-logo">
+        <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.9"/>
+          <rect x="16" y="2" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="2" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="16" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span>Strux</span>
+      </a>
+      <div class="nav-links">
+        <a href="features.html" class="nav-link">Features</a>
+        <a href="docs.html" class="nav-link">Docs</a>
+        <a href="getting-started.html" class="nav-link nav-link--active">Get Started</a>
+        <a href="demo.html" class="nav-link">Demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="container">
+      <header class="page-header">
+        <span class="section-tag">Quick Start</span>
+        <h1 class="page-title">Up and running in<br><span class="hero-gradient">under a minute.</span></h1>
+        <p class="page-subtitle">Three commands to a fully functional CMS with content types, relationships, and an admin panel.</p>
+      </header>
+
+      <!-- Prerequisites -->
+      <div class="docs-callout" style="max-width: 720px; margin: 0 auto 3rem;">
+        <p><strong>Prerequisites:</strong> Node.js ≥ 20.0.0 and pnpm (recommended), npm, or yarn.</p>
+      </div>
+
+      <!-- Steps -->
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>Create a new project</h3>
+            <p>Use the CLI tool to scaffold a new Strux project with the default template, sample schemas, and dummy content.</p>
+            <pre><code>npx create-strux-app my-project</code></pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Install dependencies</h3>
+            <p>Navigate to your project and install all required packages.</p>
+            <pre><code>cd my-project
+pnpm install</code></pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>Start development</h3>
+            <p>Launch the CMS with a single command. The admin panel will be available at <code>http://localhost:3000</code>.</p>
+            <pre><code>pnpm dev</code></pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Create your first schema</h3>
+            <p>Define a content type by adding a JSON Schema file to the <code>schema/</code> directory.</p>
+            <pre><code>{
+  "displayName": "Blog Post",
+  "kind": "collectionType",
+  "singularName": "blog-post",
+  "pluralName": "blog-posts",
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title" },
+    "body": { "type": "richtext", "required": true },
+    "published": { "type": "boolean" }
+  }
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h3>Start creating content</h3>
+            <p>Open the admin panel, navigate to Content Manager, and start adding entries. Every save creates a Git commit automatically.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- What's Next -->
+      <section style="max-width: 720px; margin: 4rem auto 0;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">What's Next?</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <a href="docs.html#collection-types" class="feature-card" style="text-decoration: none;">
+            <h3 class="feature-title" style="font-size: 1rem;">Collection Types →</h3>
+            <p class="feature-desc">Learn how to define and use collection types.</p>
+          </a>
+          <a href="docs.html#relationships" class="feature-card" style="text-decoration: none;">
+            <h3 class="feature-title" style="font-size: 1rem;">Relationships →</h3>
+            <p class="feature-desc">Connect content types with relational links.</p>
+          </a>
+          <a href="docs.html#dynamic-zones" class="feature-card" style="text-decoration: none;">
+            <h3 class="feature-title" style="font-size: 1rem;">Dynamic Zones →</h3>
+            <p class="feature-desc">Build flexible, component-based content areas.</p>
+          </a>
+          <a href="docs.html#api-usage" class="feature-card" style="text-decoration: none;">
+            <h3 class="feature-title" style="font-size: 1rem;">API Usage →</h3>
+            <p class="feature-desc">Query and manage content through the REST API.</p>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Strux CMS. Open Source under MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
