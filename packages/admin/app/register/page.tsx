@@ -181,7 +181,7 @@ export default function RegisterPage() {
         </form>
 
         <div className="text-center text-xs text-muted-foreground border-t border-border pt-4">
-          Jayson CMS — v0.1.0
+          Strux CMS — v0.1.0
         </div>
       </div>
     </div>

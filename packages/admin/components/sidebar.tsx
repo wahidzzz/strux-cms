@@ -125,7 +125,7 @@ export function Sidebar() {
                   </div>
               )}
               <span className="text-lg font-bold tracking-tight truncate max-w-[140px]">
-                {settings?.brandName || 'Jayson CMS'}
+                {settings?.brandName || 'Strux CMS'}
               </span>
             </Link>
           </div>

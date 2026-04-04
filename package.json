@@ -1,5 +1,5 @@
 {
-  "name": "git-native-json-cms",
+  "name": "strux-cms",
   "version": "0.1.0",
   "private": true,
   "description": "Production-grade CMS using JSON file storage and Git versioning",

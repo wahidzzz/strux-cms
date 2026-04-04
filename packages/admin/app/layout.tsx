@@ -8,7 +8,7 @@ import { SettingsProvider } from '@/components/settings-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Jayson CMS Admin',
+  title: 'Strux CMS Admin',
   description: 'Production-grade CMS using JSON file storage and Git versioning',
 }
 

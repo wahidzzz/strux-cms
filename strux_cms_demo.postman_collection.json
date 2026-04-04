@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "84729381-0123-4567-89ab-cdef01234567",
-		"name": "Jayson CMS Demo API",
-		"description": "API collection for testing and demonstrating Jayson CMS headless capabilities.",
+		"name": "Strux CMS Demo API",
+		"description": "API collection for testing and demonstrating Strux CMS headless capabilities.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [

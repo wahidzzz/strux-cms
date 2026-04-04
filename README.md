@@ -1,8 +1,8 @@
-# Jayson: JSON Git-Native CMS - Alpha Release Documentation
+# Strux: JSON Git-Native CMS - Alpha Release Documentation
 
-Welcome to the Alpha Release of **Jayson**, a revolutionary Git-Native JSON-based Content Management System (CMS). Jayson challenges the traditional CMS paradigm by replacing heavy database infrastructure with lightweight, file-based JSON storage, versioned natively via Git.
+Welcome to the Alpha Release of **Strux**, a revolutionary Git-Native JSON-based Content Management System (CMS). Strux challenges the traditional CMS paradigm by replacing heavy database infrastructure with lightweight, file-based JSON storage, versioned natively via Git.
 
-This document serves as an in-depth technical dive into Jayson's architecture, security engineering, performance profile, and roadmap.
+This document serves as an in-depth technical dive into Strux's architecture, security engineering, performance profile, and roadmap.
 
 ---
 
@@ -16,7 +16,7 @@ For years, Headless CMS platforms have relied on traditional relational or NoSQL
 
 ### The "Content-as-Code" Paradigm
 
-By storing all schemas, configurations, and content as JSON files, Jayson turns your file system into your database and **Git into your database engine**.
+By storing all schemas, configurations, and content as JSON files, Strux turns your file system into your database and **Git into your database engine**.
 
 **What Problems Does It Solve?**
 1. **Zero Database Infrastructure:** No PostgreSQL, no MongoDB. Only a file system.
@@ -28,7 +28,7 @@ By storing all schemas, configurations, and content as JSON files, Jayson turns 
 
 ## 2. Technical Profile & Performance
 
-Jayson is engineered for high performance and reliability, targeting the following metrics:
+Strux is engineered for high performance and reliability, targeting the following metrics:
 
 | Metric | Target | Description |
 | :--- | :--- | :--- |
@@ -65,12 +65,12 @@ Security is built into the engine layer, ensuring data protection even if the AP
 ## 4. Architecture Deep Dive
 
 ### 4.1. GitEngine & Worktree Architecture
-To prevent commit pollution, Jayson utilizes **Git Worktrees**:
+To prevent commit pollution, Strux utilizes **Git Worktrees**:
 - **Data Branch:** Content lives on an orphan branch named `cms-data`.
 - **Hybrid Mapping:** The `content/` directory is mapped to `cms-data` using `git worktree add`, while code/config remains on the `main` branch.
 
 ### 4.2. QueryEngine & Real-time Sync
-Querying a file system directly is slow, so Jayson maintains a high-performance **In-Memory Index**.
+Querying a file system directly is slow, so Strux maintains a high-performance **In-Memory Index**.
 - **Index Sync:** Uses **Chokidar** to watch the file system. External modifications (like a `git pull`) trigger instant index refreshes without requiring a system restart.
 - **Population:** Inherently resolves deep relationships and dynamic zones during the query phase.
 
@@ -89,7 +89,7 @@ Querying a file system directly is slow, so Jayson maintains a high-performance 
 
 ## 6. Roadmap & Future Plans
 
-Jayson is currently in Alpha. Planned features include:
+Strux is currently in Alpha. Planned features include:
 
 - [ ] **Infrastructure Hooks:** Build triggers for Vercel/Netlify via MetadataEngine webhooks.
 - [ ] **Cloud Media Providers:** Support for S3, Cloudflare R2, and Cloudinary.
@@ -101,4 +101,4 @@ Jayson is currently in Alpha. Planned features include:
 
 ## 7. Conclusion
 
-Jayson CMS bridges the gap between the speed of local development and the power of enterprise CMS platforms. By treating **Content-as-Code**, it provides infinite history and zero-cost environment synchronization for modern production teams.
+Strux CMS bridges the gap between the speed of local development and the power of enterprise CMS platforms. By treating **Content-as-Code**, it provides infinite history and zero-cost environment synchronization for modern production teams.

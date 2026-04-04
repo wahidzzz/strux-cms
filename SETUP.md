@@ -1,6 +1,6 @@
 # Project Setup Guide
 
-This document describes the initial project setup for the Jayson CMS.
+This document describes the initial project setup for the Strux CMS.
 
 ## Project Structure
 

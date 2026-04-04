@@ -61,7 +61,7 @@ export default function GeneralSettings() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">General Settings</h1>
         <p className="text-muted-foreground mt-1">
-          Customize Jayson CMS branding and configuration.
+          Customize Strux CMS branding and configuration.
         </p>
       </div>
 
@@ -93,7 +93,7 @@ export default function GeneralSettings() {
                 className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                 placeholder="e.g., Acme Corp CMS"
               />
-              <p className="text-xs text-muted-foreground">This will replace &quot;Jayson CMS&quot; in the sidebar and titles.</p>
+              <p className="text-xs text-muted-foreground">This will replace &quot;Strux CMS&quot; in the sidebar and titles.</p>
             </div>
 
             <div className="space-y-2">

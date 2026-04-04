@@ -1,7 +1,7 @@
 {
   "name": "@cms/admin",
   "version": "0.1.0",
-  "description": "Admin UI for Jayson CMS built with Next.js 14",
+  "description": "Admin UI for Strux CMS built with Next.js 14",
   "private": true,
   "scripts": {
     "dev": "next dev",
