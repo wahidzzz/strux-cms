@@ -120,9 +120,12 @@ export function Sidebar() {
               {settings?.logoUrl ? (
                 <img src={settings.logoUrl} alt="Logo" className="w-8 h-8 rounded" />
               ) : (
-                  <div className="bg-primary rounded-lg p-1.5">
-                    <Layers className="h-5 w-5 text-primary-foreground" />
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                    <rect x="2" y="2" width="10" height="10" rx="2" fill="hsl(var(--primary))" opacity="0.9"/>
+                    <rect x="16" y="2" width="10" height="10" rx="2" fill="hsl(var(--primary))" opacity="0.6"/>
+                    <rect x="2" y="16" width="10" height="10" rx="2" fill="hsl(var(--primary))" opacity="0.6"/>
+                    <rect x="16" y="16" width="10" height="10" rx="2" fill="hsl(var(--primary))" opacity="0.3"/>
+                  </svg>
               )}
               <span className="text-lg font-bold tracking-tight truncate max-w-[140px]">
                 {settings?.brandName || 'Strux CMS'}
