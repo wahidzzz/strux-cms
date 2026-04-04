@@ -253,7 +253,11 @@ async function main() {
     '.vscode',
     '.turbo',
     'SETUP.md',
-    'strux_cms_demo.postman_collection.json'
+    'strux_cms_demo.postman_collection.json',
+    'pnpm-lock.yaml',
+    'package-lock.json',
+    'yarn.lock',
+    'bun.lockb'
   ];
   for (const f of cleanupFiles) {
     const fPath = path.join(targetDir, f);
