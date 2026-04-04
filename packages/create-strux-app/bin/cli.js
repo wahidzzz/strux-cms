@@ -352,13 +352,30 @@ async function main() {
     info('Installing dependencies (this may take a minute)...');
     try {
       const pmCmd = detectPackageManager();
+
+      // Fix workspace:* protocol for non-pnpm package managers
+      if (pmCmd !== 'pnpm') {
+        const packagesDir = path.join(targetDir, 'packages');
+        if (fs.existsSync(packagesDir)) {
+          const pkgs = fs.readdirSync(packagesDir);
+          for (const pkgName of pkgs) {
+            const pkgPath = path.join(packagesDir, pkgName, 'package.json');
+            if (fs.existsSync(pkgPath)) {
+              let content = fs.readFileSync(pkgPath, 'utf8');
+              content = content.replace(/"workspace:\*"/g, '"*"');
+              fs.writeFileSync(pkgPath, content, 'utf8');
+            }
+          }
+        }
+      }
+
       execSync(`${pmCmd} install`, {
         cwd: targetDir,
         stdio: 'inherit'
       });
       success('Dependencies installed');
     } catch {
-      warn('Dependency installation failed. Run "pnpm install" manually.');
+      warn('Dependency installation failed. Run manual installation (e.g. "npm install").');
     }
   }
 
