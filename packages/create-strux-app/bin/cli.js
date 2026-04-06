@@ -267,6 +267,30 @@ async function main() {
   }
   success('Cleaned up project files');
 
+  // --- 2b. Reset .cms/ for fresh install ---
+  const cmsDir = path.join(targetDir, '.cms');
+  const cmsCleanup = [
+    'users',           // directory — stale user accounts
+    'config.json',     // will be auto-generated with fresh JWT secret on first boot
+    'rbac.json',       // will be auto-generated with default roles on first boot
+    'media.json',      // no media in a fresh project
+    'metadata.json',   // no metadata in a fresh project
+    'config',          // config subdirectory
+  ];
+  for (const item of cmsCleanup) {
+    const itemPath = path.join(cmsDir, item);
+    if (fs.existsSync(itemPath)) {
+      fs.removeSync(itemPath);
+    }
+  }
+  // Ensure the .cms directory itself and .gitkeep still exist
+  fs.ensureDirSync(cmsDir);
+  const gitkeepPath = path.join(cmsDir, '.gitkeep');
+  if (!fs.existsSync(gitkeepPath)) {
+    fs.writeFileSync(gitkeepPath, '# CMS system directory — managed automatically\n');
+  }
+  success('Reset .cms/ for fresh install');
+
   // --- 3. Write schemas ---
   const schemas = STARTER_SCHEMAS[template] || [];
   const schemaDir = path.join(targetDir, 'schema');
@@ -403,6 +427,9 @@ async function main() {
   log('');
   log(`  ${kleur.gray('Admin panel:')}  ${kleur.underline('http://localhost:3001')}`);
   log(`  ${kleur.gray('API server:')}   ${kleur.underline('http://localhost:3000')}`);
+  log('');
+  log(`  ${kleur.yellow('→')} On first launch, the admin panel will guide you through`);
+  log(`    creating your administrator account.`);
   log('');
   log(`  ${kleur.gray('Docs:')}  ${kleur.underline('https://github.com/wahidzzz/strux-cms')}`);
   log('');

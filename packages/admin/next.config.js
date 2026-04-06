@@ -4,12 +4,12 @@ const nextConfig = {
   transpilePackages: ['@cms/core', '@cms/api'],
   webpack: (config, { isServer }) => {
     if (isServer) {
-      config.externals.push('sharp');
+      config.externals.push('sharp', 'chokidar', 'fsevents');
     }
     return config;
   },
   experimental: {
-    serverComponentsExternalPackages: ['sharp'],
+    serverComponentsExternalPackages: ['sharp', 'chokidar', 'fsevents'],
     serverActions: {
       bodySizeLimit: '10mb'
     }
