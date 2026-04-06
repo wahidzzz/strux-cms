@@ -1,6 +1,6 @@
 {
   "name": "create-strux-app",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "CLI to scaffold a new Strux CMS project in seconds.",
   "license": "MIT",
   "bin": {
