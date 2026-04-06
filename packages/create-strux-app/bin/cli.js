@@ -324,6 +324,7 @@ async function main() {
       const id = generateId();
       const fullEntry = {
         id,
+        documentId: id,
         ...entry,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()

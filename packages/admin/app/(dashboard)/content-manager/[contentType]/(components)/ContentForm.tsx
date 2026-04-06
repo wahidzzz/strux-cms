@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Save, CheckCircle, Clock, Trash2, Image as ImageIcon, Link as LinkIcon, FileText, Eye, EyeOff, Search, ChevronRight } from 'lucide-react'
+import { Save, CheckCircle, Clock, Trash2, Image as ImageIcon, Link as LinkIcon, FileText, Eye, EyeOff, Search, ChevronRight, ChevronUp, ChevronDown, Layers, Plus, GripVertical } from 'lucide-react'
 import { MediaInput } from './MediaInput'
 
 type ContentFormProps = {
@@ -20,6 +20,7 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
   const [error, setError] = useState<string | null>(null)
   const [relationEntries, setRelationEntries] = useState<Record<string, any[]>>({})
   const [showMarkdownPreview, setShowMarkdownPreview] = useState<Record<string, boolean>>({})
+  const [collapsedItems, setCollapsedItems] = useState<Record<string, boolean>>({})
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }))
@@ -163,13 +164,21 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
           {fieldName} {def.required && <span className="text-destructive">*</span>}
         </label>
 
-        {def.type === 'string' || def.type === 'email' || def.type === 'uid' ? (
+        {def.type === 'string' || def.type === 'email' || def.type === 'uid' || def.type === 'password' ? (
           <input
-            type={def.type === 'email' ? 'email' : 'text'}
+            type={def.type === 'email' ? 'email' : def.type === 'password' ? 'password' : 'text'}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
             placeholder={`Enter ${fieldName}...`}
+            required={def.required}
+          />
+        ) : def.type === 'date' || def.type === 'datetime' ? (
+          <input
+            type={def.type === 'date' ? 'date' : 'datetime-local'}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm bg-background"
             required={def.required}
           />
         ) : def.type === 'number' ? (
@@ -339,68 +348,182 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
                   ) : def.type === 'media' ? (
                         <MediaInput value={value} onChange={onChange} fieldName={fieldName} />
                       ) : def.type === 'dynamiczone' ? (
-                        <div className="space-y-4 rounded-xl">
-                          {/* Render existing components in the dynamic zone */}
-                          {(Array.isArray(value) ? value : []).map((zoneItem: any, index: number) => {
-                            const compName = zoneItem.__component
-                            const compDef = allSchemas.find(s => s.apiId === compName)
+                        <div className="space-y-4 rounded-xl mt-2 animate-in fade-in slide-in-from-top-2">
+                          {/* Zone Header with label and count */}
+                          <div className="flex items-center justify-between pb-2 px-1 border-b border-border/40">
+                            <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em] flex items-center gap-2">
+                              <Layers className="w-3.5 h-3.5 text-primary/60" />
+                              {fieldName}
+                            </h4>
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-mono">
+                              {(Array.isArray(value) ? value : []).length} items
+                            </span>
+                          </div>
 
-                            return (
-                              <div key={`${compName}-${index}`} className="border border-border/60 rounded-lg bg-card/50 overflow-hidden group">
-                                <div className="flex items-center justify-between p-3 bg-muted/20 border-b border-border/40">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase tracking-wider">
-                                      {compDef?.displayName || compName}
+                          {/* Existing components list */}
+                          <div className="space-y-3">
+                            {(Array.isArray(value) ? value : []).map((zoneItem: any, index: number) => {
+                              const compName = zoneItem.__component
+                              const compDef = allSchemas.find(s => s.apiId === compName)
+                              const itemId = `${fieldName}-${index}`
+                              const isCollapsed = collapsedItems[itemId]
+
+                              return (
+                                <div key={itemId} className={`border border-border/80 rounded-xl bg-card border-l-[4px] shadow-sm transition-all overflow-hidden ${isCollapsed ? 'hover:shadow-md' : 'shadow-md'} ${isCollapsed ? 'border-l-muted-foreground/30' : 'border-l-primary'}`}>
+                                  {/* Component Header / Controls */}
+                                  <div 
+                                    className="flex items-center justify-between p-3 bg-muted/40 cursor-pointer select-none group"
+                                    onClick={() => setCollapsedItems(prev => ({ ...prev, [itemId]: !isCollapsed }))}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className="p-1 px-1.5 rounded bg-muted/50 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                        <GripVertical className="w-3.5 h-3.5 opacity-60" />
+                                      </div>
+                                      <span className="text-xs font-bold uppercase tracking-wider text-foreground/80">
+                                        {compDef?.displayName || compName}
+                                      </span>
+                                      <span className="text-[10px] text-muted-foreground font-mono opacity-60 group-hover:opacity-100 transition-opacity">
+                                        #{index + 1}
+                                      </span>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-1.5">
+                                      {/* Order Controls */}
+                                      <div className="flex bg-muted/60 p-0.5 rounded-lg border border-border/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button
+                                          type="button"
+                                          disabled={index === 0}
+                                          title="Move Up"
+                                          className="p-1 text-muted-foreground hover:text-primary transition-colors disabled:opacity-20"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            const newZone = [...value]
+                                            const temp = newZone[index]
+                                            newZone[index] = newZone[index - 1]
+                                            newZone[index - 1] = temp
+                                            onChange(newZone)
+                                          }}
+                                        >
+                                          <ChevronUp className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                          type="button"
+                                          disabled={index === value.length - 1}
+                                          title="Move Down"
+                                          className="p-1 text-muted-foreground hover:text-primary transition-colors disabled:opacity-20"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            const newZone = [...value]
+                                            const temp = newZone[index]
+                                            newZone[index] = newZone[index + 1]
+                                            newZone[index + 1] = temp
+                                            onChange(newZone)
+                                          }}
+                                        >
+                                          <ChevronDown className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          if (confirm(`Remove ${compDef?.displayName || compName}?`)) {
+                                            const newZone = [...value]
+                                            newZone.splice(index, 1)
+                                            onChange(newZone)
+                                          }
+                                        }}
+                                        className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                      
+                                      <div className="ml-1 text-muted-foreground/60 transition-transform duration-200" style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(0)' }}>
+                                        {isCollapsed ? <Plus className="w-3.5 h-3.5 rotate-45" /> : <ChevronUp className="w-3.5 h-3.5" />}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Component Body */}
+                                  {!isCollapsed && (
+                                    <div className="p-5 space-y-6 bg-card/60 animate-in fade-in zoom-in-95 duration-200 border-t border-border/30">
+                                      {compDef ? Object.entries(compDef.attributes).map(([subFieldName, subDef]: [string, any]) => (
+                                        <div key={subFieldName} className="space-y-1.5">
+                                          <div className="flex items-center justify-between">
+                                            <label className="text-[11px] font-bold text-foreground/70 uppercase tracking-wide">
+                                              {subFieldName}{subDef.required ? <span className="text-destructive ml-1">*</span> : ''}
+                                            </label>
+                                            {subDef.type === 'uid' && <span className="text-[9px] text-muted-foreground uppercase opacity-50">slug</span>}
+                                          </div>
+                                          <div className="pl-3 border-l-2 border-border/40 focus-within:border-primary transition-colors">
+                                            {renderField(subFieldName, subDef, zoneItem[subFieldName], (newVal) => {
+                                              const newZone = [...(value || [])]
+                                              newZone[index] = { ...newZone[index], [subFieldName]: newVal }
+                                              onChange(newZone)
+                                            })}
+                                          </div>
+                                        </div>
+                                      )) : (
+                                        <div className="flex flex-col items-center gap-2 p-6 text-center">
+                                          <EyeOff className="w-6 h-6 text-muted-foreground/30" />
+                                          <p className="text-xs font-semibold text-destructive/80">Component "{compName}" schema not found.</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )
+                            })}
+                          </div>
+
+                          {/* Empty State */}
+                          {(!value || value.length === 0) && (
+                            <div className="p-10 border-2 border-dashed border-border/60 rounded-xl flex flex-col items-center justify-center text-center bg-muted/5 transition-colors hover:bg-muted/10">
+                              <div className="p-3.5 rounded-full bg-primary/5 text-primary/40 mb-3 border border-primary/10">
+                                <Plus className="w-6 h-6" />
+                              </div>
+                              <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">No components added</p>
+                              <p className="text-[10px] text-muted-foreground/60 max-w-[200px] mt-1.5 leading-relaxed font-medium">
+                                Choose a component from the library below to start building.
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Library - Add Component UI */}
+                          <div className="pt-4 border-t border-border/20">
+                            <h5 className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] mb-3 text-center">Component Library</h5>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                            {def.allowedComponents?.map((compId: string) => {
+                              const cschema = allSchemas.find(s => s.apiId === compId)
+                              return (
+                                <button
+                                  key={compId}
+                                  type="button"
+                                  onClick={() => {
+                                    const newComp = { __component: compId }
+                                    onChange([...(value || []), newComp])
+                                    // Optionally auto-expand new items
+                                    const newIndex = (value || []).length
+                                    setCollapsedItems(prev => ({ ...prev, [`${fieldName}-${newIndex}`]: false }))
+                                  }}
+                                  className="flex items-center gap-3 px-4 py-3.5 border border-border/60 rounded-xl bg-card/60 hover:bg-primary/5 hover:border-primary/50 hover:text-primary transition-all text-left group shadow-sm hover:shadow-md"
+                                >
+                                  <div className="p-2 rounded-lg bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors shadow-inner">
+                                    <Plus className="w-4 h-4" />
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <span className="text-[11px] font-bold uppercase tracking-wide truncate">
+                                      {cschema?.displayName || compId}
+                                    </span>
+                                    <span className="text-[9px] text-muted-foreground/70 font-mono scale-90 origin-left mt-0.5">
+                                      {compId}
                                     </span>
                                   </div>
-                                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        const newZone = [...(value || [])]
-                                        newZone.splice(index, 1)
-                                        onChange(newZone)
-                                      }}
-                                      className="p-1 text-muted-foreground hover:text-destructive transition-colors ml-2"
-                                    >
-                                      <Trash2 className="w-4 h-4" />
-                                    </button>
-                                  </div>
-                                </div>
-                                <div className="p-4 space-y-4">
-                                  {compDef ? Object.entries(compDef.attributes).map(([subFieldName, subDef]: [string, any]) => (
-                                    <div key={subFieldName} className="space-y-1">
-                                      <label className="text-sm font-medium">{subFieldName}{subDef.required ? ' *' : ''}</label>
-                                      {renderField(subFieldName, subDef, zoneItem[subFieldName], (newVal) => {
-                                        const newZone = [...(value || [])]
-                                        newZone[index] = { ...newZone[index], [subFieldName]: newVal }
-                                        onChange(newZone)
-                                      })}
-                                    </div>
-                                  )) : <p className="text-sm text-destructive px-2">Component schema not found.</p>}
-                                </div>
-                              </div>
-                            )
-                          })}
-
-                          {/* Add Component Menu */}
-                          <div className="relative pt-2">
-                            <select
-                              value=""
-                              onChange={(e) => {
-                                if (e.target.value) {
-                                  onChange([...(value || []), { __component: e.target.value }])
-                                }
-                              }}
-                              className="w-full px-3 py-2.5 border-2 border-dashed border-primary/30 rounded-lg focus:outline-none focus:border-primary/60 text-sm bg-primary/5 hover:bg-primary/10 transition-colors appearance-none text-center font-medium text-primary cursor-pointer"
-                            >
-                              <option value="" disabled hidden>+ Add a Component to {fieldName}</option>
-                              <option value="">+ Add a Component to {fieldName}</option>
-                              {def.allowedComponents?.map((compId: string) => {
-                                const cschema = allSchemas.find(s => s.apiId === compId)
-                                return <option key={compId} value={compId}>{cschema?.displayName || compId}</option>
-                              })}
-                            </select>
+                                </button>
+                              )
+                            })}
+                            </div>
                           </div>
                         </div>
                   ) : def.type === 'json' ? (

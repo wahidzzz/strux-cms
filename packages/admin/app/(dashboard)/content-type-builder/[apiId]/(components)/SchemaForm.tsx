@@ -502,6 +502,7 @@ export default function SchemaForm({ initialSchema, isCreate, allSchemas }: Sche
                         { id: 'number', label: 'Number', desc: 'Integers or decimals' },
                         { id: 'boolean', label: 'Boolean', desc: 'True or False' },
                         { id: 'email', label: 'Email', desc: 'Email address format' },
+                        { id: 'password', label: 'Password', desc: 'Encrypted field' },
                         { id: 'uid', label: 'UID', desc: 'Unique identifier / slug' }
                       ].map(type => (
                         <button
@@ -526,6 +527,8 @@ export default function SchemaForm({ initialSchema, isCreate, allSchemas }: Sche
                       {[
                         { id: 'richtext', label: 'Rich Text', desc: 'Markdown formatting' },
                         { id: 'media', label: 'Media', desc: 'Images, videos, files' },
+                        { id: 'date', label: 'Date', desc: 'Calendar date' },
+                        { id: 'datetime', label: 'Datetime', desc: 'Date and time' },
                         { id: 'json', label: 'JSON', desc: 'Raw JSON data' },
                         { id: 'enumeration', label: 'Enumeration', desc: 'List of specific values' }
                       ].map(type => (

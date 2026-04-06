@@ -21,6 +21,7 @@
 import { nanoid } from 'nanoid'
 import { join } from 'path'
 import slugify from 'slugify'
+import bcrypt from 'bcryptjs'
 import type {
   ContentEntry,
   CreateData,
@@ -126,6 +127,9 @@ export class ContentEngine {
     // Step 4.5: Generate slug if uid field exists in schema
     await this.generateSlugIfNeeded(contentType, entry)
 
+    // Hash password fields
+    await this.hashPasswordsIfNeeded(contentType, entry)
+
     // Step 4.6: Validate relation references
     await this.validateRelations(contentType, entry)
 
@@ -207,7 +211,11 @@ export class ContentEngine {
     if (isNumeric) {
       filters.id = { $eq: Number(id) };
     } else {
-      filters.documentId = { $eq: id };
+      // Resilient lookup: check both id and documentId for string identifiers
+      filters.$or = [
+        { id: { $eq: id } },
+        { documentId: { $eq: id } }
+      ];
     }
 
     const results = this.queryEngine.query(contentType, {
@@ -333,6 +341,9 @@ export class ContentEngine {
 
     // Step 3.5: Regenerate slug if target field changed
     await this.regenerateSlugIfNeeded(contentType, existing, updated)
+
+    // Hash password fields if they were updated
+    await this.hashPasswordsIfNeeded(contentType, updated, data)
 
     // Step 3.6: Validate relation references
     await this.validateRelations(contentType, updated)
@@ -724,6 +735,9 @@ export class ContentEngine {
 
       // Generate slug if uid field exists in schema
       await this.generateSlugIfNeeded(contentType, entry)
+
+      // Hash password fields
+      await this.hashPasswordsIfNeeded(contentType, entry)
 
       // Validate relation references
       await this.validateRelations(contentType, entry)
@@ -1369,4 +1383,37 @@ export class ContentEngine {
        }
      }
    }
+
+  /**
+   * Automatically hash password fields before saving
+   * 
+   * @param contentType The content type identifier
+   * @param entry The full entry being saved
+   * @param updatedData Optional subset of data being updated (to check if password was actually changed)
+   */
+  private async hashPasswordsIfNeeded(
+    contentType: string,
+    entry: any,
+    updatedData?: any
+  ): Promise<void> {
+    const schema = await this.schemaEngine.loadSchema(contentType)
+    
+    for (const [fieldName, fieldDef] of Object.entries(schema.attributes)) {
+      if (fieldDef.type === 'password') {
+        const passwordValue = entry[fieldName]
+        
+        // Only hash if a value is provided and (it's a new entry OR it was explicitly in the updated data)
+        const shouldHash = passwordValue && (!updatedData || Object.keys(updatedData).includes(fieldName))
+        
+        if (shouldHash && typeof passwordValue === 'string') {
+          // Check if it's already a hash (simple check, bcrypt hashes usually start with $2a$ or $2b$)
+          const isAlreadyHashed = passwordValue.startsWith('$2a$') || passwordValue.startsWith('$2b$')
+          
+          if (!isAlreadyHashed) {
+            entry[fieldName] = await bcrypt.hash(passwordValue, 10)
+          }
+        }
+      }
+    }
+  }
 }

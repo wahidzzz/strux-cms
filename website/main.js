@@ -26,6 +26,7 @@
   if (toggle) {
     toggle.addEventListener('click', () => {
       const links = document.querySelector('.nav-links');
+      toggle.classList.toggle('active');
       links.classList.toggle('nav-links--open');
     });
   }
