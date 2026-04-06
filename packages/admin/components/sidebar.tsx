@@ -118,6 +118,7 @@ export function Sidebar() {
           <div className="flex items-center h-16 px-6 border-b border-border bg-muted/20">
             <Link href="/" className="flex items-center space-x-3">
               {settings?.logoUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={settings.logoUrl} alt="Logo" className="w-8 h-8 rounded" />
               ) : (
                   <svg width="32" height="32" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">

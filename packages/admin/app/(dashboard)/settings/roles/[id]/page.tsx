@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Save, ArrowLeft, Loader2, Info, Check, CheckSquare, Square, MinusSquare, Crown } from 'lucide-react'
 import Link from 'next/link'
@@ -52,18 +52,18 @@ export default function RoleDetailPage({ params }: { params: { id: string } }) {
 
   const isImmutable = role?.type === 'admin' || role?.type === 'super_admin'
 
-  const hasPermission = (subject: string, action: string) => {
+  const hasPermission = useCallback((subject: string, action: string) => {
     if (isImmutable) return true
     return workingPermissions.some(p =>
       (p.subject === subject || p.subject === 'all') &&
       (p.action === action || p.action === '*')
     )
-  }
+  }, [isImmutable, workingPermissions])
 
-  const isActionApplicable = (subject: string, action: string) => {
+  const isActionApplicable = useCallback((subject: string, action: string) => {
     if (subject === 'media') return !['publish', 'unpublish'].includes(action)
     return true
-  }
+  }, [])
 
   const togglePermission = (subject: string, action: string) => {
     if (isImmutable) return

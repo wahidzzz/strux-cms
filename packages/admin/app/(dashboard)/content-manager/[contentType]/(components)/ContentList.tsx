@@ -124,6 +124,7 @@ export default function ContentList({ params, schema, initialData, initialMeta }
       return (
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded border border-border overflow-hidden bg-muted flex-shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={value} alt="Preview" className="w-full h-full object-cover" />
           </div>
           <span className="truncate text-xs text-muted-foreground">Image</span>

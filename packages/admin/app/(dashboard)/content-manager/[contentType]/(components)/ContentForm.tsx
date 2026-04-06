@@ -467,7 +467,7 @@ export default function ContentForm({ contentType, schema, allSchemas, initialEn
                                       )) : (
                                         <div className="flex flex-col items-center gap-2 p-6 text-center">
                                           <EyeOff className="w-6 h-6 text-muted-foreground/30" />
-                                          <p className="text-xs font-semibold text-destructive/80">Component "{compName}" schema not found.</p>
+                                          <p className="text-xs font-semibold text-destructive/80">Component &quot;{compName}&quot; schema not found.</p>
                                         </div>
                                       )}
                                     </div>
